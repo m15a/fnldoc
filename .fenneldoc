@@ -1,0 +1,10 @@
+;; -*- mode: fennel; -*-
+;; default configuration for Fenneldoc
+;; See https://gitlab.com/andreyorst/fenneldoc
+
+{:insert-comment true
+ :insert-version true
+ :version-key :_VERSION
+ :description-key :_DESCRIPTION
+ :function-signatures true
+ :verbose true}
