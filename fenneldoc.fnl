@@ -27,14 +27,25 @@
   (print "Usage: fenneldoc [flags] [files]
 Create documentation for your project.
 
-  --version-key _VERSION         : What key to use to look for version of the module.
-  --description-key _DESCRIPTION : What key to use to look for description of the module.
+Value flags:
+  --version-key     _VERSION     : key to use to get the version of the module.
+  --description-key _DESCRIPTION : key to use to get the description of the module.
 
-  --silent                       : Do not report errors
-  --no-function-signatures       : Do not generate function signatures in documentation.
-  --no-final-comment             : Do not insert final comment with fenneldoc version
+Toggle flags:
+  --[no-]silent                  : (don't) report errors
+  --[no-]function-signatures     : (don't) generate function signatures in documentation.
+  --[no-]final-comment           : (don't) insert final comment with fenneldoc version
+  --[no-]toc                     : (don't) generate table of contents
 
-  --help                         : print this message and exit")
+  --help                         : print this message and exit
+
+All keys have higher precedence than configuration file, therefore
+values passed with keys will override folowing values in
+docjmentation.
+
+Each toggle key has two variants with and without `no'.  For example,
+passing `--no-toc' will disable generation of contents table, and
+`--toc` will anable it.")
   (os.exit 0))
 
 (fn process-args []
@@ -48,9 +59,14 @@ Create documentation for your project.
       :--description-key (do (set (i v) (next arg i))
                              (if i (set config.description-key v)
                                  (error "expected value for --description-key")))
-      :--silent (set default-config.verbose false)
+      :--silent    (set default-config.verbose true)
+      :--no-silent (set default-config.verbose false)
+      :--function-signatures    (set config.function-signatures true)
       :--no-function-signatures (set config.function-signatures false)
+      :--final-comment    (set config.insert-comment true)
       :--no-final-comment (set config.insert-comment false)
+      :--toc    (set config.toc true)
+      :--no-toc (set config.toc false)
       :--help (help)
       _ (table.insert files v))
     (set (i v) (next arg i)))
@@ -118,10 +134,19 @@ corresponding to pcall result."
   lines)
 
 
+(fn add-toc [lines contents]
+  (when (and config.toc contents (next contents))
+    (lines:append "**Table of contents**")
+    (each [item _ (utils.stablepairs contents)]
+      (lines:append (.. "- [`" item "`](#" item ")")))
+    (lines:append "")))
+
+
 (fn add-item-documentation [lines item docs]
   (lines:append (if docs (pick-values 1 (docs:gsub "\n#" "\n###"))
                     "**Undocumented**"))
   (lines:append ""))
+
 
 (fn gen-markdown [module-info]
   (let [lines (setmetatable [(.. "# " module-info.module)]
@@ -130,7 +155,10 @@ corresponding to pcall result."
     (match module-info.version
       version (do (lines:append "")
                   (lines:append (.. "Documentation for version: " version))))
-    (lines:append "")
+    
+    (-> (lines:append "")
+        (add-toc module-info.docs))
+    
     (each [item {: docs : args} (utils.stablepairs module-info.docs)]
       (-> (lines:append (.. "## `" item "`"))
           (add-function-signature item args)
@@ -157,8 +185,9 @@ corresponding to pcall result."
     (when version?
       (table.insert dirs 2 version?))
     (each [_ dir (ipairs dirs)]
-      (fs.mkdir dir)
-      (fs.chdir dir))
+      (when (not= dir :src)
+        (fs.mkdir dir)
+        (fs.chdir dir)))
     (fs.chdir olddir)
     (.. (table.concat dirs "/") "/" fname)))
 
