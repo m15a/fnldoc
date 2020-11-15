@@ -12,7 +12,8 @@
                :version-key :_VERSION
                :description-key :_DESCRIPTION
                :function-signatures true
-               :verbose true})
+               :silent false
+               :toc true})
 
 
 (fn process-config []
@@ -25,6 +26,7 @@
 
 (fn help []
   (print "Usage: fenneldoc [flags] [files]
+
 Create documentation for your project.
 
 Value flags:
@@ -59,8 +61,8 @@ passing `--no-toc' will disable generation of contents table, and
       :--description-key (do (set (i v) (next arg i))
                              (if i (set config.description-key v)
                                  (error "expected value for --description-key")))
-      :--silent    (set default-config.verbose true)
-      :--no-silent (set default-config.verbose false)
+      :--silent    (set default-config.silent true)
+      :--no-silent (set default-config.silent false)
       :--function-signatures    (set config.function-signatures true)
       :--no-function-signatures (set config.function-signatures false)
       :--final-comment    (set config.insert-comment true)
@@ -79,19 +81,15 @@ passing `--no-toc' will disable generation of contents table, and
   (.. (string.upper (string.sub str 1 1))
       (string.sub str 2 -1)))
 
-
-(fn require-module [module]
-  "Require module in protected call.  Returns vector with first value
+(fn require-module [file]
+  "Require file as module in protected call.  Returns vector with first value
 corresponding to pcall result."
-  (let [(module? mod) (pcall require module)]
+  (let [(module? mod) (pcall fennel.dofile file {:useMetadata true})]
     [module? mod]))
 
 
 (fn process-file [file]
-  (let [[module? module] (-> file
-                             (string.gsub "/" ".")
-                             (string.gsub ".fnl$" "")
-                             require-module)]
+  (let [[module? module] (require-module file)]
     (if (not module?) (io.stderr:write (.. "Error loading file " file "\n" module))
         (let [result {:module (-> file
                                   (string.gsub ".*/" "")
@@ -149,16 +147,15 @@ corresponding to pcall result."
 
 
 (fn gen-markdown [module-info]
-  (let [lines (setmetatable [(.. "# " module-info.module)]
+  (let [lines (setmetatable [(.. "# " module-info.module (match module-info.version
+                                                           version (.. " (" version ")")
+                                                           _ ""))]
                             {:__index table})]
     (-?>> module-info.description lines:append)
-    (match module-info.version
-      version (do (lines:append "")
-                  (lines:append (.. "Documentation for version: " version))))
-    
+
     (-> (lines:append "")
         (add-toc module-info.docs))
-    
+
     (each [item {: docs : args} (utils.stablepairs module-info.docs)]
       (-> (lines:append (.. "## `" item "`"))
           (add-function-signature item args)
@@ -174,7 +171,7 @@ corresponding to pcall result."
     res))
 
 
-(fn create-file-and-dirs [file version?]
+(fn create-file-and-dirs [file]
   (let [path (file:gsub "[^\\/]+.fnl$" "")
         fname (-> file
                   (string.gsub path "")
@@ -182,8 +179,6 @@ corresponding to pcall result."
         dirs (-> (string.split path "\\/")
                  (table.append 1 "doc"))
         olddir (fs.currentdir)]
-    (when version?
-      (table.insert dirs 2 version?))
     (each [_ dir (ipairs dirs)]
       (when (not= dir :src)
         (fs.mkdir dir)
@@ -203,7 +198,7 @@ corresponding to pcall result."
   (each [_ file (ipairs files)]
     (let [processed (process-file file)
           markdown (gen-markdown processed)]
-      (write-doc markdown (create-file-and-dirs file processed.version)))))
+      (write-doc markdown (create-file-and-dirs file)))))
 
 (main)
 
