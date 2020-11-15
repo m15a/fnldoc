@@ -1,22 +1,24 @@
 LUA ?= lua
 FENNEL ?= fennel
-FNLSOURCES = fenneldoc.fnl
+FNLSOURCES = src/fenneldoc.fnl src/config.fnl src/parser.fnl src/launcher.fnl
 LUASOURCES = $(FNLSOURCES:.fnl=.lua)
 
 .PHONY: build clean help
 
 build: fenneldoc
 
-fenneldoc: fenneldoc.lua
+fenneldoc: $(LUASOURCES)
 	echo "#!/usr/bin/env $(LUA)" > $@
-	cat fenneldoc.lua >> fenneldoc
+	cat src/launcher.lua >> fenneldoc
 	chmod 755 $@
 
-fenneldoc.lua: $(FNLSOURCES)
-	$(FENNEL) --no-metadata --require-as-include --compile $< > $@
+${LUASOURCES}: $(FNLSOURCES)
+
+%.lua: %.fnl
+	$(FENNEL) --add-fennel-path src/?.fnl --no-metadata --require-as-include --compile $< > $@
 
 clean:
-	rm -f $(LUASOURCES)
+	rm -f $(LUASOURCES) fenneldoc
 
 help:
 	@echo "make                -- create executable lua script" >&2
