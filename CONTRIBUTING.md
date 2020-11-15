@@ -30,9 +30,6 @@ For this particular project, please follow rules as described in [Clojure Style 
 If you see any inconsistencies with the style guide in the code, feel free to change these in a non-breaking way.
 
 If you've added new functions, each one must be covered with a set of tests.
-For that purpose this project has special `test.fnl` module, that defines such macros as `assert*`, `assert-eq`, `assert-ne`, and `test`.
-All tests must be created with the `test` macro, which automatically defines the test function and runs it afterwards.
-All assertions in tests must be one with one of `assert-eq`, `assert-ne`, or `assert*` macros, as these provide human readable output in the log.
 
 When changing existing functions make sure that all tests pass.
 If some tests do not pass, make sure that these tests are written to test this function.
@@ -44,9 +41,10 @@ Makefile also has `luacov-console` target, which can be used to see coverage of 
 
 ## Writing documentation
 If you've added new code, make sure it is covered not only by tests but also with documentation.
-This includes writing documentation strings directly in the code, either by using docstring feature of the language, or by adding comments which begin with `DOC:`
+This is better done by writing documentation strings directly in the code, by using docstring feature of the language.
+This way this documentation can be exported to markdown later on.
 
-Documentation uses Markdown format, as it is widely supported and can be read without any special software.
+Documentation files uses Markdown format, as it is widely supported and can be read without any special software.
 Please make sure to follow existing style of documentation, which can be shortly describing as:
 
 -   One sentence per line.
