@@ -1,4 +1,5 @@
 (local fennel (require :fennel))
+(local compiler (require :fennel.compiler))
 (local fs (require :lfs))
 (local {: gen-markdown
         : gen-function-signature
@@ -42,11 +43,11 @@ Concatenates lines in `docs` with newline, and writes result to
 `file`."
   (let [(path dir msg code) (create-dirs-from-path file config)]
     (if path
-        (let [(f msg code) (io.open path :w)]
-          (if f
-              (with-open [file f]
+        (let [(file msg code) (io.open path :w)]
+          (if file
+              (with-open [file file]
                 (file:write docs))
-              (do (io.stderr:write (.. "Error opening file '" file "': " msg " (" code ")\n"))
+              (do (io.stderr:write (.. "Error opening file '" path "': " msg " (" code ")\n"))
                   (os.exit code))))
         (do (io.stderr:write (.. "Error creating directory '" dir "': " msg " (" code ")\n"))
             (os.exit code)))))
@@ -80,8 +81,14 @@ Concatenates lines in `docs` with newline, and writes result to
 (fn require-module [file]
   "Require file as module in protected call.  Returns vector with first value
 corresponding to pcall result."
-  (let [(module? module) (pcall fennel.dofile file {:useMetadata true})]
-    [(and module? (type module)) module]))
+  (match (pcall fennel.dofile file {:useMetadata true})
+    (true module) [(type module) module]
+    ;; try again, now with compiler env
+    (false msg) (match (pcall fennel.dofile file {:useMetadata true
+                                                  :env :_COMPILER
+                                                  :scope (. compiler :scopes :compiler)})
+                  (true module) [(type module) module]
+                  (false msg) [false msg])))
 
 
 (fn gen-module-info [file config]
