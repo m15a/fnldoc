@@ -48,32 +48,27 @@ passing `--no-toc' will disable generation of contents table, and
   (os.exit 0))
 
 
+(macro set-flag-value [i key flag]
+  "Boilerplate for setting configuration values and removing
+correspoinding args."
+  `(do (table.remove arg ,i)
+       (match (pcall table.remove arg (+ ,i 1))
+         (true val#) (set ,key val#)
+         (false _#)  (do (io.stderr:write (.. "fenneldoc: expected value for " ,flag "\n"))
+                         (os.exit -1)))))
+
+
 (fn process-args [config]
   "Process command line arguments"
   (let [files []]
     (var (i flag) (next arg))
     (while (and i (> i 0))
       (match flag
-        :--version-key (do (tset arg i nil)
-                           (set (i flag) (next arg i))
-                           (if (and i (> i 0)) (set config.keys.version flag)
-                               (error "expected value for --version-key" 2)))
-        :--license-key (do (tset arg i nil)
-                           (set (i flag) (next arg i))
-                           (if (and i (> i 0)) (set config.keys.license flag)
-                               (error "expected value for --license-key" 2)))
-        :--description-key (do (tset arg i nil)
-                               (set (i flag) (next arg i))
-                               (if (and i (> i 0)) (set config.keys.description flag)
-                                   (error "expected value for --description-key" 2)))
-        :--copyright-key (do (tset arg i nil)
-                             (set (i flag) (next arg i))
-                             (if (and i (> i 0)) (set config.keys.copyright flag)
-                                 (error "expected value for --copyright-key" 2)))
-        :--out-dir (do (tset arg i nil)
-                       (set (i flag) (next arg i))
-                       (if (and i (> i 0)) (set config.out-dir flag)
-                           (error "expected value for --out-dir" 2)))
+        :--version-key (set-flag-value i config.keys.version flag)
+        :--license-key (set-flag-value i config.keys.license flag)
+        :--description-key (set-flag-value i config.keys.description flag)
+        :--copyright-key (set-flag-value i config.keys.copyright flag)
+        :--out-dir (set-flag-value i config.out-dir flag)
 
         ;; TODO: currently has no effect
         :--silent    (set default-config.silent true)
