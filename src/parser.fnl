@@ -1,6 +1,9 @@
 (local fennel (require :fennel))
 (local fs (require :lfs))
-(local fenneldoc (require :fenneldoc))
+(local {: gen-markdown
+        : gen-function-signature
+        : gen-item-documentation}
+       (require :markdown))
 
 
 (fn string.split [s seps]
@@ -17,12 +20,13 @@
                   (string.gsub path "")
                   (string.gsub ".fnl$" ".md"))
         dirs (-> (string.split path "\\/")
-                 (table.append 1 "doc"))
+                 (doto (table.insert 1 "doc")))
         olddir (fs.currentdir)]
-    (each [_ dir (ipairs dirs)]
-      (when (not= dir :src)
-        (fs.mkdir dir)
-        (fs.chdir dir)))
+    (each [i dir (ipairs dirs)]
+      (if (not= dir :src)
+          (do (fs.mkdir dir)
+              (fs.chdir dir))
+          (tset dirs i nil)))
     (fs.chdir olddir)
     (.. (table.concat dirs "/") "/" fname)))
 
@@ -32,7 +36,7 @@
 Concatenates lines in `docs` with newline, and writes result to
 `file`."
   (with-open [file (io.open (create-dirs-from-path file) :w)]
-    (file:write (docs:concat "\n"))))
+    (file:write docs)))
 
 
 (fn capitalize [str]
@@ -43,34 +47,53 @@ Concatenates lines in `docs` with newline, and writes result to
 (fn require-module [file]
   "Require file as module in protected call.  Returns vector with first value
 corresponding to pcall result."
-  (let [(module? mod) (pcall fennel.dofile file {:useMetadata true})]
-    [module? mod]))
+  (let [(module? module) (pcall fennel.dofile file {:useMetadata true})]
+    [(and module? (type module)) module]))
+
+
+(fn module-heading [file]
+  (-> file
+      (string.gsub ".*/" "")
+      (capitalize)))
+
+(fn function-name-from-file [file]
+  (-> file
+      (string.gsub ".*/" "")
+      (string.gsub ".fnl$" "")))
+
+(fn module-docs [module config]
+  (let [docs {}]
+    (each [id val (pairs module)]
+      (when (and (not= (string.sub id 1 1) :_)
+                 (not= id config.version-key))
+        (tset docs id {:docstring (fennel.metadata:get val :fnl/docstring)
+                       :arglist (fennel.metadata:get val :fnl/arglist)})))
+    docs))
 
 
 (fn gen-module-info [file config]
-  (let [[module? module] (require-module file)]
-    (if (not module?) (io.stderr:write (.. "Error loading file " file "\n" module))
-        (let [result {:module (-> file
-                                  (string.gsub ".*/" "")
-                                  (capitalize))
-                      :docs {}}
-              docs result.docs]
-          (match (. module config.description-key)
-            descr (tset result :description descr))
-          (match (. module config.version-key)
-            version (tset result :version version))
-          (each [id val (pairs module)]
-            (when (and (not= (string.sub id 1 1) :_)
-                       (not= id config.version-key))
-              (tset docs id {:docs (fennel.metadata:get val :fnl/docstring)
-                             :args (fennel.metadata:get val :fnl/arglist)})))
-          result))))
+  (match (require-module file)
+    [:table module] {:module (module-heading file)
+                     :type :module
+                     :version (. module config.version-key)
+                     :description (. module config.description-key)
+                     :items (module-docs module config)}
+    [:function function] {:module (module-heading file)
+                          :type :function-module
+                          :description (.. (gen-function-signature
+                                            (function-name-from-file file)
+                                            (fennel.metadata:get function :fnl/arglist)
+                                            config)
+                                           (gen-item-documentation
+                                            (fennel.metadata:get function :fnl/docstring)))
+                          :items {}}
+    [false err] (io.stderr:write (.. "Error loading file " file "\n" err))))
 
 
-(fn process-file [file config]
+(fn generate-doc [file config]
   "Accepts `file` path, and `config`. Generates module documentation
 and writes it to `file` creating it if not exists."
-  (-> file
-      (gen-module-info config)
-      (fenneldoc config)
-      (write-doc file)))
+  (-?> file
+       (gen-module-info config)
+       (gen-markdown config)
+       (write-doc file)))
