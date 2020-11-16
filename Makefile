@@ -18,11 +18,11 @@ ${LUASOURCES}: $(FNLSOURCES)
 	$(FENNEL) --add-fennel-path src/?.fnl --no-metadata --require-as-include --compile $< > $@
 
 clean:
-	rm -f $(LUASOURCES) fenneldoc
+	rm -f fenneldoc $(wildcard src/*.lua)
 
 help:
-	@echo "make                -- create executable lua script" >&2
-	@echo "make clean          -- remove lua files" >&2
-	@echo "make help           -- print this message and exit" >&2
+	@echo "make       -- create executable lua script" >&2
+	@echo "make clean -- remove lua files" >&2
+	@echo "make help  -- print this message and exit" >&2
 
 -include .depend.mk
