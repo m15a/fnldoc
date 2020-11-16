@@ -8,6 +8,7 @@
 (fn gen-info-comment [lines config]
   (when config.insert-comment
     (-> lines
+        (append "")
         (append (.. "<!-- Generated with Fenneldoc " config.fenneldoc-version))
         (append     "     https://gitlab.com/andreyorst/fenneldoc -->")
         (append "")))
@@ -30,9 +31,26 @@
 (fn gen-toc [lines contents config]
   (when (and config.toc contents (next contents))
     (append lines "**Table of contents**")
+    (append lines "")
     (each [item _ (utils.stablepairs contents)]
       (append lines (.. "- [`" item "`](#" item ")")))
     (append lines ""))
+  lines)
+
+
+(fn gen-license-info [lines license config]
+  (when (and config.insert-license license)
+    (-> lines
+        (append (.. "License: " license))
+        (append "")))
+  lines)
+
+
+(fn gen-copyright-info [lines copyright config]
+  (when (and config.insert-copyright copyright)
+    (-> lines
+        (append copyright)
+        (append "")))
   lines)
 
 
@@ -55,8 +73,7 @@
     (-?>> module-info.description
           (append lines))
 
-    (-> lines
-        (append "")
+    (-> (append lines "")
         (gen-toc module-info.items config))
 
     (each [item {: docstring : arglist} (utils.stablepairs module-info.items)]
@@ -64,6 +81,15 @@
           (append (.. "## `" item "`"))
           (gen-function-signature item arglist config)
           (gen-item-documentation docstring)))
+
+    (when (and (or module-info.copyright module-info.license)
+               (or config.insert-copyright config.insert-license))
+      (-> lines
+          (append "")
+          (append "---")
+          (append "")
+          (gen-copyright-info module-info.copyright config)
+          (gen-license-info module-info.license config)))
 
     (-> lines
         (gen-info-comment config)

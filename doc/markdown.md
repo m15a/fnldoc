@@ -2,6 +2,7 @@
 Functions for generating Markdown
 
 **Table of contents**
+
 - [`gen-function-signature`](#gen-function-signature)
 - [`gen-item-documentation`](#gen-item-documentation)
 - [`gen-markdown`](#gen-markdown)
@@ -33,5 +34,6 @@ Function signature:
 
 Generate markdown feom `module-info` accordingly to `config`.
 
-<!-- Generated with Fenneldoc 0.0.3
+
+<!-- Generated with Fenneldoc 0.0.4
      https://gitlab.com/andreyorst/fenneldoc -->

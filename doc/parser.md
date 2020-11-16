@@ -4,9 +4,12 @@ Function signature:
 ```
 (parser file config)
 ```
-Accepts `file` path, and `config`. Generates module documentation
-and writes it to `file` creating it if not exists.
+
+Accepts `file` as path to some Fennel module, and `config` table.
+Generates module documentation and writes it to `file` with `.md`
+extension, creating it if not exists.
 
 
-<!-- Generated with Fenneldoc 0.0.3
+
+<!-- Generated with Fenneldoc 0.0.4
      https://gitlab.com/andreyorst/fenneldoc -->

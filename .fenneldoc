@@ -2,10 +2,15 @@
 ;; Configuration file for Fenneldoc.
 ;; https://gitlab.com/andreyorst/fenneldoc
 
-{:version-key :_VERSION
- :description-key :_DESCRIPTION
+{:keys {:version :_VERSION
+        :description :_DESCRIPTION
+        :license :_LICENSE
+        :copyright :_COPYRIGHT}
  :insert-comment true
  :insert-version true
+ :insert-license true
+ :insert-copyright true
  :function-signatures true
  :toc true
- :verbose true}
+ :out-dir "./doc"
+ :silent false}

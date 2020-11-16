@@ -14,41 +14,47 @@
     res))
 
 
-(fn create-dirs-from-path [file]
+(fn create-dirs-from-path [file config]
   (let [path (file:gsub "[^\\/]+.fnl$" "")
         fname (-> file
                   (string.gsub path "")
                   (string.gsub ".fnl$" ".md"))
         dirs (-> (string.split path "\\/")
-                 (doto (table.insert 1 "doc")))
+                 (doto (table.insert 1 config.out-dir)))
         olddir (fs.currentdir)]
     (each [i dir (ipairs dirs)]
       (if (not= dir :src)
-          (do (fs.mkdir dir)
-              (fs.chdir dir))
+          (match (fs.mkdir dir)
+            (true) (fs.chdir dir)
+            (nil "File exists" 17) (fs.chdir dir)
+            (nil msg code) (do (fs.chdir olddir)
+                               (lua "return nil, dir, msg, code")))
           (tset dirs i nil)))
     (fs.chdir olddir)
-    (.. (table.concat dirs "/") "/" fname)))
+    (-> (table.concat dirs "/")
+        (.. "/" fname)
+        (string.gsub "[/]+" "/"))))
 
 
-(fn write-doc [docs file]
+(fn write-doc [docs file config]
   "Accepts `docs` as a vector of lines, and a path to a `file`.
 Concatenates lines in `docs` with newline, and writes result to
 `file`."
-  (with-open [file (io.open (create-dirs-from-path file) :w)]
-    (file:write docs)))
+  (let [(path dir msg code) (create-dirs-from-path file config)]
+    (if path
+        (let [(f msg code) (io.open path :w)]
+          (if f
+              (with-open [file f]
+                (file:write docs))
+              (do (io.stderr:write (.. "Error opening file '" file "': " msg " (" code ")\n"))
+                  (os.exit code))))
+        (do (io.stderr:write (.. "Error creating directory '" dir "': " msg " (" code ")\n"))
+            (os.exit code)))))
 
 
 (fn capitalize [str]
   (.. (string.upper (str:sub 1 1))
       (str:sub 2 -1)))
-
-
-(fn require-module [file]
-  "Require file as module in protected call.  Returns vector with first value
-corresponding to pcall result."
-  (let [(module? module) (pcall fennel.dofile file {:useMetadata true})]
-    [(and module? (type module)) module]))
 
 
 (fn module-heading [file]
@@ -64,26 +70,44 @@ corresponding to pcall result."
 (fn module-docs [module config]
   (let [docs {}]
     (each [id val (pairs module)]
-      (when (and (not= (string.sub id 1 1) :_)
-                 (not= id config.version-key))
+      (when (and (not= (string.sub id 1 1) :_) ;; ignore keys starting with `_`
+                 (not (. config.keys id)))     ;; ignore special keys, like `:version`
         (tset docs id {:docstring (fennel.metadata:get val :fnl/docstring)
                        :arglist (fennel.metadata:get val :fnl/arglist)})))
     docs))
 
 
+(fn require-module [file]
+  "Require file as module in protected call.  Returns vector with first value
+corresponding to pcall result."
+  (let [(module? module) (pcall fennel.dofile file {:useMetadata true})]
+    [(and module? (type module)) module]))
+
+
 (fn gen-module-info [file config]
   (match (require-module file)
+    ;; Ordinary module that returns a table.  If module has keys that
+    ;; are specified within the `:keys` section of `.fenneldoc` those
+    ;; are looked up in the module for additional info.
     [:table module] {:module (module-heading file)
                      :type :module
-                     :version (. module config.version-key)
-                     :description (. module config.description-key)
+                     :version (. module config.keys.version)
+                     :description (. module config.keys.description)
+                     :copyright (. module config.keys.copyright)
+                     :license (. module config.keys.license)
                      :items (module-docs module config)}
+    ;; function modules have no version, license, or description keys,
+    ;; as there's no way of adding this as a metadata or embed into
+    ;; function itself.  So module description is set to a combination
+    ;; of function docstring and signature if allowed by config.
+    ;; Table of contents is also omitted.
     [:function function] {:module (module-heading file)
                           :type :function-module
                           :description (.. (gen-function-signature
                                             (function-name-from-file file)
                                             (fennel.metadata:get function :fnl/arglist)
                                             config)
+                                           "\n"
                                            (gen-item-documentation
                                             (fennel.metadata:get function :fnl/docstring)))
                           :items {}}
@@ -91,9 +115,10 @@ corresponding to pcall result."
 
 
 (fn generate-doc [file config]
-  "Accepts `file` path, and `config`. Generates module documentation
-and writes it to `file` creating it if not exists."
+  "Accepts `file` as path to some Fennel module, and `config` table.
+Generates module documentation and writes it to `file` with `.md`
+extension, creating it if not exists."
   (-?> file
        (gen-module-info config)
        (gen-markdown config)
-       (write-doc file)))
+       (write-doc file config)))
