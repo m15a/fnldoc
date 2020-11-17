@@ -20,6 +20,9 @@ ${LUASOURCES}: $(FNLSOURCES)
 clean:
 	rm -f fenneldoc $(wildcard src/*.lua)
 
+docs: fenneldoc
+	fenneldoc $(FNLSOURCES)
+
 help:
 	@echo "make       -- create executable lua script" >&2
 	@echo "make clean -- remove lua files" >&2
