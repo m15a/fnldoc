@@ -11,5 +11,5 @@ extension, creating it if not exists.
 
 
 
-<!-- Generated with Fenneldoc 0.0.4
+<!-- Generated with Fenneldoc 0.0.5
      https://gitlab.com/andreyorst/fenneldoc -->

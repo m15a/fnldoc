@@ -1,93 +1,124 @@
-(local utils (require :fennel.utils))
-
-
-(fn append [t val]
-  (doto t (table.insert val)))
+(import-macros {: into} :cljlib-macros)
+(local {: ordered-set
+        : apply
+        : seq
+        : conj
+        : keys}
+       (require :cljlib))
 
 
 (fn gen-info-comment [lines config]
   (when config.insert-comment
-    (-> lines
-        (append "")
-        (append (.. "<!-- Generated with Fenneldoc " config.fenneldoc-version))
-        (append     "     https://gitlab.com/andreyorst/fenneldoc -->")
-        (append "")))
+    (conj lines
+          ""
+          (.. "<!-- Generated with Fenneldoc " config.fenneldoc-version)
+          "     https://gitlab.com/andreyorst/fenneldoc -->"
+          ""))
   lines)
 
 
 (fn gen-function-signature [lines item arglist config]
   (when (and config.function-signatures arglist)
     (let [arglist (table.concat arglist " ")]
-      (-> lines
-          (append "Function signature:")
-          (append "")
-          (append "```")
-          (append (.. "(" item (if (= arglist "") "" " ")  arglist ")"))
-          (append "```")
-          (append ""))))
-  lines)
-
-
-(fn gen-toc [lines contents config]
-  (when (and config.toc contents (next contents))
-    (append lines "**Table of contents**")
-    (append lines "")
-    (each [item _ (utils.stablepairs contents)]
-      (append lines (.. "- [`" item "`](#" item ")")))
-    (append lines ""))
+      (conj lines
+            "Function signature:"
+            ""
+            "```"
+            (.. "(" item (if (= arglist "") "" " ")  arglist ")")
+            "```"
+            "")))
   lines)
 
 
 (fn gen-license-info [lines license config]
   (when (and config.insert-license license)
-    (-> lines
-        (append (.. "License: " license))
-        (append "")))
+    (conj lines (.. "License: " license) ""))
   lines)
 
 
 (fn gen-copyright-info [lines copyright config]
   (when (and config.insert-copyright copyright)
-    (-> lines
-        (append copyright)
-        (append "")))
+    (conj lines copyright ""))
   lines)
 
 
 (fn gen-item-documentation [lines docstring]
-  "Generate documentation feom `docstring` and append it to `lines`.
+  "Generate documentation feom `docstring` and conj it to `lines`.
 
 `lines` must be a sequential table."
-  (-> lines
-      (append (if docstring (pick-values 1 (docstring:gsub "\n#" "\n###"))
-                  "**Undocumented**"))
-      (append "")))
+  (conj lines
+        (if docstring
+            (pick-values 1 (docstring:gsub "\n#" "\n###"))
+            "**Undocumented**")
+        ""))
+
+
+(fn sorter [config]
+  (match config.doc-order
+    :alphabetic nil
+    :reversed-alphabetic #(> $1 $2)
+    else else))
+
+
+(fn get-ordered-items [module-info config]
+  (let [ordered-items (apply ordered-set (or module-info.doc-order []))
+        sorted-items (doto (keys module-info.items)
+                       (table.sort (sorter config)))]
+    (into [] (into ordered-items sorted-items))))
+
+
+(fn gen-toc [lines items config]
+  (when (and config.toc items (next items))
+    (conj lines
+          "**Table of contents**"
+          "")
+    (each [_ item (ipairs items)]
+      (conj lines (.. "- [`" item "`](#" item ")")))
+    (conj lines ""))
+  lines)
+
+
+(fn gen-items-doc [lines ordered-items module-info config]
+  (each [_ item (ipairs ordered-items)]
+    (match (. module-info.items item)
+      info (-> (conj lines (.. "## `" item "`"))
+               (gen-function-signature item info.arglist config)
+               (gen-item-documentation info.docstring))
+      nil (print (.. "WARNING: Could not find '" item "' in " module-info.module)))))
+
+
+(fn module-version [module-info]
+  (match module-info.version
+    version (.. " (" version ")")
+    _ ""))
+
+
+(fn capitalize [str]
+  (.. (string.upper (str:sub 1 1)) (str:sub 2 -1)))
+
+
+(fn module-heading [file]
+  (.. "# " (capitalize (string.gsub file ".*/" ""))))
 
 
 (fn gen-markdown [module-info config]
   "Generate markdown feom `module-info` accordingly to `config`."
-  (let [lines [(.. "# " module-info.module
-                   (match module-info.version
-                     version (.. " (" version ")")
-                     _ ""))]]
+  (let [ordered-items (get-ordered-items module-info config)
+        lines [(.. (module-heading module-info.module) (module-version module-info))]]
+
     (-?>> module-info.description
-          (append lines))
+          (conj lines))
 
-    (-> (append lines "")
-        (gen-toc module-info.items config))
-
-    (each [item {: docstring : arglist} (utils.stablepairs module-info.items)]
-      (-> lines
-          (append (.. "## `" item "`"))
-          (gen-function-signature item arglist config)
-          (gen-item-documentation docstring)))
+    (-> (conj lines "")
+        (gen-toc ordered-items config)
+        (gen-items-doc ordered-items module-info config))
 
     (when (and (or module-info.copyright module-info.license)
                (or config.insert-copyright config.insert-license))
-      (-> lines
-          (append "")
-          (append "---")
-          (append "")
+      (-> (conj lines
+                ""
+                "---"
+                "")
           (gen-copyright-info module-info.copyright config)
           (gen-license-info module-info.license config)))
 
@@ -108,5 +139,6 @@
    (table.concat
     (gen-function-signature [] function arglist config)
     "\n"))
+ :_DOC_ORDER [:gen-markdown :gen-function-signature]
  :_DESCRIPTION
  "Functions for generating Markdown"}

@@ -1,5 +1,6 @@
 LUA ?= lua
 FENNEL ?= fennel
+FNLPATHS = src cljlib
 FNLSOURCES = $(wildcard src/*.fnl)
 LUASOURCES = $(FNLSOURCES:.fnl=.lua)
 
@@ -15,7 +16,7 @@ fenneldoc: $(LUASOURCES)
 ${LUASOURCES}: $(FNLSOURCES)
 
 %.lua: %.fnl
-	$(FENNEL) --add-fennel-path src/?.fnl --no-metadata --require-as-include --compile $< > $@
+	$(FENNEL) $(foreach path,$(FNLPATHS),--add-fennel-path $(path)/?.fnl) --no-metadata --require-as-include --compile $< > $@
 
 clean:
 	rm -f fenneldoc $(wildcard src/*.lua)
