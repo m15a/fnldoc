@@ -1,4 +1,4 @@
-# Fenneldoc.fnl (0.0.4)
+# Fenneldoc.fnl (0.0.5)
 Fenneldoc - generate documentation for Fennel projects.
 
 Generates documentation for Fennel libraries by analyzing project
@@ -18,5 +18,5 @@ Copyright (C) 2020 Andrey Orst
 License: [MIT](https://gitlab.com/andreyorst/fenneldoc/-/raw/master/LICENSE)
 
 
-<!-- Generated with Fenneldoc 0.0.4
+<!-- Generated with Fenneldoc 0.0.5
      https://gitlab.com/andreyorst/fenneldoc -->

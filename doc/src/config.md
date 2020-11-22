@@ -15,18 +15,21 @@ Default configuration:
 {:keys {:version :_VERSION
         :description :_DESCRIPTION
         :license :_LICENSE
-        :copyright :_COPYRIGHT}
+        :copyright :_COPYRIGHT
+        :doc-order :_DOC_ORDER}
  :insert-comment true
  :insert-version true
  :insert-license true
  :insert-copyright true
  :function-signatures true
+ :order :aplhabetic
  :toc true
  :out-dir "./doc"
+ :fennel-path []
  :silent false}
 ```
 
 
 
-<!-- Generated with Fenneldoc 0.0.4
+<!-- Generated with Fenneldoc 0.0.5
      https://gitlab.com/andreyorst/fenneldoc -->

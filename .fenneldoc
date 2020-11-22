@@ -5,12 +5,15 @@
 {:keys {:version :_VERSION
         :description :_DESCRIPTION
         :license :_LICENSE
-        :copyright :_COPYRIGHT}
+        :copyright :_COPYRIGHT
+        :doc-order :_ITEM_ORDER}
  :insert-comment true
  :insert-version true
  :insert-license true
  :insert-copyright true
  :function-signatures true
+ :order :aplhabetic
  :toc true
  :out-dir "./doc"
+ :fennel-path ["cljlib/?.fnl" "src/?.fnl"]
  :silent false}
