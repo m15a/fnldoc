@@ -8,6 +8,8 @@
         : first}
        (require :cljlib))
 
+;; format: {:key [default-value "descr line1" "line2" ... "lineN"]}
+
 (local key-flags {:--license-key     [:_LICENSE "key to use to get license information of the module."]
                   :--description-key [:_DESCRIPTION "key to use to get the description of the module."]
                   :--copyright-key   [:_COPYRIGHT "key to use to get copyright information of the module."]
@@ -15,7 +17,9 @@
                   :--version-key     [:_VERSION "key to use to get the version of the module."]})
 
 (local value-flags {:--out-dir ["./doc" "output directory for generated documentation."]
-                    :--order   ["alphabetic" "sorting of items that were not given particular order."]})
+                    :--order   ["alphabetic" "sorting of items that were not given particular order."
+                                "Supported alghorithms: alphabetic, reverse-alphabetic."
+                                "You also can specify a custom sorting function in .fenneldoc file.q"]})
 
 (local bool-flags {:--function-signatures    [true "(don't) generate function signatures in documentation."]
                    :--final-comment          [true "(don't) insert final comment with fenneldoc version."]
@@ -40,11 +44,17 @@
   (let [lines []
         longest-flag (longest (keys flags))
         longest-default (longest (mapv first (vals flags)))]
-    (each [flag [default docstring] (pairs flags)]
+    (each [flag [default docstring & doc-lines] (pairs flags)]
       (let [default (tostring (or default ""))
             flag-pad (make-padding (length flag) longest-flag)
             doc-pad (make-padding (length default) longest-default)]
-        (table.insert lines (.. "  " flag flag-pad default doc-pad ": " docstring))))
+        (var doc-line (.. "  " flag flag-pad default doc-pad ": " docstring))
+        (when (next doc-lines)
+          (each [_ line (ipairs doc-lines)]
+            (set doc-line (.. doc-line "\n  " (make-padding 1 (length flag))
+                              flag-pad (make-padding 1 (length default))
+                              doc-pad "  " line))))
+        (table.insert lines doc-line)))
     (table.sort lines)
     (table.concat lines "\n")))
 

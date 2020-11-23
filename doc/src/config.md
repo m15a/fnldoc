@@ -2,7 +2,7 @@
 Function signature:
 
 ```
-(config)
+(config version)
 ```
 
 Process configuration file and merge it with default configuration.

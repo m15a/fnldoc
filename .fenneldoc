@@ -6,7 +6,7 @@
         :description :_DESCRIPTION
         :license :_LICENSE
         :copyright :_COPYRIGHT
-        :doc-order :_ITEM_ORDER}
+        :doc-order :_DOC_ORDER}
  :insert-comment true
  :insert-version true
  :insert-license true

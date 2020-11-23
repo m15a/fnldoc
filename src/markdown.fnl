@@ -56,8 +56,13 @@
 (fn sorter [config]
   (match config.doc-order
     :alphabetic nil
-    :reversed-alphabetic #(> $1 $2)
-    else else))
+    :reverse-alphabetic #(> $1 $2)
+    (func ? (= (type func) :function)) func
+    else (do (io.stderr:write (.. "Unsupported sorting algorithm: '"
+                                  else
+                                  "'\nSupported alghorithms: alphabetic, reverse-alphabetic, or function.\n"))
+             (os.exit -1))
+    nil nil))
 
 
 (fn get-ordered-items [module-info config]

@@ -19,11 +19,11 @@ Fenneldoc **runs your code**, so if your program has side effects those will be 
 
 ## Features
 - [x] Parse runtime information of the module.
+- [x] Configurable item order and sorting.
 - [ ] Validate documentation:
   - [ ] Analyze documentation to contain descriptions arguments of the described function,
   - [ ] Run documentation tests, by looking for code inside backticks.
-- [ ] Parse macro modules.
-  - Currently it is impossible to dynamically load macro module at runtime.
+- [x] Parse macro modules.
 
 
 # Documentation format
@@ -98,6 +98,52 @@ So macro module table should look like this:
 ```
 
 Fenneldoc understands that if it got `function` from [special keys](#special-keys), it will call it to obtain value.
+
+### Specifying order of documentation items
+Since items in Lua tables have arbitrary order, it is impossible to reason about documentation order by inspecting tables returned from modules at runtime.
+As an escape hatch, Fenneldoc supports specifying order of items in a sequential table in special key `:_DOC_ORDER` stored in the module table.
+For example we have a module with two functions:
+
+``` fennel
+(fn first-function [...]
+  "Do something with args."
+  ...)
+
+(fn another-function [...]
+  "Do something else with args."
+  ...)
+
+{: first-function
+ : another-function}
+```
+
+Because order of the items in exported table is arbitrary, Fenneldoc sorts the table alphabetically by default.
+Thus the order of the documentation will be `another-function` followed by `first-function`.
+You can override this behavior by adding `_DOC_ORDER` key into the map:
+
+``` fennel
+{: first-function
+ : another-function
+ :_DOC_ORDER [:first-function :another-function]}
+```
+
+Now the order will be preserved, and `first-function` will come first in generated documentation.
+Note, that you don't need to specify all the keys of your module if you don't care about some specific functions of you module - any missing keys will be sorted alphabetically.
+
+``` fennel
+{: first-function
+ : another-function
+ : some
+ : extra
+ : stuff
+ :_DOC_ORDER [:first-function :another-function]}
+```
+
+The order of items in the case above will be `first-function`, `another-function`, `extra`, `some`, `stuff`.
+
+If you wish to sort items differently from alphabetic order, you can specify either `reverse-alphabetic`, or sorting function.
+You can set this as a value for the `:order` key in configuration file, or by passing it via `--order VALUE` flag.
+Note, that you can't pass function via command-line argument.
 
 ## Configuration
 Fenneldoc can be configured by placing `.fenneldoc` file at the root of your project, where `fenneldoc` will be called.
