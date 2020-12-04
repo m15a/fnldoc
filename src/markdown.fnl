@@ -3,7 +3,8 @@
         : apply
         : seq
         : conj
-        : keys}
+        : keys
+        : string?}
        (require :cljlib))
 
 
@@ -43,12 +44,12 @@
 
 
 (fn gen-item-documentation [lines docstring]
-  "Generate documentation feom `docstring` and conj it to `lines`.
+  "Generate documentation from `docstring` and `conj` it to `lines`.
 
 `lines` must be a sequential table."
   (conj lines
-        (if docstring
-            (pick-values 1 (docstring:gsub "\n#" "\n###"))
+        (if (string? docstring)
+            (docstring:gsub "# " "### ")
             "**Undocumented**")
         ""))
 
