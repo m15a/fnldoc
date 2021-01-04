@@ -4,7 +4,8 @@
                       :description :_DESCRIPTION
                       :license :_LICENSE
                       :copyright :_COPYRIGHT
-                      :doc-order :_DOC_ORDER}
+                      :doc-order :_DOC_ORDER
+                      :module-name :_MODULE_NAME}
                :insert-comment true
                :insert-version true
                :insert-license true

@@ -1,4 +1,4 @@
-(local fenneldoc {:_VERSION "0.0.6"
+(local fenneldoc {:_VERSION "0.0.7"
                   :_COPYRIGHT "Copyright (C) 2020 Andrey Orst"
                   :_LICENSE "[MIT](https://gitlab.com/andreyorst/fenneldoc/-/raw/master/LICENSE)"
                   :_DESCRIPTION "Fenneldoc - generate documentation for Fennel projects.

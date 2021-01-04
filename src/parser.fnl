@@ -6,14 +6,19 @@
         : gen-item-documentation}
        (require :markdown))
 
+(fn function-name-from-file [file]
+  (-> file
+      (string.gsub ".*/" "")
+      (string.gsub ".fnl$" "")))
 
-(fn create-dirs-from-path [file config]
+(fn create-dirs-from-path [file module config]
   "Creates path up to specified file."
   (let [sep (package.config:sub 1 1)
         path (.. config.out-dir sep (file:gsub (.. "[^" sep "]+.fnl$") ""))
-        fname (-> file
+        fname (-> (or module.module file)
                   (string.gsub (.. ".*[" sep "]+") "")
-                  (string.gsub ".fnl$" ".md"))]
+                  (string.gsub ".fnl$" "")
+                  (.. ".md"))]
     (var p "")
     (each [dir (path:gmatch (.. "[^" sep "]+"))]
       (set p (.. p dir sep))
@@ -24,11 +29,11 @@
         (string.gsub (.. "[" sep "]+") sep))))
 
 
-(fn write-doc [docs file config]
+(fn write-doc [docs file module config]
   "Accepts `docs` as a vector of lines, and a path to a `file`.
 Concatenates lines in `docs` with newline, and writes result to
 `file`."
-  (match (create-dirs-from-path file config)
+  (match (create-dirs-from-path file module config)
     path (match (io.open path :w)
            f (with-open [file f]
                (file:write docs))
@@ -39,12 +44,6 @@ Concatenates lines in `docs` with newline, and writes result to
                            (os.exit code))))
 
 
-(fn function-name-from-file [file]
-  (-> file
-      (string.gsub ".*/" "")
-      (string.gsub ".fnl$" "")))
-
-
 (fn get-module-docs [module config]
   (let [docs {}]
     (each [id val (pairs module)]
@@ -53,7 +52,6 @@ Concatenates lines in `docs` with newline, and writes result to
         (tset docs id {:docstring (fennel.metadata:get val :fnl/docstring)
                        :arglist (fennel.metadata:get val :fnl/arglist)})))
     docs))
-
 
 (fn require-module [file]
   "Require file as module in protected call.  Returns vector with first value
@@ -67,12 +65,13 @@ corresponding to pcall result."
                   (true module) [(type module) module]
                   (false msg) [false msg])))
 
-(fn get-module-info [module key]
+(fn get-module-info [module key fallback]
   (let [info (. module key)]
     (match (type info)
       :function (info) ;; hack for supporting this in macro modules
       :string info
       :table info
+      :nil fallback
       _ nil)))
 
 (fn module-info [file config]
@@ -80,7 +79,7 @@ corresponding to pcall result."
     ;; Ordinary module that returns a table.  If module has keys that
     ;; are specified within the `:keys` section of `.fenneldoc` those
     ;; are looked up in the module for additional info.
-    [:table module] {:module file
+    [:table module] {:module (get-module-info module config.keys.module-name file)
                      :type :module
                      :version (get-module-info module config.keys.version)
                      :description (get-module-info module config.keys.description)
@@ -110,7 +109,6 @@ corresponding to pcall result."
   "Accepts `file` as path to some Fennel module, and `config` table.
 Generates module documentation and writes it to `file` with `.md`
 extension, creating it if not exists."
-  (-?> file
-       (module-info config)
-       (gen-markdown config)
-       (write-doc file config)))
+  (let [module (module-info file config)
+        markdown (gen-markdown module config)]
+    (write-doc markdown file module config)))
