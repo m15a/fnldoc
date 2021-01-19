@@ -10,16 +10,16 @@
 
 ;; format: {:key [default-value "descr line1" "line2" ... "lineN"]}
 
-(local key-flags {:--license-key     [:_LICENSE "key to use to get license information of the module."]
-                  :--description-key [:_DESCRIPTION "key to use to get the description of the module."]
-                  :--copyright-key   [:_COPYRIGHT "key to use to get copyright information of the module."]
-                  :--doc-order-key   [:_DOC_ORDER "key to use to get order of items of the module."]
-                  :--version-key     [:_VERSION "key to use to get the version of the module."]})
+(local key-flags {:--license-key     [:_LICENSE "license information of the module."]
+                  :--description-key [:_DESCRIPTION "the description of the module."]
+                  :--copyright-key   [:_COPYRIGHT "copyright information of the module."]
+                  :--doc-order-key   [:_DOC_ORDER "order of items of the module."]
+                  :--version-key     [:_VERSION "the version of the module."]})
 
 (local value-flags {:--out-dir ["./doc" "output directory for generated documentation."]
                     :--order   ["alphabetic" "sorting of items that were not given particular order."
                                 "Supported alghorithms: alphabetic, reverse-alphabetic."
-                                "You also can specify a custom sorting function in .fenneldoc file.q"]})
+                                "You also can specify a custom sorting function in .fenneldoc file."]})
 
 (local bool-flags {:--function-signatures    [true "(don't) generate function signatures in documentation."]
                    :--final-comment          [true "(don't) insert final comment with fenneldoc version."]
@@ -28,17 +28,11 @@
                    :--toc                    [true "(don't) generate table of contents."]
                    :--silent                 [true "(don't) report errors."]})
 
-(fn make-padding [size max-size]
-  (var pad "")
-  (for [i size max-size]
-    (set pad (.. pad " ")))
-  pad)
-
 (fn longest [items]
   (var len 0)
   (each [_ x (ipairs items)]
     (set len (math.max len (length (tostring x)))))
-  len)
+  (+ len 1))
 
 (fn gen-help-info [flags]
   (let [lines []
@@ -46,13 +40,13 @@
         longest-default (longest (mapv first (vals flags)))]
     (each [flag [default docstring & doc-lines] (pairs flags)]
       (let [default (tostring (or default ""))
-            flag-pad (make-padding (length flag) longest-flag)
-            doc-pad (make-padding (length default) longest-default)]
-        (var doc-line (.. "  " flag flag-pad default doc-pad ": " docstring))
+            flag-pad (string.rep " " (- longest-flag (length flag)))
+            doc-pad (string.rep " " (- longest-default (length default)))]
+        (var doc-line (.. "  " flag flag-pad default doc-pad docstring))
         (when (next doc-lines)
           (each [_ line (ipairs doc-lines)]
-            (set doc-line (.. doc-line "\n  " (make-padding 1 (length flag))
-                              flag-pad (make-padding 1 (length default))
+            (set doc-line (.. doc-line "\n  " (string.rep " " (- (length flag) 1))
+                              flag-pad (string.rep " " (- (length default) 1))
                               doc-pad "  " line))))
         (table.insert lines doc-line)))
     (table.sort lines)
@@ -82,8 +76,8 @@ Toggle flags:
              "
 
 Other flags:
-  --     : treat remaining flags as files
-  --help : print this message and exit.
+  --     treat remaining flags as files
+  --help print this message and exit.
 
 All keys have corresponding entry in `.fenneldoc' configuration file,
 and args passed via command line have higher precedence, therefore
