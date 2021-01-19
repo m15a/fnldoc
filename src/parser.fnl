@@ -5,6 +5,7 @@
         : gen-function-signature
         : gen-item-documentation}
        (require :markdown))
+(local test-module (require :doctest))
 
 (fn function-name-from-file [file]
   (-> file
@@ -81,6 +82,7 @@ corresponding to pcall result."
     ;; are looked up in the module for additional info.
     [:table module] {:module (get-module-info module config.keys.module-name file)
                      :type :module
+                     :f-table module
                      :version (get-module-info module config.keys.version)
                      :description (get-module-info module config.keys.description)
                      :copyright (get-module-info module config.keys.copyright)
@@ -94,6 +96,7 @@ corresponding to pcall result."
     ;; Table of contents is also omitted.
     [:function function] {:module file
                           :type :function-module
+                          :f-table {(function-name-from-file file) function}
                           :description (.. (gen-function-signature
                                             (function-name-from-file file)
                                             (fennel.metadata:get function :fnl/arglist)
@@ -110,5 +113,6 @@ corresponding to pcall result."
 Generates module documentation and writes it to `file` with `.md`
 extension, creating it if not exists."
   (let [module (module-info file config)
-        markdown (gen-markdown module config)]
+        markdown (gen-markdown module config)
+        valid? (test-module module)]
     (write-doc markdown file module config)))
