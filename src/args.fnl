@@ -1,4 +1,4 @@
-(import-macros {: into} :cljlib-macros)
+(import-macros {: into} :cljlib.macros)
 (local {: hash-set
         : inc
         : conj

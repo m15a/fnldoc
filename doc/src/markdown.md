@@ -35,5 +35,5 @@ Function signature:
 Generate documentation from `docstring`.
 
 
-<!-- Generated with Fenneldoc 0.0.5
+<!-- Generated with Fenneldoc 0.0.7
      https://gitlab.com/andreyorst/fenneldoc -->
