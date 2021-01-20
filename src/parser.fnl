@@ -58,12 +58,12 @@ Concatenates lines in `docs` with newline, and writes result to
   "Require file as module in protected call.  Returns vector with first value
 corresponding to pcall result."
   (match (pcall fennel.dofile file {:useMetadata true})
-    (true module) [(type module) module]
+    (true module) [(type module) module :functions]
     ;; try again, now with compiler env
     (false msg) (match (pcall fennel.dofile file {:useMetadata true
                                                   :env :_COMPILER
                                                   :scope (. compiler :scopes :compiler)})
-                  (true module) [(type module) module]
+                  (true module) [(type module) module :macros]
                   (false msg) [false msg])))
 
 (fn get-module-info [module key fallback]
@@ -80,21 +80,23 @@ corresponding to pcall result."
     ;; Ordinary module that returns a table.  If module has keys that
     ;; are specified within the `:keys` section of `.fenneldoc` those
     ;; are looked up in the module for additional info.
-    [:table module] {:module (get-module-info module config.keys.module-name file)
-                     :type :module
-                     :f-table module
-                     :version (get-module-info module config.keys.version)
-                     :description (get-module-info module config.keys.description)
-                     :copyright (get-module-info module config.keys.copyright)
-                     :license (get-module-info module config.keys.license)
-                     :items (get-module-docs module config)
-                     :doc-order (get-module-info module config.keys.doc-order)}
+    [:table module module-type] {:module (get-module-info module config.keys.module-name file)
+                                 :file file
+                                 :type module-type
+                                 :f-table module
+                                 :version (get-module-info module config.keys.version)
+                                 :description (get-module-info module config.keys.description)
+                                 :copyright (get-module-info module config.keys.copyright)
+                                 :license (get-module-info module config.keys.license)
+                                 :items (get-module-docs module config)
+                                 :doc-order (get-module-info module config.keys.doc-order)}
     ;; function modules have no version, license, or description keys,
     ;; as there's no way of adding this as a metadata or embed into
     ;; function itself.  So module description is set to a combination
     ;; of function docstring and signature if allowed by config.
     ;; Table of contents is also omitted.
-    [:function function] {:module file
+    [:function function] {:module (function-name-from-file file)
+                          :file file
                           :type :function-module
                           :f-table {(function-name-from-file file) function}
                           :description (.. (gen-function-signature

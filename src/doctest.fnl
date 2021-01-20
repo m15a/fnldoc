@@ -12,32 +12,35 @@
         (string.gsub "\n```" "")
         (string.gsub "^\n" ""))))
 
-(fn run-test [test]
-  (pcall #(fennel.eval test)))
+(fn run-test [test prerequesites]
+  (pcall #(fennel.eval (.. (or prerequesites "") test))))
 
-(fn run-tests-for-fn [func docstring]
+(fn run-tests-for-fn [func docstring prerequesites]
   (var error? false)
   (each [n test (ipairs (extract-tests docstring))]
-    (match (run-test test)
+    (match (run-test test prerequesites)
       (false msg) (do (io.stderr:write (.. "error in doc for " func ":\n"))
-                      (io.stderr:write (.. (fennel.view msg) "\n"))
+                      (io.stderr:write (.. (tostring msg) "\n"))
                       (set error? true))))
   error?)
 
 (fn test-module [module-info]
   (var error? false)
-  (each [name func (pairs module-info.f-table)]
-    (tset _G (fennel.mangle name) func))
+  (var prerequesites "")
+  (match module-info.type
+    :macros (set prerequesites (.. "(require-macros :" (-> module-info.file (string.gsub ".*/" "") (string.gsub ".fnl$" "")) ")\n"))
+    _ (each [name func (pairs module-info.f-table)]
+        (tset _G (fennel.mangle name) func)))
   (match module-info.type
     :function-module
     (set error? (run-tests-for-fn
                  module-info.module
                  module-info.description))
-    :module
+    _
     (let [funcs (keys module-info.items)]
       (each [_ func (ipairs funcs)]
         (when-let [{: docstring} (. module-info.items func)]
-          (let [res (run-tests-for-fn func docstring)]
+          (let [res (run-tests-for-fn func docstring prerequesites)]
             (set error? (or error? res)))))))
   (when error?
     (io.stderr:write (.. "Errors in module " module-info.module "\n"))
