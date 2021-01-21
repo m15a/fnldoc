@@ -17,4 +17,5 @@
  :toc true
  :out-dir "./doc"
  :fennel-path ["cljlib/?.fnl" "src/?.fnl"]
+ :test-requirements {}
  :silent false}

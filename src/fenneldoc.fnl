@@ -16,7 +16,9 @@ metadata at runtime.
 (local process-config (require :config))
 (local process-args (require :args))
 
-(let [(files config) (process-args (process-config fenneldoc._VERSION))]
+(let [(files config) (-> fenneldoc._VERSION
+                         process-config
+                         process-args)]
   (each [_ file (ipairs files)]
     (process-file file config)))
 

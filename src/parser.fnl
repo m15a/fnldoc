@@ -6,6 +6,7 @@
         : gen-item-documentation}
        (require :markdown))
 (local test-module (require :doctest))
+(local {: get-in} (require :cljlib))
 
 (fn function-name-from-file [file]
   (-> file
@@ -58,13 +59,13 @@ Concatenates lines in `docs` with newline, and writes result to
   "Require file as module in protected call.  Returns vector with first value
 corresponding to pcall result."
   (match (pcall fennel.dofile file {:useMetadata true})
-    (true module) [(type module) module :functions]
+    (true module) (values (type module) module :functions)
     ;; try again, now with compiler env
-    (false msg) (match (pcall fennel.dofile file {:useMetadata true
-                                                  :env :_COMPILER
-                                                  :scope (. compiler :scopes :compiler)})
-                  (true module) [(type module) module :macros]
-                  (false msg) [false msg])))
+    (false _) (match (pcall fennel.dofile file {:useMetadata true
+                                                :env :_COMPILER
+                                                :scope (. compiler :scopes :compiler)})
+                (true module) (values (type module) module :macros)
+                (false msg) (values false msg))))
 
 (fn get-module-info [module key fallback]
   (let [info (. module key)]
@@ -80,9 +81,10 @@ corresponding to pcall result."
     ;; Ordinary module that returns a table.  If module has keys that
     ;; are specified within the `:keys` section of `.fenneldoc` those
     ;; are looked up in the module for additional info.
-    [:table module module-type] {:module (get-module-info module config.keys.module-name file)
+    (:table module module-type) {:module (get-module-info module config.keys.module-name file)
                                  :file file
                                  :type module-type
+                                 :requirements (get-in config [:test-requirements file] "")
                                  :f-table module
                                  :version (get-module-info module config.keys.version)
                                  :description (get-module-info module config.keys.description)
@@ -95,9 +97,10 @@ corresponding to pcall result."
     ;; function itself.  So module description is set to a combination
     ;; of function docstring and signature if allowed by config.
     ;; Table of contents is also omitted.
-    [:function function] {:module (function-name-from-file file)
+    (:function function) {:module file
                           :file file
                           :type :function-module
+                          :requirements (get-in config [:test-requirements file] "")
                           :f-table {(function-name-from-file file) function}
                           :description (.. (gen-function-signature
                                             (function-name-from-file file)
@@ -107,14 +110,15 @@ corresponding to pcall result."
                                            (gen-item-documentation
                                             (fennel.metadata:get function :fnl/docstring)))
                           :items {}}
-    [false err] (io.stderr:write (.. "Error loading file " file "\n" err "\n"))))
-
+    (false err) (io.stderr:write (.. "Error loading " file "\n" err "\n"))
+    _ (io.stderr:write (.. "Error loading " file "\nunhandled error!\n"))))
 
 (fn generate-doc [file config]
   "Accepts `file` as path to some Fennel module, and `config` table.
 Generates module documentation and writes it to `file` with `.md`
 extension, creating it if not exists."
-  (let [module (module-info file config)
-        markdown (gen-markdown module config)
-        valid? (test-module module)]
-    (write-doc markdown file module config)))
+  (match (module-info file config)
+    module (let [res (test-module module)
+                 markdown (gen-markdown module config)]
+             (write-doc markdown file module config))
+    _ (io.stderr:write (.. "skipping " file "\n"))))
