@@ -36,11 +36,12 @@
           (io.stderr:write "WARNING: undocumented exported function " func "\n"))
       (each [n test (ipairs (extract-tests docstring))]
         (match (run-test test module-info.requirements module-info)
-          (false msg) (do (io.stderr:write "\nIn file: " module-info.file "\n"
-                                           "Error in docstring for " func "\n"
+          (false msg) (let [msg (string.gsub (tostring msg) "^%[.-%]:%d+:%s*" "")]
+                        (io.stderr:write "In file: " module-info.file "\n"
+                                           "Error in docstring for: " func "\n"
                                            "In test:\n``` fennel\n" test "\n```\n"
-                                           "Error:\n")
-                          (io.stderr:write (tostring msg) "\n")
+                                           "Error:\n"
+                                           msg "\n\n")
                           (set error? true)))))
   error?)
 
@@ -50,7 +51,7 @@
   (match module-info.type
     :function-module
     (set error? (run-tests-for-fn
-                 module-info.module
+                 (pick-values 1 (next module-info.f-table))
                  (and module-info.documented? module-info.description)
                  module-info))
     _

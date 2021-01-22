@@ -22,7 +22,7 @@ Fenneldoc **runs your code**, so if your program has side effects those will be 
 - [x] Configurable item order and sorting.
 - [ ] Validate documentation:
   - [ ] Analyze documentation to contain descriptions arguments of the described function,
-  - [ ] Run documentation tests, by looking for code inside backticks.
+  - [x] Run documentation tests, by looking for code inside backticks.
 - [x] Parse macro modules.
 
 
@@ -148,47 +148,50 @@ Note, that you can't pass function via command-line argument.
 ### Documentation validation
 
 Documentation is tested by default.
-When `fenneldoc` sees three backticks, followed by fennel, it treats everything as test code until it sees threee backticks again.
-For example, suppose we made a mistake in the function:
+When `fenneldoc` sees three backticks, followed by `fennel`, it treats everything as test code until it sees threee backticks again.
+For example, suppose we made a change in function but forgot to update the docstring:
 
 ``` clojure
-(fn sum3 [a b c]
-  "Sums all three arguments.
+(fn sum [a b]
+  "Sums three arguments.
 
 # Examples
 
 ``` fennel
-(assert (= (sum3 1 2 3) 6))
+(assert (= (sum 1 2 3) 6))
 ```"
   (+ a b))
 ```
 
-This function claims in the docstring that it sums all three arguments, however the actual body only sums two.
+This function claims that it sums three arguments, however the actual body only sums two.
 
-If we run `fenneldoc --check-only sum3.fnl`, we'll get the following:
+If we run `fenneldoc --check-only sum.fnl`, we'll get the following:
 
-
-    fenneldoc sum3.fnl
-
-    In file: sum3.fnl
-    Error in docstring for sum3.fnl
+    $ fenneldoc --check-only sum.fnl
+    In file: sum.fnl
+    Error in docstring for: sum
     In test:
     ``` fennel
-    (assert (= (sum3 1 2 3) 6))
+    (assert (= (sum 1 2 3) 6))
     ```
     Error:
-    [string "..."]:2: assertion failed!
-    Errors in module sum3.fnl
+    assertion failed!
 
-Which indicates that either our docstring is not correct or we have the bug in the code.
+    Errors in module sum.fnl
 
-`fenneldoc` is smart enough for the most cases, and can require your module's exported functions without namespace prefix.
-So you can use functions literally in documentation, e.g. if you return a table, no need to destructure it manually, or store it in some `local`.
+This prevents confusion when updated function beavior doesn't match documentation.
+
+In most cases `fenneldoc` is smart enough, and can require your module's exported functions without namespace prefix.
+Therefore you can use functions literally in documentation, e.g. if you return a table, no need to destructure it manually, or store it in some `local` within the docstring.
 
 However, if this doesn't work you can specify how dependencies should be required in `.fenneldoc` config.
-You do so by writing piece of code as a string, instructing how to require additional dependencies.
-This is needed when testing macro modules.
+This also doesn't work for macros, so you'll have to add in config a proper require for your macro modules.
+You do so by writing piece of code as a string inder the key, which represents file being processed, and string contains instructing how to require additional dependencies and/or macros:
 
+``` clojure
+{;; rest of config
+ :test-requirements {:macro-module.fnl "(import-macros {: some-macro} :macro-module)"}}
+```
 
 ## Configuration
 Fenneldoc can be configured by placing `.fenneldoc` file at the root of your project, where `fenneldoc` will be called.
@@ -200,8 +203,7 @@ Example of configuration file:
 ``` fennel
 {:keys {:version :VERSION}
  :toc false
- :out-dir "./documentation"
- :silent true}
+ :out-dir "./documentation"}
 ```
 
 Here, we configure Fenneldoc to look for module version via `:VERSION` key, as opposed to default `:_VERSION`.
