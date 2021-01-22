@@ -1,50 +1,80 @@
 (local fennel (require :fennel))
 (local compiler (require :fennel.compiler))
-(local fs (require :lfs))
-(local {: gen-markdown
-        : gen-function-signature
+(local {: get-in} (require :cljlib))
+(local {: gen-function-signature
         : gen-item-documentation}
        (require :markdown))
-(local test-module (require :doctest))
-(local {: get-in} (require :cljlib))
+
+(fn sandbox-module [module file]
+  (setmetatable
+   {}
+   {:__index (fn []
+               (io.stderr:write
+                (.. "ERROR: access to '" module
+                    "' module detected in file: " file
+                    "while loading\n"))
+               (os.exit 1))}))
+
+(fn create-sandbox [overrides]
+  "Create sandboxed environment to run files containing documentation,
+and tests from that documentation.
+
+Does not allow any IO, loading files or Lua code via `load`,
+`loadfile`, and `loadstring`, using `rawset`, `rawset`, and `module`,
+and accessing such modules as `os`, `debug`, `package`, `io`.
+
+This means that your files must not use these modules on the top
+level, or run any code when file is loaded that uses those modules."
+  (let [env {;; allowed modules
+             : assert
+             : bit32
+             : collectgarbage
+             : coroutine
+             : dofile
+             : error
+             : getmetatable
+             : ipairs
+             : math
+             : next
+             : pairs
+             : pcall
+             : rawequal
+             : rawlen
+             : require
+             : select
+             : setmetatable
+             : string
+             : table
+             : tonumber
+             : tostring
+             : type
+             : unpack
+             : utf8
+             : xpcall
+             ;; disallowed modules
+             :load nil
+             :loadfile nil
+             :loadstring nil
+             :rawget nil
+             :rawset nil
+             :module nil
+             ;; sandboxed modules
+             :arg []
+             :print (fn []
+                      (io.stderr:write "ERROR: IO detected in file: " file " while loading\n") (os.exit 1))
+             :os (sandbox-module :os file)
+             :debug (sandbox-module :debug file)
+             :package (sandbox-module :package file)
+             :io (sandbox-module :io file)}]
+    (set env._G env)
+    (each [k v (pairs overrides)]
+      (tset env k v))
+    env))
 
 (fn function-name-from-file [file]
   (-> file
       (string.gsub ".*/" "")
       (string.gsub ".fnl$" "")))
-
-(fn create-dirs-from-path [file module config]
-  "Creates path up to specified file."
-  (let [sep (package.config:sub 1 1)
-        path (.. config.out-dir sep (file:gsub (.. "[^" sep "]+.fnl$") ""))
-        fname (-> (or module.module file)
-                  (string.gsub (.. ".*[" sep "]+") "")
-                  (string.gsub ".fnl$" "")
-                  (.. ".md"))]
-    (var p "")
-    (each [dir (path:gmatch (.. "[^" sep "]+"))]
-      (set p (.. p dir sep))
-      (match (fs.mkdir p)
-        (nil "File exists" 17) nil
-        (nil msg code) (lua "return nil, dir, msg, code")))
-    (-> (.. p sep fname)
-        (string.gsub (.. "[" sep "]+") sep))))
-
-
-(fn write-doc [docs file module config]
-  "Accepts `docs` as a vector of lines, and a path to a `file`.
-Concatenates lines in `docs` with newline, and writes result to
-`file`."
-  (match (create-dirs-from-path file module config)
-    path (match (io.open path :w)
-           f (with-open [file f]
-               (file:write docs))
-           (nil  msg code) (do (io.stderr:write (.. "Error opening file '" path "': " msg " (" code ")\n"))
-                               (os.exit code)))
-
-    (nil dir msg code) (do (io.stderr:write (.. "Error creating directory '" dir "': " msg " (" code ")\n"))
-                           (os.exit code))))
-
 
 (fn get-module-docs [module config]
   (let [docs {}]
@@ -58,7 +88,7 @@ Concatenates lines in `docs` with newline, and writes result to
 (fn require-module [file]
   "Require file as module in protected call.  Returns vector with first value
 corresponding to pcall result."
-  (match (pcall fennel.dofile file {:useMetadata true})
+  (match (pcall fennel.dofile file {:useMetadata true :env sandbox})
     (true module) (values (type module) module :functions)
     ;; try again, now with compiler env
     (false _) (match (pcall fennel.dofile file {:useMetadata true
@@ -77,6 +107,8 @@ corresponding to pcall result."
       _ nil)))
 
 (fn module-info [file config]
+  "Returns table containing all relevant information about the module
+for which documentation is generated."
   (match (require-module file)
     ;; Ordinary module that returns a table.  If module has keys that
     ;; are specified within the `:keys` section of `.fenneldoc` those
@@ -85,7 +117,6 @@ corresponding to pcall result."
                                  :file file
                                  :type module-type
                                  :requirements (get-in config [:test-requirements file] "")
-                                 :f-table module
                                  :version (get-module-info module config.keys.version)
                                  :description (get-module-info module config.keys.description)
                                  :copyright (get-module-info module config.keys.copyright)
@@ -101,7 +132,7 @@ corresponding to pcall result."
                           :file file
                           :type :function-module
                           :requirements (get-in config [:test-requirements file] "")
-                          :f-table {(function-name-from-file file) function}
+                          :documented? (fennel.metadata:get function :fnl/docstring)
                           :description (.. (gen-function-signature
                                             (function-name-from-file file)
                                             (fennel.metadata:get function :fnl/arglist)
@@ -110,15 +141,8 @@ corresponding to pcall result."
                                            (gen-item-documentation
                                             (fennel.metadata:get function :fnl/docstring)))
                           :items {}}
-    (false err) (io.stderr:write (.. "Error loading " file "\n" err "\n"))
-    _ (io.stderr:write (.. "Error loading " file "\nunhandled error!\n"))))
+    (false err) (io.stderr:write "Error loading " file "\n" err "\n")
+    _ (io.stderr:write "Error loading " file "\nunhandled error!\n")))
 
-(fn generate-doc [file config]
-  "Accepts `file` as path to some Fennel module, and `config` table.
-Generates module documentation and writes it to `file` with `.md`
-extension, creating it if not exists."
-  (match (module-info file config)
-    module (let [res (test-module module)
-                 markdown (gen-markdown module config)]
-             (write-doc markdown file module config))
-    _ (io.stderr:write (.. "skipping " file "\n"))))
+{: create-sandbox
+ : module-info}

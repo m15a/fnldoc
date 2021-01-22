@@ -21,12 +21,11 @@
                                 "Supported alghorithms: alphabetic, reverse-alphabetic."
                                 "You also can specify a custom sorting function in .fenneldoc file."]})
 
-(local bool-flags {:--function-signatures    [true "(don't) generate function signatures in documentation."]
-                   :--final-comment          [true "(don't) insert final comment with fenneldoc version."]
-                   :--copyright              [true "(don't) insert copyright information."]
-                   :--license                [true "(don't) insert license information from the module."]
-                   :--toc                    [true "(don't) generate table of contents."]
-                   :--silent                 [true "(don't) report errors."]})
+(local bool-flags {:--function-signatures [true "(don't) generate function signatures in documentation."]
+                   :--final-comment       [true "(don't) insert final comment with fenneldoc version."]
+                   :--copyright           [true "(don't) insert copyright information."]
+                   :--license             [true "(don't) insert license information from the module."]
+                   :--toc                 [true "(don't) generate table of contents."]})
 
 (fn longest [items]
   (var len 0)
@@ -76,8 +75,10 @@ Toggle flags:
              "
 
 Other flags:
-  --     treat remaining flags as files
-  --help print this message and exit.
+  --           treat remaining flags as files
+  --skip-check don't preform documentation checking.
+  --check-only don't generate docs, only run documentation tests.
+  --help       print this message and exit.
 
 All keys have corresponding entry in `.fenneldoc' configuration file,
 and args passed via command line have higher precedence, therefore
@@ -107,7 +108,7 @@ passing `--no-toc' will disable generation of contents table, and
   (let [flag (string.sub flag 3 -1)]
     (match (. arg i)
       val (tset config flag val)
-      nil (do (io.stderr:write (.. "fenneldoc: expected value for " flag "\n"))
+      nil (do (io.stderr:write "fenneldoc: expected value for " flag "\n")
               (os.exit -1)))))
 
 (fn handle-key-flag [i flag config]
@@ -116,19 +117,19 @@ passing `--no-toc' will disable generation of contents table, and
   (let [flag (string.sub flag 3 -5)]
     (match (. arg i)
       val (tset config.keys flag val)
-      nil (do (io.stderr:write (.. "fenneldoc: expected value for " flag "\n"))
+      nil (do (io.stderr:write "fenneldoc: expected value for " flag "\n")
               (os.exit -1)))))
 
 (fn handle-file [file files no-check]
   (when (and (not no-check) (= (string.sub file 1 2) :--))
-    (io.stderr:write (.. "fenneldoc: unknown flag " file "\n"))
+    (io.stderr:write "fenneldoc: unknown flag " file "\n")
     (os.exit -1))
   (table.insert files file))
 
 (fn handle-fennel-path [i]
   (match (. arg (inc i))
     val (set fennel.path (.. val ";" fennel.path))
-    nil (do (io.stderr:write (.. "fenneldoc: expected value for --add-fennel-path\n"))
+    nil (do (io.stderr:write "fenneldoc: expected value for --add-fennel-path\n")
             (os.exit -1))))
 
 
@@ -148,6 +149,8 @@ passing `--no-toc' will disable generation of contents table, and
                                (handle-fennel-path i))
         :-- (do (set i (inc i))
                 (lua :break))
+        :--check-only (handle-bool-flag :--check-only config)
+        :--skip-check (handle-bool-flag :--skip-check config)
         :--help (help)
         file (handle-file file files))
       (set i (inc i)))

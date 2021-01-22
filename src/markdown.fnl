@@ -59,9 +59,9 @@
     :alphabetic nil
     :reverse-alphabetic #(> $1 $2)
     (func ? (= (type func) :function)) func
-    else (do (io.stderr:write (.. "Unsupported sorting algorithm: '"
-                                  else
-                                  "'\nSupported alghorithms: alphabetic, reverse-alphabetic, or function.\n"))
+    else (do (io.stderr:write "Unsupported sorting algorithm: '"
+                              else
+                              "'\nSupported alghorithms: alphabetic, reverse-alphabetic, or function.\n")
              (os.exit -1))
     nil nil))
 
