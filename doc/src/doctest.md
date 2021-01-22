@@ -1,11 +1,11 @@
-# Args.fnl
+# Doctest.fnl
 Function signature:
 
 ```
-(args config)
+(doctest module-info)
 ```
 
-Process command line arguments
+Run tests contained in module documentations.
 
 
 
