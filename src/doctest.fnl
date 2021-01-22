@@ -2,9 +2,6 @@
 (local {: keys} (require :cljlib))
 (import-macros {: when-let} :cljlib.macros)
 
-(fn has-tests? [fn-doc]
-  (string.find fn-doc "```%s*fennel"))
-
 (fn extract-tests [fn-doc]
   (icollect [test (fn-doc:gmatch "\n?```%s*fennel.-\n```")]
     (-> test
@@ -13,9 +10,30 @@
         (string.gsub "^\n" ""))))
 
 (fn run-test [test requirements]
-  (table.insert (or package.loaders package.searchers) (. (require :fennel) :searcher))
-  (let [requirements (or (-?> requirements (.. "\n")) "")]
-    (pcall #(fennel.eval (..  requirements test) {}))))
+  (let [env {: require
+             : assert
+             : string
+             : table
+             : print
+             : type
+             : getmetatable
+             : setmetatable
+             : pairs
+             : ipairs
+             : utf8
+             : io
+             : error
+             : next
+             : pcall
+             : xpcall
+             : select
+             : tostring}
+        requirements (or (-?> requirements (.. "\n")) "")]
+    (set env._G env)
+    (table.insert (or package.loaders
+                      package.searchers)
+                  fennel.searcher)
+    (pcall fennel.eval (.. requirements test) {:env env})))
 
 (fn run-tests-for-fn [func docstring module-info]
   (var error? false)
