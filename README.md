@@ -145,6 +145,51 @@ If you wish to sort items differently from alphabetic order, you can specify eit
 You can set this as a value for the `:order` key in configuration file, or by passing it via `--order VALUE` flag.
 Note, that you can't pass function via command-line argument.
 
+### Documentation validation
+
+Documentation is tested by default.
+When `fenneldoc` sees three backticks, followed by fennel, it treats everything as test code until it sees threee backticks again.
+For example, suppose we made a mistake in the function:
+
+``` clojure
+(fn sum3 [a b c]
+  "Sums all three arguments.
+
+# Examples
+
+``` fennel
+(assert (= (sum3 1 2 3) 6))
+```"
+  (+ a b))
+```
+
+This function claims in the docstring that it sums all three arguments, however the actual body only sums two.
+
+If we run `fenneldoc --check-only sum3.fnl`, we'll get the following:
+
+
+    fenneldoc sum3.fnl
+
+    In file: sum3.fnl
+    Error in docstring for sum3.fnl
+    In test:
+    ``` fennel
+    (assert (= (sum3 1 2 3) 6))
+    ```
+    Error:
+    [string "..."]:2: assertion failed!
+    Errors in module sum3.fnl
+
+Which indicates that either our docstring is not correct or we have the bug in the code.
+
+`fenneldoc` is smart enough for the most cases, and can require your module's exported functions without namespace prefix.
+So you can use functions literally in documentation, e.g. if you return a table, no need to destructure it manually, or store it in some `local`.
+
+However, if this doesn't work you can specify how dependencies should be required in `.fenneldoc` config.
+You do so by writing piece of code as a string, instructing how to require additional dependencies.
+This is needed when testing macro modules.
+
+
 ## Configuration
 Fenneldoc can be configured by placing `.fenneldoc` file at the root of your project, where `fenneldoc` will be called.
 Another way is to pass command lines to `fenneldoc` directly. Full set of command line arguments can be found by calling `fenneldoc --help`.

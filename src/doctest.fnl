@@ -17,13 +17,15 @@
     (io.stderr:write msg)
     (orig-fn ...)))
 
-(fn run-test [test requirements file]
+(fn run-test [test requirements module-info]
   (let [sandbox (create-sandbox {:print (fn [...]
                                           (io.stderr:write "\nIn file " file
                                                            "\nWARNING: IO in test:\n``` fennel\n" test "\n```\n"))
                                  :io (setmetatable {} {:__index (fn [] (io.stderr:write "\nIn file " file
                                                                                         "\nWARNING: 'io' module used in test:\n``` fennel\n" test "\n```\n"))})})
         requirements (or (-?> requirements (.. "\n")) "")]
+    (each [fname fval (pairs (or module-info.f-table []))]
+      (tset sandbox fname fval))
     (pcall fennel.eval (.. requirements test) {:env sandbox})))
 
 (fn run-tests-for-fn [func docstring module-info]
@@ -33,7 +35,7 @@
           (io.stderr:write "WARNING: file " func " exports undocumented function\n")
           (io.stderr:write "WARNING: undocumented exported function " func "\n"))
       (each [n test (ipairs (extract-tests docstring))]
-        (match (run-test test module-info.requirements module-info.file)
+        (match (run-test test module-info.requirements module-info)
           (false msg) (do (io.stderr:write "\nIn file: " module-info.file "\n"
                                            "Error in docstring for " func "\n"
                                            "In test:\n``` fennel\n" test "\n```\n"

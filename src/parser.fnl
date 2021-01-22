@@ -116,6 +116,7 @@ for which documentation is generated."
     (:table module module-type) {:module (get-module-info module config.keys.module-name file)
                                  :file file
                                  :type module-type
+                                 :f-table (and (not= module-type :macros) module)
                                  :requirements (get-in config [:test-requirements file] "")
                                  :version (get-module-info module config.keys.version)
                                  :description (get-module-info module config.keys.description)
@@ -130,6 +131,7 @@ for which documentation is generated."
     ;; Table of contents is also omitted.
     (:function function) {:module file
                           :file file
+                          :f-table {(function-name-from-file file) function}
                           :type :function-module
                           :requirements (get-in config [:test-requirements file] "")
                           :documented? (fennel.metadata:get function :fnl/docstring)
