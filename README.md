@@ -14,7 +14,9 @@ It then forms a `doc` directory, in which documentation files are placed followi
 If module specifies `version` or `_VERSION` keyword, documentation is placed under the directory which corresponds to the version.
 
 **Note!**
-Fenneldoc **runs your code**, so if your program has side effects those will be executed.
+Fenneldoc **runs your code**.
+It does so in a restricted environment, so if your program has side effects you will get an error.
+Use `--no-sandbox` or `:sandbox` option in config to override this behavior.
 
 
 ## Features
@@ -32,7 +34,7 @@ This means that all markdown features are supported in the docstring, such as te
 
 For example, here's how you might define information about your `my-module.fnl` file:
 
-``` fennel
+``` clojure
 (local my-module {:_VERSION "0.1.0"
                   :_DESCRIPTION "Tag line or short description"
                   :_COPYRIGHT "Copyright info that appears at the end of the document"
@@ -90,7 +92,7 @@ Luckily for us, Fennel supports amazing `hash-fn` syntax, which can be used like
 This creates anonymous function, that will return `"some string"` when called.
 So macro module table should look like this:
 
-``` fennel
+``` clojure
 (local macro-module {:_VERSION #"0.1.0"
                      :_DESCRIPTION #"Tag line or short description"
                      :_COPYRIGHT #"Copyright info that appears at the end of the document"
@@ -104,7 +106,7 @@ Since items in Lua tables have arbitrary order, it is impossible to reason about
 As an escape hatch, Fenneldoc supports specifying order of items in a sequential table in special key `:_DOC_ORDER` stored in the module table.
 For example we have a module with two functions:
 
-``` fennel
+``` clojure
 (fn first-function [...]
   "Do something with args."
   ...)
@@ -121,7 +123,7 @@ Because order of the items in exported table is arbitrary, Fenneldoc sorts the t
 Thus the order of the documentation will be `another-function` followed by `first-function`.
 You can override this behavior by adding `_DOC_ORDER` key into the map:
 
-``` fennel
+``` clojure
 {: first-function
  : another-function
  :_DOC_ORDER [:first-function :another-function]}
@@ -130,7 +132,7 @@ You can override this behavior by adding `_DOC_ORDER` key into the map:
 Now the order will be preserved, and `first-function` will come first in generated documentation.
 Note, that you don't need to specify all the keys of your module if you don't care about some specific functions of you module - any missing keys will be sorted alphabetically.
 
-``` fennel
+``` clojure
 {: first-function
  : another-function
  : some
@@ -197,36 +199,25 @@ You do so by writing piece of code as a string inder the key, which represents f
 Fenneldoc can be configured by placing `.fenneldoc` file at the root of your project, where `fenneldoc` will be called.
 Another way is to pass command lines to `fenneldoc` directly. Full set of command line arguments can be found by calling `fenneldoc --help`.
 
-Configuration file is simply a `.fnl` file without extension, which exports a table with keys.
+Configuration file is simply a fennel file without extension, which exports a table with keys.
 Example of configuration file:
 
-``` fennel
+``` clojure
 {:keys {:version :VERSION}
  :toc false
  :out-dir "./documentation"}
 ```
 
 Here, we configure Fenneldoc to look for module version via `:VERSION` key, as opposed to default `:_VERSION`.
-There are other keys that can be set up on per project basis, see [special keys](#special-keys) section.
-
 Next we say that we do not need table of contents, by specifying `:toc false`, change output directory to `./documentation`, and suppress all messages and error reports.
-Full set of available options can be seen by calling `fenneldoc --help`.
 
-
-### Special keys
-If you do not like `_VERSION` or any other key, you can specify your own keys in `.fenneldoc` or via command-line flags.
-At this momment these keys are supported:
-
-- `:version`, can be set via `--version-key KEY`
-- `:description`, can be set via `--description-key KEY`
-- `:license`, can be set via `--license-key KEY`
-- `:copyright`, can be set via `--copyright-key KEY`
-
+There are other options that can be set up on per project basis, see [config.md](./doc/config.md) file for more info.
+Full set of available options can also be seen by calling `fenneldoc --help`.
 
 ## Contributing
 Please do.
 You can report issues or feature request at [project's Gitlab repository](https://gitlab.com/andreyorst/fenneldoc).
 Consider reading [contribution guidelines](https://gitlab.com/andreyorst/fenneldoc/-/blob/master/CONTRIBUTING.md) beforehand.
 
-<!--  LocalWords:  backticks docstring Fenneldoc TODO
+<!--  LocalWords:  backticks docstring Fenneldoc TODO config
  -->

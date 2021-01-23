@@ -8,7 +8,7 @@
         : first}
        (require :cljlib))
 
-;; format: {:key [default-value "descr line1" "line2" ... "lineN"]}
+;; format: {:key [default-value descr validate-fn]}
 
 (local key-flags {:--license-key     [:_LICENSE "license information of the module."]
                   :--description-key [:_DESCRIPTION "the description of the module."]
@@ -16,18 +16,31 @@
                   :--doc-order-key   [:_DOC_ORDER "order of items of the module."]
                   :--version-key     [:_VERSION "the version of the module."]})
 
+(local orders (hash-set :alphabetic :reverse-alphabetic))
+(local modes (hash-set :checkdoc :check :doc))
 (local value-flags {:--out-dir ["./doc" "output directory for generated documentation."]
-                    :--order   ["alphabetic" "sorting of items that were not given particular order."
-                                "Supported alghorithms: alphabetic, reverse-alphabetic."
-                                "You also can specify a custom sorting function in .fenneldoc file."]})
+                    :--order   ["alphabetic" "sorting of items that were not given particular order.
+                                              Supported alghorithms: alphabetic, reverse-alphabetic.
+                                              You also can specify a custom sorting function in .fenneldoc file."
+                                #(when (not (orders $))
+                                   (io.stderr:write "Error: wrong value specified for key --order '" $"'\nsupported orders: alphabetic, reverse-alphabetic\n")
+                                   (os.exit 1))]
+                    :--mode    ["checkdoc" "mode to operate in.  Supported modes:
+                                           checkdoc - check documentation and generate markdown;
+                                           check    - only check documentation;
+                                           doc      - only generate markdown."
+                                #(when (not (modes $))
+                                   (io.stderr:write "Error wrong value specified for key --mode '" $"'\nsupported modes: checkdoc, check, doc.\n")
+                                   (os.exit 1))]})
 
 (local bool-flags {:--function-signatures [true "(don't) generate function signatures in documentation."]
                    :--final-comment       [true "(don't) insert final comment with fenneldoc version."]
                    :--copyright           [true "(don't) insert copyright information."]
                    :--license             [true "(don't) insert license information from the module."]
-                   :--toc                 [true "(don't) generate table of contents."]})
+                   :--toc                 [true "(don't) generate table of contents."]
+                   :--sandbox             [true "(don't) sandbox loaded code and documentation tests."]})
 
-(fn longest [items]
+(fn longest-length [items]
   (var len 0)
   (each [_ x (ipairs items)]
     (set len (math.max len (length (tostring x)))))
@@ -35,13 +48,15 @@
 
 (fn gen-help-info [flags]
   (let [lines []
-        longest-flag (longest (keys flags))
-        longest-default (longest (mapv first (vals flags)))]
-    (each [flag [default docstring & doc-lines] (pairs flags)]
+        longest-flag (longest-length (keys flags))
+        longest-default (longest-length (mapv first (vals flags)))]
+    (each [flag [default docstring] (pairs flags)]
       (let [default (tostring (or default ""))
             flag-pad (string.rep " " (- longest-flag (length flag)))
-            doc-pad (string.rep " " (- longest-default (length default)))]
-        (var doc-line (.. "  " flag flag-pad default doc-pad docstring))
+            doc-pad (string.rep " " (- longest-default (length default)))
+            [doc-line & doc-lines] (icollect [s (docstring:gmatch "[^\r\n]+")]
+                                     (s:gsub "^%s*(.-)%s*$" "%1"))]
+        (var doc-line (.. "  " flag flag-pad default doc-pad doc-line))
         (when (next doc-lines)
           (each [_ line (ipairs doc-lines)]
             (set doc-line (.. doc-line "\n  " (string.rep " " (- (length flag) 1))
@@ -76,8 +91,6 @@ Toggle flags:
 
 Other flags:
   --           treat remaining flags as files
-  --skip-check don't preform documentation checking.
-  --check-only don't generate docs, only run documentation tests.
   --help       print this message and exit.
 
 All keys have corresponding entry in `.fenneldoc' configuration file,
@@ -105,9 +118,12 @@ passing `--no-toc' will disable generation of contents table, and
 
 (fn handle-value-flag [i flag config]
   ;; value flags are followed with value
-  (let [flag (string.sub flag 3 -1)]
+  (let [[_ _ validate-fn] (. value-flags flag)
+        flag (string.sub flag 3 -1)]
     (match (. arg i)
-      val (tset config flag val)
+      val (do (when validate-fn
+                (validate-fn val))
+              (tset config flag val))
       nil (do (io.stderr:write "fenneldoc: expected value for " flag "\n")
               (os.exit -1)))))
 

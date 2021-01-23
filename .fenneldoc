@@ -2,8 +2,7 @@
 ;; Configuration file for Fenneldoc.
 ;; https://gitlab.com/andreyorst/fenneldoc
 
-{:check-only false
- :fennel-path ["cljlib/?.fnl" "src/?.fnl"]
+{:fennel-path ["cljlib/?.fnl" "src/?.fnl"]
  :function-signatures true
  :insert-comment true
  :insert-copyright true
@@ -15,8 +14,9 @@
         :license "_LICENSE"
         :module-name "_MODULE_NAME"
         :version "_VERSION"}
+ :mode "checkdoc"
  :order "aplhabetic"
  :out-dir "./doc"
- :skip-check false
+ :sandbox true
  :test-requirements {}
  :toc true}

@@ -67,7 +67,7 @@ level, or run any code when file is loaded that uses those modules."
              :package (sandbox-module :package file)
              :io (sandbox-module :io file)}]
     (set env._G env)
-    (each [k v (pairs overrides)]
+    (each [k v (pairs (or overrides {}))]
       (tset env k v))
     env))
 
@@ -85,17 +85,18 @@ level, or run any code when file is loaded that uses those modules."
                        :arglist (fennel.metadata:get val :fnl/arglist)})))
     docs))
 
-(fn require-module [file]
+(fn require-module [file config]
   "Require file as module in protected call.  Returns vector with first value
 corresponding to pcall result."
-  (match (pcall fennel.dofile file {:useMetadata true :env sandbox})
-    (true module) (values (type module) module :functions)
-    ;; try again, now with compiler env
-    (false _) (match (pcall fennel.dofile file {:useMetadata true
-                                                :env :_COMPILER
-                                                :scope (. compiler :scopes :compiler)})
-                (true module) (values (type module) module :macros)
-                (false msg) (values false msg))))
+  (let [sandbox (when config.sandbox (create-sandbox))]
+    (match (pcall fennel.dofile file {:useMetadata true :env sandbox})
+      (true module) (values (type module) module :functions)
+      ;; try again, now with compiler env
+      (false _) (match (pcall fennel.dofile file {:useMetadata true
+                                                  :env :_COMPILER
+                                                  :scope (. compiler :scopes :compiler)})
+                  (true module) (values (type module) module :macros)
+                  (false msg) (values false msg)))))
 
 (fn get-module-info [module key fallback]
   (let [info (. module key)]
@@ -109,14 +110,14 @@ corresponding to pcall result."
 (fn module-info [file config]
   "Returns table containing all relevant information about the module
 for which documentation is generated."
-  (match (require-module file)
+  (match (require-module file config)
     ;; Ordinary module that returns a table.  If module has keys that
     ;; are specified within the `:keys` section of `.fenneldoc` those
     ;; are looked up in the module for additional info.
     (:table module module-type) {:module (get-module-info module config.keys.module-name file)
                                  :file file
                                  :type module-type
-                                 :f-table (and (not= module-type :macros) module)
+                                 :f-table (if (= module-type :macros) {} module)
                                  :requirements (get-in config [:test-requirements file] "")
                                  :version (get-module-info module config.keys.version)
                                  :description (get-module-info module config.keys.description)

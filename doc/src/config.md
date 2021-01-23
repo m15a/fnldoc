@@ -12,8 +12,7 @@ working directory.
 Default configuration:
 
 ``` fennel
-{:check-only false
- :fennel-path []
+{:fennel-path []
  :function-signatures true
  :insert-comment true
  :insert-copyright true
@@ -25,18 +24,19 @@ Default configuration:
         :license "_LICENSE"
         :module-name "_MODULE_NAME"
         :version "_VERSION"}
+ :mode "checkdoc"
  :order "aplhabetic"
  :out-dir "./doc"
- :skip-check false
  :test-requirements {}
  :toc true}
 ```
 
 ### Key descriptions
 
-- `check-only` - run documentation tests but do not generate documentation files.
-- `skip-check` - do not preform documentation checks, just produce documentation files.
-  **Note**: These two flags must not be used together.
+- `mode` - mode to operate in:
+  - `checkdoc` - run checks and generate documentation files if no errors occurred.
+  - `check` - only run checks
+  - `doc` - only generate documentation files.
 - `fennel-path` - add PATH to fennel.path for finding Fennel modules.
 - `test-requirements` - code, that will be injected into each test in respecting module.
   For example, `{:somefile.fnl "(local {: foo1 :foo2} (require :somelib))"}` will inject the
@@ -46,7 +46,7 @@ Default configuration:
 - `copyright` - whether to insert copyright information.
 - `license` - whether to insert license information from the module.
 - `toc` - whether to generate table of contents.
-- `out-dir` - pathe where to put documentation files.
+- `out-dir` - path where to put documentation files.
 - `keys` - a table of keys to lookup in modules to obtain additional info:
   - `license-key` -  license information of the module.
   - `description-key` - the description of the module.
@@ -54,8 +54,9 @@ Default configuration:
   - `doc-order-key` - order of items of the module.
   - `version-key` - the version of the module.
 - `order` - sorting of items that were not given particular order.
-  Supported alghorithms: alphabetic, reverse-alphabetic.
+  Supported algorithms: alphabetic, reverse-alphabetic.
   You also can specify a custom sorting function for this key.
+- `sandbox` - whether to sandbox loading code and running documentation tests.
 
 
 
