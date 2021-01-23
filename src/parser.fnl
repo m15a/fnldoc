@@ -24,7 +24,12 @@ Does not allow any IO, loading files or Lua code via `load`,
 and accessing such modules as `os`, `debug`, `package`, `io`.
 
 This means that your files must not use these modules on the top
-level, or run any code when file is loaded that uses those modules."
+level, or run any code when file is loaded that uses those modules.
+
+You can provide an `overrides` table, which contains function name as
+a key, and function as a value.  This function will be used instead of
+specified function name in the sandbox.  For example, you can wrap IO
+functions to only throw warning, and not error. "
   (let [env {;; allowed modules
              : assert
              : bit32
@@ -108,8 +113,9 @@ corresponding to pcall result."
       _ nil)))
 
 (fn module-info [file config]
-  "Returns table containing all relevant information about the module
-for which documentation is generated."
+  "Returns table containing all relevant information accordingly to
+`config` about the module in `file` for which documentation is
+generated."
   (match (require-module file config)
     ;; Ordinary module that returns a table.  If module has keys that
     ;; are specified within the `:keys` section of `.fenneldoc` those
@@ -130,20 +136,20 @@ for which documentation is generated."
     ;; function itself.  So module description is set to a combination
     ;; of function docstring and signature if allowed by config.
     ;; Table of contents is also omitted.
-    (:function function) {:module file
-                          :file file
-                          :f-table {(function-name-from-file file) function}
-                          :type :function-module
-                          :requirements (get-in config [:test-requirements file] "")
-                          :documented? (fennel.metadata:get function :fnl/docstring)
-                          :description (.. (gen-function-signature
-                                            (function-name-from-file file)
-                                            (fennel.metadata:get function :fnl/arglist)
-                                            config)
-                                           "\n"
-                                           (gen-item-documentation
-                                            (fennel.metadata:get function :fnl/docstring)))
-                          :items {}}
+    (:function function) (let [docstring (fennel.metadata:get function :fnl/docstring)
+                               arglist (fennel.metadata:get function :fnl/arglist)
+                               fname (function-name-from-file file)]
+                           {:module file
+                            :file file
+                            :f-table {fname function}
+                            :type :function-module
+                            :requirements (get-in config [:test-requirements file] "")
+                            :documented? (not (not docstring)) ;; convert to boolean
+                            :description (.. (gen-function-signature fname arglist config)
+                                             "\n"
+                                             (gen-item-documentation docstring))
+                            : arglist
+                            :items {}})
     (false err) (io.stderr:write "Error loading " file "\n" err "\n")
     _ (io.stderr:write "Error loading " file "\nunhandled error!\n")))
 

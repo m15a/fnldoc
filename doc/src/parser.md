@@ -22,6 +22,11 @@ and accessing such modules as `os`, `debug`, `package`, `io`.
 This means that your files must not use these modules on the top
 level, or run any code when file is loaded that uses those modules.
 
+You can provide an `overrides` table, which contains function name as
+a key, and function as a value.  This function will be used instead of
+specified function name in the sandbox.  For example, you can wrap IO
+functions to only throw warning, and not error.
+
 ## `module-info`
 Function signature:
 
@@ -29,8 +34,9 @@ Function signature:
 (module-info file config)
 ```
 
-Returns table containing all relevant information about the module
-for which documentation is generated.
+Returns table containing all relevant information accordingly to
+`config` about the module in `file` for which documentation is
+generated.
 
 
 <!-- Generated with Fenneldoc 0.1.0

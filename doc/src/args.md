@@ -5,7 +5,7 @@ Function signature:
 (args config)
 ```
 
-Process command line arguments
+Process command line arguments based on `config`.
 
 
 

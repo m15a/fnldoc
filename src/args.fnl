@@ -150,7 +150,7 @@ passing `--no-toc' will disable generation of contents table, and
 
 
 (fn process-args [config]
-  "Process command line arguments"
+  "Process command line arguments based on `config`. "
   (let [files []
         arglen (length arg)]
     (var i 1)
