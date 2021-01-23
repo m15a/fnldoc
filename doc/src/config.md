@@ -7,7 +7,7 @@ Function signature:
 
 Process configuration file and merge it with default configuration.
 Configuration is stored in `.fenneldoc` which is looked up in the
-working directory.
+working directory.  Injects private `version` field in config.
 
 Default configuration:
 

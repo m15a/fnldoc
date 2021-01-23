@@ -5,7 +5,8 @@ Function signature:
 (doctest module-info sandbox?)
 ```
 
-Run tests contained in module documentations.
+Run tests contained in documentations.
+Accepts `module-info` with items to check, and `sandbox?` argument.
 
 
 

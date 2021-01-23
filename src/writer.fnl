@@ -1,10 +1,10 @@
 (local fs (require :lfs))
 
-(fn create-dirs-from-path [file module config]
+(fn create-dirs-from-path [file module-info config]
   "Creates path up to specified file."
   (let [sep (package.config:sub 1 1)
         path (.. config.out-dir sep (file:gsub (.. "[^" sep "]+.fnl$") ""))
-        fname (-> (or module.module file)
+        fname (-> (or module-info.module file)
                   (string.gsub (.. ".*[" sep "]+") "")
                   (string.gsub ".fnl$" "")
                   (.. ".md"))]
@@ -17,11 +17,12 @@
     (-> (.. p sep fname)
         (string.gsub (.. "[" sep "]+") sep))))
 
-(fn write-doc [docs file module config]
+(fn writer [docs file module-info config]
   "Accepts `docs` as a vector of lines, and a path to a `file`.
 Concatenates lines in `docs` with newline, and writes result to
-`file`."
-  (match (create-dirs-from-path file module config)
+`file`.  `module-info` must contain `module` key with file, and
+`config` must contain `out-dir` key."
+  (match (create-dirs-from-path file module-info config)
     path (match (io.open path :w)
            f (with-open [file f]
                (file:write docs))

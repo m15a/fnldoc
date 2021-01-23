@@ -22,8 +22,8 @@ Use `--no-sandbox` or `:sandbox` option in config to override this behavior.
 ## Features
 - [x] Parse runtime information of the module.
 - [x] Configurable item order and sorting.
-- [ ] Validate documentation:
-  - [ ] Analyze documentation to contain descriptions arguments of the described function,
+- [x] Validate documentation:
+  - [x] Analyze documentation to contain descriptions arguments of the described function;
   - [x] Run documentation tests, by looking for code inside backticks.
 - [x] Parse macro modules.
 
