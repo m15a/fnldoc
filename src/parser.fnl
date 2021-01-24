@@ -5,7 +5,9 @@
         : gen-item-documentation}
        (require :markdown))
 
-(fn sandbox-module [module file]
+(import-macros {: fn*} :cljlib.macros)
+
+(fn* sandbox-module [module file]
   (setmetatable
    {}
    {:__index (fn []
@@ -15,7 +17,7 @@
                     "while loading\n"))
                (os.exit 1))}))
 
-(fn create-sandbox [overrides]
+(fn* create-sandbox
   "Create sandboxed environment to run files containing documentation,
 and tests from that documentation.
 
@@ -29,59 +31,61 @@ level, or run any code when file is loaded that uses those modules.
 You can provide an `overrides` table, which contains function name as
 a key, and function as a value.  This function will be used instead of
 specified function name in the sandbox.  For example, you can wrap IO
-functions to only throw warning, and not error. "
-  (let [env {;; allowed modules
-             : assert
-             : bit32
-             : collectgarbage
-             : coroutine
-             : dofile
-             : error
-             : getmetatable
-             : ipairs
-             : math
-             : next
-             : pairs
-             : pcall
-             : rawequal
-             : rawlen
-             : require
-             : select
-             : setmetatable
-             : string
-             : table
-             : tonumber
-             : tostring
-             : type
-             : unpack
-             : utf8
-             : xpcall
-             ;; disallowed modules
-             :load nil
-             :loadfile nil
-             :loadstring nil
-             :rawget nil
-             :rawset nil
-             :module nil
-             ;; sandboxed modules
-             :arg []
-             :print (fn []
-                      (io.stderr:write "ERROR: IO detected in file: " file " while loading\n") (os.exit 1))
-             :os (sandbox-module :os file)
-             :debug (sandbox-module :debug file)
-             :package (sandbox-module :package file)
-             :io (sandbox-module :io file)}]
-    (set env._G env)
-    (each [k v (pairs (or overrides {}))]
-      (tset env k v))
-    env))
+functions to only throw warning, and not error."
+  ([] (create-sandbox {}))
+  ([overrides]
+   (let [env {;; allowed modules
+              : assert
+              : bit32
+              : collectgarbage
+              : coroutine
+              : dofile
+              : error
+              : getmetatable
+              : ipairs
+              : math
+              : next
+              : pairs
+              : pcall
+              : rawequal
+              : rawlen
+              : require
+              : select
+              : setmetatable
+              : string
+              : table
+              : tonumber
+              : tostring
+              : type
+              : unpack
+              : utf8
+              : xpcall
+              ;; disallowed modules
+              :load nil
+              :loadfile nil
+              :loadstring nil
+              :rawget nil
+              :rawset nil
+              :module nil
+              ;; sandboxed modules
+              :arg []
+              :print (fn []
+                       (io.stderr:write "ERROR: IO detected in file: " file " while loading\n") (os.exit 1))
+              :os (sandbox-module :os file)
+              :debug (sandbox-module :debug file)
+              :package (sandbox-module :package file)
+              :io (sandbox-module :io file)}]
+     (set env._G env)
+     (each [k v (pairs overrides)]
+       (tset env k v))
+     env)))
 
-(fn function-name-from-file [file]
+(fn* function-name-from-file [file]
   (-> file
       (string.gsub ".*/" "")
       (string.gsub ".fnl$" "")))
 
-(fn get-module-docs [module config]
+(fn* get-module-docs [module config]
   (let [docs {}]
     (each [id val (pairs module)]
       (when (and (not= (string.sub id 1 1) :_) ;; ignore keys starting with `_`
@@ -90,9 +94,10 @@ functions to only throw warning, and not error. "
                        :arglist (fennel.metadata:get val :fnl/arglist)})))
     docs))
 
-(fn require-module [file config]
+(fn* require-module
   "Require file as module in protected call.  Returns vector with first value
 corresponding to pcall result."
+  [file config]
   (let [sandbox (when config.sandbox (create-sandbox))]
     (match (pcall fennel.dofile file {:useMetadata true :env sandbox})
       (true module) (values (type module) module :functions)
@@ -103,19 +108,22 @@ corresponding to pcall result."
                   (true module) (values (type module) module :macros)
                   (false msg) (values false msg)))))
 
-(fn get-module-info [module key fallback]
-  (let [info (. module key)]
-    (match (type info)
-      :function (info) ;; hack for supporting this in macro modules
-      :string info
-      :table info
-      :nil fallback
-      _ nil)))
+(fn* get-module-info
+  ([module key] (get-module-info module key nil))
+  ([module key fallback]
+   (let [info (. module key)]
+     (match (type info)
+       :function (info) ;; hack for supporting this in macro modules
+       :string info
+       :table info
+       :nil fallback
+       _ nil))))
 
-(fn module-info [file config]
+(fn* module-info
   "Returns table containing all relevant information accordingly to
 `config` about the module in `file` for which documentation is
 generated."
+  [file config]
   (match (require-module file config)
     ;; Ordinary module that returns a table.  If module has keys that
     ;; are specified within the `:keys` section of `.fenneldoc` those

@@ -11,7 +11,7 @@ Functions for generating Markdown
 Function signature:
 
 ```
-(gen-markdown module-info config)
+(gen-markdown ([module-info config]))
 ```
 
 Generate markdown feom `module-info` accordingly to `config`.
@@ -20,7 +20,7 @@ Generate markdown feom `module-info` accordingly to `config`.
 Function signature:
 
 ```
-(gen-function-signature function arglist config)
+(gen-function-signature ([function arglist config]))
 ```
 
 Generate function signature for `function` from `arglist` accordingly to `config`.
@@ -29,7 +29,7 @@ Generate function signature for `function` from `arglist` accordingly to `config
 Function signature:
 
 ```
-(gen-item-documentation docstring)
+(gen-item-documentation ([docstring]))
 ```
 
 Generate documentation from `docstring`.

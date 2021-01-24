@@ -22,10 +22,13 @@ metadata at runtime.
 (local {: module-info} (require :parser))
 (local {: gen-markdown} (require :markdown))
 
-(fn process-file [file config]
+(import-macros {: fn*} :cljlib.macros)
+
+(fn* process-file
   "Accepts `file` as path to some Fennel module, and `config` table.
 Generates module documentation and writes it to `file` with `.md`
 extension, creating it if not exists."
+  [file config]
   (match (module-info file config)
     module (do (when (not= config.mode :doc)
                  (test-module module config.sandbox))

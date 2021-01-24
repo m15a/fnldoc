@@ -2,7 +2,7 @@
 Function signature:
 
 ```
-(args config)
+(args ([config]))
 ```
 
 Process command line arguments based on `config`.

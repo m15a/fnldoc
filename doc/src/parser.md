@@ -9,7 +9,7 @@
 Function signature:
 
 ```
-(create-sandbox overrides)
+(create-sandbox ([]) ([overrides]))
 ```
 
 Create sandboxed environment to run files containing documentation,
@@ -31,7 +31,7 @@ functions to only throw warning, and not error.
 Function signature:
 
 ```
-(module-info file config)
+(module-info ([file config]))
 ```
 
 Returns table containing all relevant information accordingly to

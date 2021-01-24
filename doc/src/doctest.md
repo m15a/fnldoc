@@ -2,7 +2,7 @@
 Function signature:
 
 ```
-(doctest module-info sandbox?)
+(doctest ([module-info sandbox?]))
 ```
 
 Run tests contained in documentations.

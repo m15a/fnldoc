@@ -1,18 +1,18 @@
 (local fennel (require :fennel))
 (local {: keys} (require :cljlib))
 (local {: create-sandbox} (require :parser))
-(import-macros {: when-let} :cljlib.macros)
+(import-macros {: when-let : fn*} :cljlib.macros)
 
-(fn extract-tests [fn-doc]
+(fn* extract-tests [fn-doc]
   (icollect [test (fn-doc:gmatch "\n?```%s*fennel.-\n```")]
     (-> test
-        (string.gsub "\n?```%s*fennel" "")
-        (string.gsub "\n```" "")
+        (string.gsub "\n?%s*```%s*fennel" "")
+        (string.gsub "\n%s*```" "")
         (string.gsub "^\n" ""))))
 
 (table.insert (or package.loaders package.searchers) fennel.searcher)
 
-(fn run-test [test requirements module-info sandbox?]
+(fn* run-test [test requirements module-info sandbox?]
   (let [sandbox (create-sandbox
                  {:print (fn [...]
                            (io.stderr:write
@@ -30,24 +30,20 @@
       (tset sandbox fname fval))
     (pcall fennel.eval (.. requirements test) {:env (if sandbox? sandbox)})))
 
-(fn run-tests-for-fn [func docstring module-info sandbox?]
+(fn* run-tests-for-fn [func docstring module-info sandbox?]
   (var error? false)
-  (if (not docstring)
-      (if (= module-info.type :function-module)
-          (io.stderr:write "WARNING: file " func " exports undocumented function\n")
-          (io.stderr:write "WARNING: undocumented exported function " func "\n"))
-      (each [n test (ipairs (extract-tests docstring))]
-        (match (run-test test module-info.requirements module-info sandbox?)
-          (false msg) (let [msg (string.gsub (tostring msg) "^%[.-%]:%d+:%s*" "")]
-                        (io.stderr:write "In file: " module-info.file "\n"
-                                         "Error in docstring for: " func "\n"
-                                         "In test:\n``` fennel\n" test "\n```\n"
-                                         "Error:\n"
-                                         msg "\n\n")
-                        (set error? true)))))
+  (each [n test (ipairs (extract-tests docstring))]
+    (match (run-test test module-info.requirements module-info sandbox?)
+      (false msg) (let [msg (string.gsub (tostring msg) "^%[.-%]:%d+:%s*" "")]
+                    (io.stderr:write "In file: " module-info.file "\n"
+                                     "Error in docstring for: " func "\n"
+                                     "In test:\n``` fennel\n" test "\n```\n"
+                                     "Error:\n"
+                                     msg "\n\n")
+                    (set error? true))))
   error?)
 
-(fn check-argument [func argument docstring file]
+(fn* check-argument [func argument docstring file]
   (let [argument-pat (.. ":?" (argument:gsub "([][().%+-*?$^])" "%%%1"))]
     (when (not (or (string.find docstring (.. "`" argument-pat "`"))
                    (string.find docstring (.. "`" argument-pat "'"))))
@@ -60,7 +56,7 @@
                                " function '" func "' has undocumented argument '"
                                argument "'\n"))))))
 
-(fn check-function-arglist [func arglist docstring {: file}]
+(fn* check-function-arglist [func arglist docstring {: file}]
   (let [docstring (string.gsub docstring "\n?```.-\n```\n?" "")]
     (each [_ argument (ipairs arglist)]
       (let [argument (-> argument
@@ -72,13 +68,19 @@
                 (check-argument func argument docstring file)))
             (check-argument func argument docstring file))))))
 
-(fn check-function [func docstring arglist module-info sandbox?]
-  (check-function-arglist func arglist docstring module-info)
-  (run-tests-for-fn func docstring module-info sandbox?))
+(fn* check-function [func docstring arglist module-info sandbox?]
+  (if (not docstring)
+      (do (if (= module-info.type :function-module)
+              (io.stderr:write "WARNING: file '" module-info.file "' exports undocumented function\n")
+              (io.stderr:write "WARNING: in file '" module-info.file "' undocumented exported function '" func "'\n"))
+          nil) ;; io.stderr:write returns non-nil value, which is treated as mark that errors occured
+      (do (check-function-arglist func arglist docstring module-info)
+          (run-tests-for-fn func docstring module-info sandbox?))))
 
-(fn doctest [module-info sandbox?]
+(fn* doctest
   "Run tests contained in documentations.
 Accepts `module-info` with items to check, and `sandbox?` argument."
+  [module-info sandbox?]
   (var error? false)
   (match module-info.type
     :function-module
@@ -95,3 +97,5 @@ Accepts `module-info` with items to check, and `sandbox?` argument."
   (when error?
     (io.stderr:write "Errors in module " module-info.module "\n")
     (os.exit 1)))
+
+doctest

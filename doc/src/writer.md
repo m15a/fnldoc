@@ -2,7 +2,7 @@
 Function signature:
 
 ```
-(writer docs file module-info config)
+(writer ([docs file module-info config]))
 ```
 
 Accepts `docs` as a vector of lines, and a path to a `file`.
