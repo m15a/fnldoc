@@ -49,7 +49,7 @@
       (when (not (or (string.find docstring (.. "`" argument-pat "`"))
                      (string.find docstring (.. "`" argument-pat "'"))))
         (when (not (seen argument))
-          (if (and (string.find docstring (.. "%f[%w_]" argument-pat "%f[%w_]"))) ;; %f[%w_] emulates \b
+          (if (and (string.find docstring (.. "%f[%w_]" argument-pat "%f[^%w_]"))) ;; %f[%w_] emulates \b
               (io.stderr:write "WARNING: in file " file
                                " argument '" argument "' should appear in backtics in docstring for '"
                                func "'\n")
