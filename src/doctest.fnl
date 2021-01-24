@@ -47,20 +47,30 @@
                         (set error? true)))))
   error?)
 
-(fn check-function-arglist [func arglist docstring module-info]
-  (let [arglist (table.concat arglist " ")
-        docstring (string.gsub docstring "\n?```.-\n```\n?" "")]
-    (each [argument (arglist:gmatch "[^][ \n\r()&{}}]+")]
-      (let [argument-pat (argument:gsub "([][().%+-*?$^])" "%%%1")]
-        (when (not (or (string.find docstring (.. "`" argument-pat "`"))
-                       (string.find docstring (.. "`" argument-pat "'"))))
-          (if (string.find docstring argument-pat)
-              (io.stderr:write "WARNING: in file " module-info.file
-                               " argument '" argument "' should appear in backtics in docstring for '"
-                               func "'\n")
-              (io.stderr:write "WARNING: in file " module-info.file
+(fn check-argument [func argument docstring file]
+  (let [argument-pat (.. ":?" (argument:gsub "([][().%+-*?$^])" "%%%1"))]
+    (when (not (or (string.find docstring (.. "`" argument-pat "`"))
+                   (string.find docstring (.. "`" argument-pat "'"))))
+      (if (string.find docstring argument-pat)
+          (io.stderr:write "WARNING: in file " file
+                           " argument '" argument "' should appear in backtics in docstring for '"
+                           func "'\n")
+          (if (not= argument "...")
+              (io.stderr:write "WARNING: in file " file
                                " function '" func "' has undocumented argument '"
-                               argument "'\n")))))))
+                               argument "'\n"))))))
+
+(fn check-function-arglist [func arglist docstring {: file}]
+  (let [docstring (string.gsub docstring "\n?```.-\n```\n?" "")]
+    (each [_ argument (ipairs arglist)]
+      (let [argument (-> argument
+                         (: :gsub "[\n\r()&]+" "")   ;; strip symbols that can't be used in variable name
+                         (: :gsub "\"[^\"]-\"" ""))] ;; strip strings
+        (if (argument:find "[][{}]")
+            (each [argument (argument:gmatch "[^][ \n\r{}}]+")]
+              (when (not (string.find argument "^:"))
+                (check-argument func argument docstring file)))
+            (check-argument func argument docstring file))))))
 
 (fn check-function [func docstring arglist module-info sandbox?]
   (check-function-arglist func arglist docstring module-info)
