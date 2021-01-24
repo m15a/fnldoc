@@ -1,5 +1,5 @@
 (local fennel (require :fennel))
-(local {: keys} (require :cljlib))
+(local {: keys : hash-set : conj} (require :cljlib))
 (local {: create-sandbox} (require :parser))
 (import-macros {: when-let : fn*} :cljlib.macros)
 
@@ -43,20 +43,22 @@
                     (set error? true))))
   error?)
 
-(fn* check-argument [func argument docstring file]
-  (let [argument-pat (.. ":?" (argument:gsub "([][().%+-*?$^])" "%%%1"))]
-    (when (not (or (string.find docstring (.. "`" argument-pat "`"))
-                   (string.find docstring (.. "`" argument-pat "'"))))
-      (if (string.find docstring argument-pat)
-          (io.stderr:write "WARNING: in file " file
-                           " argument '" argument "' should appear in backtics in docstring for '"
-                           func "'\n")
-          (if (not= argument "...")
+(fn* check-argument [func argument docstring file seen]
+  (when (not= argument "")
+    (let [argument-pat (.. ":?" (argument:gsub "([][().%+-*?$^])" "%%%1"))]
+      (when (not (or (string.find docstring (.. "`" argument-pat "`"))
+                     (string.find docstring (.. "`" argument-pat "'"))))
+        (when (not (seen argument))
+          (if (and (string.find docstring (.. "%f[%w_]" argument-pat "%f[%w_]"))) ;; %f[%w_] emulates \b
               (io.stderr:write "WARNING: in file " file
-                               " function '" func "' has undocumented argument '"
-                               argument "'\n"))))))
+                               " argument '" argument "' should appear in backtics in docstring for '"
+                               func "'\n")
+              (if (not= argument "...")
+                  (io.stderr:write "WARNING: in file " file
+                                   " function '" func "' has undocumented argument '"
+                                   argument "'\n"))))))))
 
-(fn* check-function-arglist [func arglist docstring {: file}]
+(fn* check-function-arglist [func arglist docstring {: file} seen]
   (let [docstring (string.gsub docstring "\n?```.-\n```\n?" "")]
     (each [_ argument (ipairs arglist)]
       (let [argument (-> argument
@@ -65,8 +67,10 @@
         (if (argument:find "[][{}]")
             (each [argument (argument:gmatch "[^][ \n\r{}}]+")]
               (when (not (string.find argument "^:"))
-                (check-argument func argument docstring file)))
-            (check-argument func argument docstring file))))))
+                (check-argument func argument docstring file seen)
+                (conj seen argument)))
+            (check-argument func argument docstring file seen))
+        (conj seen argument)))))
 
 (fn* check-function [func docstring arglist module-info sandbox?]
   (if (not docstring)
@@ -74,7 +78,7 @@
               (io.stderr:write "WARNING: file '" module-info.file "' exports undocumented function\n")
               (io.stderr:write "WARNING: in file '" module-info.file "' undocumented exported function '" func "'\n"))
           nil) ;; io.stderr:write returns non-nil value, which is treated as mark that errors occured
-      (do (check-function-arglist func arglist docstring module-info)
+      (do (check-function-arglist func arglist docstring module-info (hash-set))
           (run-tests-for-fn func docstring module-info sandbox?))))
 
 (fn* doctest
