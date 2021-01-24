@@ -73,14 +73,29 @@
     (into [] (into ordered-items sorted-items))))
 
 
+(fn* heading-link
+  "Markdown valid heading."
+  [heading]
+  (.. "#"
+      (-> heading
+          (string.gsub " " "-")
+          (string.gsub "[^%w-]" "")
+          (string.gsub "[-]+" "-")
+          (string.gsub "^[-]*(.*)[-]*$" "%1")
+          string.lower)))
+
 (fn* gen-toc [lines items config]
   (when (and config.toc items (next items))
-    (conj lines
-          "**Table of contents**"
-          "")
-    (each [_ item (ipairs items)]
-      (conj lines (.. "- [`" item "`](#" item ")")))
-    (conj lines ""))
+    (let [seen-headings {}]
+      (conj lines
+            "**Table of contents**"
+            "")
+      (each [_ item (ipairs items)]
+        (let [heading (heading-link item)
+              id (. seen-headings heading)]
+          (tset seen-headings heading (+ (or id 0) 1))
+          (conj lines (.. "- [`" item "`](" heading (if id (.. "-" id) "") ")"))))
+      (conj lines "")))
   lines)
 
 
@@ -106,7 +121,6 @@
 (fn* module-heading [file]
   (.. "# " (capitalize (pick-values 1
                          (string.gsub file ".*/" "")))))
-
 
 (fn* gen-markdown
   "Generate markdown feom `module-info` accordingly to `config`."
