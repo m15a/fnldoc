@@ -1,6 +1,6 @@
 # Fenneldoc
 
-Tool for automatic documentation generation and validation for Fennel language.
+Tool for automatic documentation generation and validation for the [Fennel](https://fennel-lang.org/) language.
 
 
 ## Usage
@@ -24,7 +24,9 @@ Use `--no-sandbox` or `:sandbox` option in config to override this behavior.
 
 ## Features
 
-- [x] Parse runtime information of the module.
+- [x] Load runtime information of the module.
+- [ ] Parsing private (not exported) functions from the module.
+  - [ ] Parsing AST instead of running code.
 - [x] Configurable item order and sorting.
 - [x] Validate documentation:
   - [x] Analyze documentation to contain descriptions arguments of the described function;

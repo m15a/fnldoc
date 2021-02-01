@@ -64,14 +64,16 @@ Please make sure to follow existing style of documentation, which can be shortly
 Check out new branch from project's main development branch.
 If you've cloned this project some time ago, consider checking if your branch has all recent changes from upstream.
 
-Each commit must have a type, which is one of `feature`, `fix`, followed by optional scope, and a must have description after `:` colon.
+Each commit must have a type, which is one of `feat` (or `feature`), `fix`, followed by optional scope, and a must have description after `:` colon.
 For example:
 
     fix(parsing): fix #42
-    feature(tests): add more strict tests
+    feat(tests): add more strict tests
 
--   `feature` must be used when adding new code.
+-   `feat` must be used when adding new code.
 -   `fix` must be used when fixing existing code.
+
+For a more comprehensive explanation please check [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
 
 When creating merge request consider squashing your commits at merge.
 You may do this manually, or use Gitlab's "Squash commits" button.
