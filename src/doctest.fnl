@@ -1,5 +1,5 @@
 (local fennel (require :fennel))
-(local {: keys : hash-set : conj} (require :cljlib))
+(local {: keys : hash-set : conj : empty?} (require :cljlib))
 (local {: create-sandbox} (require :parser))
 (import-macros {: when-let : fn*} :cljlib.macros)
 
@@ -58,45 +58,53 @@
                                    " function '" func "' has undocumented argument '"
                                    argument "'\n"))))))))
 
-(fn* check-function-arglist [func arglist docstring {: file} seen]
+(fn skip-arg-check? [argument patterns]
+  (-> (icollect [_ pattern (ipairs patterns)]
+        (string.find (argument:gsub "^%s*(.-)%s*$" "%1") (.. "^%f[%w_]" pattern "%f[^%w_]$")))
+      empty?
+      not))
+
+(fn* check-function-arglist [func arglist docstring {: file} seen patterns]
   (let [docstring (string.gsub docstring "\n?```.-\n```\n?" "")]
     (each [_ argument (ipairs arglist)]
       (let [argument (-> argument
-                         (: :gsub "[\n\r()&]+" "")   ;; strip symbols that can't be used in variable name
+                         (: :gsub "[\n\r()&]+" "") ;; strip symbols that can't be used in variable name
                          (: :gsub "\"[^\"]-\"" ""))] ;; strip strings
         (if (argument:find "[][{}]")
             (each [argument (argument:gmatch "[^][ \n\r{}}]+")]
               (when (not (string.find argument "^:"))
-                (check-argument func argument docstring file seen)
+                (when (not (skip-arg-check? argument patterns))
+                  (check-argument func argument docstring file seen))
                 (conj seen argument)))
-            (check-argument func argument docstring file seen))
+            (when (not (skip-arg-check? argument patterns))
+              (check-argument func argument docstring file seen)))
         (conj seen argument)))))
 
-(fn* check-function [func docstring arglist module-info sandbox?]
+(fn* check-function [func docstring arglist module-info config]
   (if (not docstring)
       (do (if (= module-info.type :function-module)
               (io.stderr:write "WARNING: file '" module-info.file "' exports undocumented function\n")
               (io.stderr:write "WARNING: in file '" module-info.file "' undocumented exported function '" func "'\n"))
           nil) ;; io.stderr:write returns non-nil value, which is treated as mark that errors occured
-      (do (check-function-arglist func arglist docstring module-info (hash-set))
-          (run-tests-for-fn func docstring module-info sandbox?))))
+      (do (check-function-arglist func arglist docstring module-info (hash-set) config.ignored-args-patterns)
+          (run-tests-for-fn func docstring module-info config.sandbox))))
 
 (fn* doctest
   "Run tests contained in documentations.
-Accepts `module-info` with items to check, and `sandbox?` argument."
-  [module-info sandbox?]
+Accepts `module-info` with items to check, and `config` argument."
+  [module-info config]
   (var error? false)
   (match module-info.type
     :function-module
     (let [fname (pick-values 1 (next module-info.f-table))
           docstring (and module-info.documented? module-info.description)
           arglist module-info.arglist]
-      (set error? (check-function fname docstring arglist module-info sandbox?)))
+      (set error? (check-function fname docstring arglist module-info config)))
     _
     (let [funcs (keys module-info.items)]
       (each [_ func (ipairs funcs)]
         (when-let [{: docstring : arglist} (. module-info.items func)]
-          (let [res (check-function func docstring arglist module-info sandbox?)]
+          (let [res (check-function func docstring arglist module-info config)]
             (set error? (or error? res)))))))
   (when error?
     (io.stderr:write "Errors in module " module-info.module "\n")

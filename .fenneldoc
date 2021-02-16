@@ -4,6 +4,7 @@
 
 {:fennel-path ["cljlib/?.fnl" "src/?.fnl"]
  :function-signatures true
+ :ignored-args-patterns []
  :insert-comment true
  :insert-copyright true
  :insert-license true

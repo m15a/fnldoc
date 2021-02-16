@@ -1,4 +1,4 @@
-(local fenneldoc {:_VERSION "0.1.0"
+(local fenneldoc {:_VERSION "0.1.1"
                   :_COPYRIGHT "Copyright (C) 2020 Andrey Orst"
                   :_LICENSE "[MIT](https://gitlab.com/andreyorst/fenneldoc/-/raw/master/LICENSE)"
                   :_DESCRIPTION "Fenneldoc - generate documentation for Fennel projects.
@@ -31,7 +31,7 @@ extension, creating it if not exists."
   [file config]
   (match (module-info file config)
     module (do (when (not= config.mode :doc)
-                 (test-module module config.sandbox))
+                 (test-module module config))
                (let [markdown (gen-markdown module config)]
                  (when (not= config.mode :check)
                    (write-doc markdown file module config))))

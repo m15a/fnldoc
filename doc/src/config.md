@@ -12,8 +12,9 @@ working directory.  Injects private `version` field in config.
 Default configuration:
 
 ``` fennel
-{:fennel-path []
+{:fennel-path {}
  :function-signatures true
+ :ignored-args-patterns {}
  :insert-comment true
  :insert-copyright true
  :insert-license true
@@ -27,17 +28,20 @@ Default configuration:
  :mode "checkdoc"
  :order "aplhabetic"
  :out-dir "./doc"
+ :sandbox true
  :test-requirements {}
  :toc true}
 ```
 
-### Key descriptions
+  ### Key descriptions
 
 - `mode` - mode to operate in:
   - `checkdoc` - run checks and generate documentation files if no
     errors occurred;
   - `check` - only run checks;
   - `doc` - only generate documentation files.
+- `ignored-args-patterns` - list of patterns to check when checking
+  function argument docstring presence check should be skipped.
 - `fennel-path` - add PATH to fennel.path for finding Fennel modules.
 - `test-requirements` - code, that will be injected into each test in
   respecting module.

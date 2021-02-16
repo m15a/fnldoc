@@ -3,6 +3,7 @@
 
 (local config {:fennel-path []
                :function-signatures true
+               :ignored-args-patterns []
                :insert-comment true
                :insert-copyright true
                :insert-license true
@@ -20,40 +21,43 @@
                :test-requirements {}
                :toc true})
 
-(fn* process-config
-  "Process configuration file and merge it with default configuration.
+(fn* process-config [version]
+  (match (pcall fennel.dofile :.fenneldoc)
+    (true rc) (each [k v (pairs rc)]
+                (tset config k v))
+    (false msg) (when (not (msg:match ".fenneldoc: No such file or directory"))
+                  (io.stderr:write msg "\n")))
+
+  (each [_ path (pairs config.fennel-path)]
+    (set fennel.path (.. path ";" fennel.path)))
+
+  (set config.fenneldoc-version version)
+  config)
+
+(fennel.metadata:set
+ process-config
+ :fnl/docstring
+ (.. "Process configuration file and merge it with default configuration.
 Configuration is stored in `.fenneldoc` which is looked up in the
 working directory.  Injects private `version` field in config.
 
 Default configuration:
 
 ``` fennel
-{:fennel-path []
- :function-signatures true
- :insert-comment true
- :insert-copyright true
- :insert-license true
- :insert-version true
- :keys {:copyright \"_COPYRIGHT\"
-        :description \"_DESCRIPTION\"
-        :doc-order \"_DOC_ORDER\"
-        :license \"_LICENSE\"
-        :module-name \"_MODULE_NAME\"
-        :version \"_VERSION\"}
- :mode \"checkdoc\"
- :order \"aplhabetic\"
- :out-dir \"./doc\"
- :test-requirements {}
- :toc true}
+"
+     (fennel.view config)
+     "
 ```
 
-# Key descriptions
+  # Key descriptions
 
 - `mode` - mode to operate in:
   - `checkdoc` - run checks and generate documentation files if no
     errors occurred;
   - `check` - only run checks;
   - `doc` - only generate documentation files.
+- `ignored-args-patterns` - list of patterns to check when checking
+  function argument docstring presence check should be skipped.
 - `fennel-path` - add PATH to fennel.path for finding Fennel modules.
 - `test-requirements` - code, that will be injected into each test in
   respecting module.
@@ -106,18 +110,6 @@ then specify license under this key in you module:
 ```
 
 Now `fenneldoc` will know that information about license is stored
-under `project-license` key."
-  [version]
-  (match (pcall fennel.dofile :.fenneldoc)
-    (true rc) (each [k v (pairs rc)]
-                (tset config k v))
-    (false msg) (when (not (msg:match ".fenneldoc: No such file or directory"))
-                  (io.stderr:write msg "\n")))
-
-  (each [_ path (pairs config.fennel-path)]
-    (set fennel.path (.. path ";" fennel.path)))
-
-  (set config.fenneldoc-version version)
-  config)
+under `project-license` key."))
 
 process-config
