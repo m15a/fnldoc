@@ -1,3 +1,4 @@
+(local fennel (require :fennel))
 (import-macros {: into : fn*} :cljlib.macros)
 (local {: hash-set
         : inc
@@ -16,22 +17,31 @@
                   :--doc-order-key   [:_DOC_ORDER "order of items of the module."]
                   :--version-key     [:_VERSION "the version of the module."]})
 
-(local orders (hash-set :alphabetic :reverse-alphabetic))
-(local modes (hash-set :checkdoc :check :doc))
 (local value-flags {:--out-dir ["./doc" "output directory for generated documentation."]
                     :--order   ["alphabetic" "sorting of items that were not given particular order.
-                                              Supported alghorithms: alphabetic, reverse-alphabetic.
-                                              You also can specify a custom sorting function in .fenneldoc file."
-                                #(when (not (orders $))
-                                   (io.stderr:write "Error: wrong value specified for key --order '" $"'\nsupported orders: alphabetic, reverse-alphabetic\n")
+                                              Supported algorithms: alphabetic, reverse-alphabetic.
+                                              You also can specify a custom sorting function
+                                              in .fenneldoc file."
+                                #(when (not ((hash-set :alphabetic :reverse-alphabetic) $))
+                                   (io.stderr:write "Error: wrong value specified for key --order '" $"'\n"
+                                                    "supported orders: alphabetic, reverse-alphabetic\n")
                                    (os.exit 1))]
                     :--mode    ["checkdoc" "mode to operate in.  Supported modes:
-                                           checkdoc - check documentation and generate markdown;
-                                           check    - only check documentation;
-                                           doc      - only generate markdown."
-                                #(when (not (modes $))
-                                   (io.stderr:write "Error wrong value specified for key --mode '" $"'\nsupported modes: checkdoc, check, doc.\n")
-                                   (os.exit 1))]})
+                                            checkdoc - check documentation and generate markdown;
+                                            check    - only check documentation;
+                                            doc      - only generate markdown."
+                                #(when (not ((hash-set :checkdoc :check :doc) $))
+                                   (io.stderr:write "Error wrong value specified for key --mode '" $"'\n"
+                                                    "supported modes: checkdoc, check, doc.\n")
+                                   (os.exit 1))]
+                    :--inline-references ["link" "how to handle inline references. Supported modes:
+                                                  link - convert inline references to markdown links;
+                                                  code - convert inline references to inline code;
+                                                  keep - keep inline references as is."
+                                          #(when (not ((hash-set :link :code :keep) $))
+                                             (io.stderr:write "Error wrong value specified for key --inline-references '" $"'\n"
+                                                              "supported modes: link, code, keep.\n")
+                                             (os.exit 1))]})
 
 (local bool-flags {:--function-signatures [true "(don't) generate function signatures in documentation."]
                    :--final-comment       [true "(don't) insert final comment with fenneldoc version."]
@@ -90,16 +100,19 @@ Toggle flags:
              "
 
 Other flags:
-  --           treat remaining flags as files
-  --help       print this message and exit.
+  --                treat remaining flags as files.
+  --config consume all regular flags and write to config file.
+                    Updates current config if .fenneldoc already exists at
+                    current directory.
+  --help            print this message and exit.
 
 All keys have corresponding entry in `.fenneldoc' configuration file,
 and args passed via command line have higher precedence, therefore
-will override folowing values in `.fenneldoc'.
+will override following values in `.fenneldoc'.
 
 Each toggle key has two variants with and without `no'.  For example,
 passing `--no-toc' will disable generation of contents table, and
-`--toc` will anable it."))
+`--toc` will enable it."))
   (os.exit 0))
 
 (local bool-flags-set (hash-set))
@@ -110,7 +123,7 @@ passing `--no-toc' will disable generation of contents table, and
       (conj bool-flags-set inverse-flag))))
 
 (fn* handle-bool-flag [flag config]
-  ;; Bool flags can start with `--no-` prefix, meaning that we want to
+  ;; Boolean flags can start with `--no-` prefix, meaning that we want to
   ;; disable feature.
   (match (string.sub flag 1 4)
     :--no (tset config (string.sub flag 6) false)
@@ -150,6 +163,19 @@ passing `--no-toc' will disable generation of contents table, and
     nil (do (io.stderr:write "fenneldoc: expected value for --add-fennel-path\n")
             (os.exit -1))))
 
+(fn* write-config [config]
+  (match (io.open ".fenneldoc" :w)
+    f (with-open [file f]
+        (let [version config.fenneldoc-version]
+          (set config.fenneldoc-version nil)
+          (file:write ";; -*- mode: fennel; -*- vi:ft=fennel\n"
+                      ";; Configuration file for Fenneldoc " version "\n"
+                      ";; https://gitlab.com/andreyorst/fenneldoc\n\n"
+                      (pick-values 1 (: (fennel.view config) :gsub "\\\n" "\n"))
+                      "\n")
+          (set config.fenneldoc-version version)))
+    (nil msg code) (do (io.stderr:write "Error opening file '.fenneldoc': " msg " (" code ")\n")
+                       (os.exit code))))
 
 (fn* process-args
   "Process command line arguments based on `config`. "
@@ -157,6 +183,7 @@ passing `--no-toc' will disable generation of contents table, and
   (let [files []
         arglen (length arg)]
     (var i 1)
+    (var write-config? false)
     (while (<= i arglen)
       (match (. arg i)
         (flag ? (. bool-flags-set flag)) (handle-bool-flag flag config)
@@ -166,6 +193,7 @@ passing `--no-toc' will disable generation of contents table, and
                                           (handle-value-flag i flag config))
         :--add-fennel-path (do (set i (inc i))
                                (handle-fennel-path i))
+        :--config (set write-config? true)
         :-- (do (set i (inc i))
                 (lua :break))
         :--check-only (handle-bool-flag :--check-only config)
@@ -173,6 +201,9 @@ passing `--no-toc' will disable generation of contents table, and
         :--help (help)
         file (handle-file file files))
       (set i (inc i)))
+
+    (when write-config?
+      (write-config config))
 
     ;; in case `--` was passed we need to add remaining keys as files
     (while (<= i arglen)
@@ -185,3 +216,5 @@ passing `--no-toc' will disable generation of contents table, and
     (values files config)))
 
 process-args
+
+;; LocalWords:  descr fn fenneldoc checkdoc config args

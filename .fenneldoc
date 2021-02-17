@@ -1,10 +1,11 @@
-;; -*- mode: fennel; -*-
-;; Configuration file for Fenneldoc.
+;; -*- mode: fennel; -*- vi:ft=fennel
+;; Configuration file for Fenneldoc 0.1.2
 ;; https://gitlab.com/andreyorst/fenneldoc
 
 {:fennel-path ["cljlib/?.fnl" "src/?.fnl"]
  :function-signatures true
- :ignored-args-patterns []
+ :ignored-args-patterns ["%.%.%."]
+ :inline-references "link"
  :insert-comment true
  :insert-copyright true
  :insert-license true
@@ -16,7 +17,7 @@
         :module-name "_MODULE_NAME"
         :version "_VERSION"}
  :mode "checkdoc"
- :order "aplhabetic"
+ :order "alphabetic"
  :out-dir "./doc"
  :sandbox true
  :test-requirements {}

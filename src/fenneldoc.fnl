@@ -1,5 +1,5 @@
-(local fenneldoc {:_VERSION "0.1.1"
-                  :_COPYRIGHT "Copyright (C) 2020 Andrey Orst"
+(local fenneldoc {:_VERSION "0.1.2"
+                  :_COPYRIGHT "Copyright (C) 2020 Andrey Listopadov"
                   :_LICENSE "[MIT](https://gitlab.com/andreyorst/fenneldoc/-/raw/master/LICENSE)"
                   :_DESCRIPTION "Fenneldoc - generate documentation for Fennel projects.
 
@@ -44,3 +44,6 @@ extension, creating it if not exists."
     (process-file file config)))
 
 fenneldoc
+
+;; LocalWords:  Andrey Listopadov Fenneldoc metadata runtime config md
+;; LocalWords:  fnl args doctest

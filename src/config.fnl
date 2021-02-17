@@ -3,7 +3,8 @@
 
 (local config {:fennel-path []
                :function-signatures true
-               :ignored-args-patterns []
+               :ignored-args-patterns ["%.%.%."]
+               :inline-references :link
                :insert-comment true
                :insert-copyright true
                :insert-license true
@@ -15,7 +16,7 @@
                       :module-name "_MODULE_NAME"
                       :version "_VERSION"}
                :mode "checkdoc"
-               :order "aplhabetic"
+               :order "alphabetic"
                :out-dir "./doc"
                :sandbox true
                :test-requirements {}
@@ -58,6 +59,15 @@ Default configuration:
   - `doc` - only generate documentation files.
 - `ignored-args-patterns` - list of patterns to check when checking
   function argument docstring presence check should be skipped.
+
+- `inline-references` - how to handle inline references.  Inline
+  references are denoted with opening backtick and closed with single
+  quote.  Fenneldoc supports several modes to operate on inline
+  references:
+  - `:link` - convert inline references into links to headings found
+    in current file.
+  - `:code` - all inline references will be converted to inline code.
+  - `:keep` - inline references are kept as is.
 - `fennel-path` - add PATH to fennel.path for finding Fennel modules.
 - `test-requirements` - code, that will be injected into each test in
   respecting module.
@@ -113,3 +123,5 @@ Now `fenneldoc` will know that information about license is stored
 under `project-license` key."))
 
 process-config
+
+; LocalWords:  checkdoc fenneldoc config

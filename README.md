@@ -32,6 +32,7 @@ Use `--no-sandbox` or `:sandbox` option in config to override this behavior.
   - [x] Analyze documentation to contain descriptions arguments of the described function;
   - [x] Run documentation tests, by looking for code inside backticks.
 - [x] Parse macro modules.
+- [x] Automatically generate file local links from inline references.
 
 
 # Documentation format
@@ -172,7 +173,7 @@ Note, that you can't pass sorting function via command-line argument.
 ### Documentation validation
 
 Documentation is tested by default.
-When `fenneldoc` sees three backticks, followed by `fennel`, it treats everything as test code until it sees threee backticks again.
+When `fenneldoc` sees three backticks, followed by `fennel`, it treats everything as test code until it sees three backticks again.
 For example, suppose we made a change in function but forgot to update the docstring:
 
 ``` clojure
@@ -203,19 +204,28 @@ If we run `fenneldoc --check-only sum.fnl`, we'll get the following:
 
     Errors in module sum.fnl
 
-This prevents confusion when updated function beavior doesn't match documentation.
+This prevents confusion when updated function behavior doesn't match documentation.
 
 In most cases `fenneldoc` is smart enough, and can require your module's exported functions without namespace prefix.
 Therefore you can use functions literally in documentation, e.g. if you return a table, no need to destructure it manually, or store it in some `local` within the docstring.
 
 However, if this doesn't work you can specify how dependencies should be required in `.fenneldoc` config.
 This also doesn't work for macros, so you'll have to add in config a proper require for your macro modules.
-You do so by writing piece of code as a string inder the key, which represents file being processed, and string contains instructing how to require additional dependencies and/or macros:
+You do so by writing piece of code as a string under the key, which represents file being processed, and string contains instructing how to require additional dependencies and/or macros:
 
 ``` clojure
 {;; rest of config
  :test-requirements {:macro-module.fnl "(import-macros {: some-macro} :macro-module)"}}
 ```
+
+
+## Inline references
+
+Fenneldoc supports automatic resolution of inline references in documentation strings.
+For example, when docstring contains the following string ``Calls `foo' on its arguments.`` here ```foo'`` is an inline reference.
+Inline references start with backtick (backquote) and end with single quote.
+Fenneldoc looks up matching heading in currently processed file and replaces inline reference to link, if such heading exists.
+If heading wasn't found such reference will be replaced to inline code, unless `inline-references` is set to `:keep`.
 
 
 ## Configuration
@@ -239,11 +249,23 @@ There are other options that can be set up on per project basis, see [config.md]
 Full set of available options can also be seen by calling `fenneldoc --help`.
 
 
+### Config generation
+
+Fenneldoc can generate configuration file for you with all default options, or update existing config by passing flags to `fenneldoc`.
+If you want to generate fresh config, remove your old `.fenneldoc` file, and run `fenneldoc --config`.
+This will create default `.fenneldoc` configuration file.
+If you want to alter this file contents, you can pass flags to `fenneldoc` like this:
+
+    fenneldoc --no-toc --no-function-signatures --config --mode doc
+
+This will permanently disable table of contents, function signatures and documentation validation for current project.
+
 ## Contributing
 
 Please do.
 You can report issues or feature request at [project's Gitlab repository](https://gitlab.com/andreyorst/fenneldoc).
 Consider reading [contribution guidelines](https://gitlab.com/andreyorst/fenneldoc/-/blob/master/CONTRIBUTING.md) beforehand.
 
-<!--  LocalWords:  backticks docstring Fenneldoc TODO config
- -->
+<!--  LocalWords:  backticks docstring Fenneldoc TODO config runtime -->
+<!--  LocalWords:  metadata AST fnl foo's md Lua namespace Gitlab -->
+<!--  LocalWords:  destructure --> backtick backquote

@@ -111,3 +111,5 @@ Accepts `module-info` with items to check, and `config` argument."
     (os.exit 1)))
 
 doctest
+
+; LocalWords:  docstring backtics

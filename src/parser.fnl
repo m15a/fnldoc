@@ -152,10 +152,10 @@ generated."
                             :f-table {fname function}
                             :type :function-module
                             :requirements (get-in config [:test-requirements file] "")
-                            :documented? (not (not docstring)) ;; convert to boolean
+                            :documented? (not (not docstring)) ;; convert to Boolean
                             :description (.. (gen-function-signature fname arglist config)
                                              "\n"
-                                             (gen-item-documentation docstring))
+                                             (gen-item-documentation docstring config.inline-references))
                             : arglist
                             :items {}})
     (false err) (io.stderr:write "Error loading " file "\n" err "\n")
@@ -163,3 +163,6 @@ generated."
 
 {: create-sandbox
  : module-info}
+
+; LocalWords:  sandboxed Lua loadfile loadstring rawset os io config
+; LocalWords:  metadata docstring fenneldoc

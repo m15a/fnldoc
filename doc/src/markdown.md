@@ -29,11 +29,12 @@ Generate function signature for `function` from `arglist` accordingly to `config
 Function signature:
 
 ```
-(gen-item-documentation ([docstring]))
+(gen-item-documentation ([docstring mode]))
 ```
 
-Generate documentation from `docstring`.
+Generate documentation from `docstring`, and handle inline references
+based on `mode`.
 
 
-<!-- Generated with Fenneldoc 0.1.0
+<!-- Generated with Fenneldoc 0.1.2
      https://gitlab.com/andreyorst/fenneldoc -->

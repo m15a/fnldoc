@@ -43,13 +43,35 @@
   lines)
 
 
-(fn* gen-item-documentation [lines docstring]
+(fn* extract-inline-code-references [docstring]
+  (icollect [s (docstring:gmatch "`([%a_][^`']-)'")]
+    s))
+
+
+(fn* gen-cross-links [docstring toc mode]
+  (var docstring docstring)
+  (each [_ item (ipairs (extract-inline-code-references docstring))]
+    (let [pat (item:gsub "([().%+-*?[^$])" "%%%1")] ; escaping Lua's patterns with `%`
+      (set docstring
+           (match mode
+             :link (match (. toc item)
+                     link-id (docstring:gsub (.. "`" pat "'") (.. "[`" item "`](" link-id ")"))
+                     _ (docstring:gsub (.. "`" pat "'") (.. "`" item "`")))
+             :code (docstring:gsub (.. "`" pat "'") (.. "`" item "`"))
+             _ docstring))))
+  docstring)
+
+
+(fn* gen-item-documentation [lines docstring toc mode]
   "Generate documentation from `docstring` and `conj` it to `lines`.
 
-`lines` must be a sequential table."
+`lines` must be a sequential table.
+`toc` is a table of headings to ids.
+`mode` is a mode to handle inline references."
   (conj lines
         (if (string? docstring)
-            (docstring:gsub "# " "### ")
+            (-> (docstring:gsub "# " "### ")
+                (gen-cross-links toc mode))
             "**Undocumented**")
         ""))
 
@@ -61,7 +83,7 @@
     (func ? (= (type func) :function)) func
     else (do (io.stderr:write "Unsupported sorting algorithm: '"
                               else
-                              "'\nSupported alghorithms: alphabetic, reverse-alphabetic, or function.\n")
+                              "'\nSupported algorithms: alphabetic, reverse-alphabetic, or function.\n")
              (os.exit -1))
     nil nil))
 
@@ -84,27 +106,35 @@
           (string.gsub "^[-]*(.*)[-]*$" "%1")
           string.lower)))
 
-(fn* gen-toc [lines items config]
-  (when (and config.toc items (next items))
-    (let [seen-headings {}]
-      (conj lines
-            "**Table of contents**"
-            "")
-      (each [_ item (ipairs items)]
-        (let [heading (heading-link item)
-              id (. seen-headings heading)]
-          (tset seen-headings heading (+ (or id 0) 1))
-          (conj lines (.. "- [`" item "`](" heading (if id (.. "-" id) "") ")"))))
-      (conj lines "")))
+(fn* toc-table [items]
+  (let [toc {}
+        seen-headings {}]
+    (each [_ item (ipairs items)]
+      (let [heading (heading-link item)
+            id (. seen-headings heading)
+            link (.. heading (if id (.. "-" id) ""))]
+        (tset seen-headings heading (+ (or id 0) 1))
+        (tset toc item link)))
+    toc))
+
+(fn* gen-toc [lines toc ordered-items config]
+  (when (and config.toc toc (next toc))
+    (conj lines
+          "**Table of contents**"
+          "")
+    (each [_ item (ipairs ordered-items)]
+      (match (. toc item)
+        link (conj lines (.. "- [`" item "`](" link ")"))))
+    (conj lines ""))
   lines)
 
 
-(fn* gen-items-doc [lines ordered-items module-info config]
+(fn* gen-items-doc [lines ordered-items toc module-info config]
   (each [_ item (ipairs ordered-items)]
     (match (. module-info.items item)
       info (-> (conj lines (.. "## `" item "`"))
                (gen-function-signature item info.arglist config)
-               (gen-item-documentation info.docstring))
+               (gen-item-documentation info.docstring toc config.inline-references))
       nil (print (.. "WARNING: Could not find '" item "' in " module-info.module)))))
 
 
@@ -119,21 +149,24 @@
 
 
 (fn* module-heading [file]
-  (.. "# " (capitalize (pick-values 1
-                         (string.gsub file ".*/" "")))))
+  (.. "# " (capitalize (pick-values 1 (string.gsub file ".*/" "")))))
 
 (fn* gen-markdown
   "Generate markdown feom `module-info` accordingly to `config`."
   [module-info config]
   (let [ordered-items (get-ordered-items module-info config)
+        toc-table (toc-table ordered-items)
         lines [(.. (module-heading module-info.module) (module-version module-info))]]
 
-    (-?>> module-info.description
-          (conj lines))
+    (when module-info.description
+      (->> (gen-cross-links module-info.description
+                            toc-table
+                            config.inline-references)
+           (conj lines)))
 
     (-> (conj lines "")
-        (gen-toc ordered-items config)
-        (gen-items-doc ordered-items module-info config))
+        (gen-toc toc-table ordered-items config)
+        (gen-items-doc ordered-items toc-table module-info config))
 
     (when (and (or module-info.copyright module-info.license)
                (or config.insert-copyright config.insert-license))
@@ -150,10 +183,11 @@
 
 {: gen-markdown
  :gen-item-documentation
- (fn* [docstring]
-   "Generate documentation from `docstring`."
+ (fn* [docstring mode]
+   "Generate documentation from `docstring`, and handle inline references
+based on `mode`."
    (table.concat
-    (gen-item-documentation [] docstring)
+    (gen-item-documentation [] docstring {} mode)
     "\n"))
  :gen-function-signature
  (fn* [function arglist config]
@@ -164,3 +198,5 @@
  :_DOC_ORDER [:gen-markdown :gen-function-signature]
  :_DESCRIPTION
  "Functions for generating Markdown"}
+
+;; LocalWords:  Fenneldoc Lua's docstring arglist config

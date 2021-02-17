@@ -10,5 +10,5 @@ Accepts `module-info` with items to check, and `config` argument.
 
 
 
-<!-- Generated with Fenneldoc 0.1.0
+<!-- Generated with Fenneldoc 0.1.2
      https://gitlab.com/andreyorst/fenneldoc -->

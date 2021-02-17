@@ -1,8 +1,12 @@
+## Fenneldoc 0.1.2 (2021-02-17)
+
+- Add automatic resolution of inline references.
+- Add new key `--config` to generate default config or update existing config by specifying keys to `fenneldoc`.
+
 ## Fenneldoc 0.1.1 (2021-02-16)
 
 - Update cljlib to most recent version.
-- Add ability to skip certain argument patterns when checking
-  docstrings.
+- Add ability to skip certain argument patterns when checking docstrings.
 
 ## Fenneldoc 0.1.0 (2021-01-24)
 
@@ -15,5 +19,5 @@ First stable release of Fenneldoc.
   - Run documentation tests, by looking for code inside backticks.
 - Parse macro modules.
 
-<!--  LocalWords:  Fenneldoc backticks cljlib docstrings
+<!--  LocalWords:  Fenneldoc backticks cljlib docstrings config
  -->

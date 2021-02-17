@@ -37,3 +37,5 @@ Concatenates lines in `docs` with newline, and writes result to
                            (os.exit code))))
 
 writer
+
+; LocalWords:  fnl md dir msg config
