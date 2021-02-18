@@ -81,7 +81,7 @@
         (conj seen argument)))))
 
 (fn* check-function [func docstring arglist module-info config]
-  (if (not docstring)
+  (if (or (not docstring) (= docstring ""))
       (do (if (= module-info.type :function-module)
               (io.stderr:write "WARNING: file '" module-info.file "' exports undocumented function\n")
               (io.stderr:write "WARNING: in file '" module-info.file "' undocumented exported function '" func "'\n"))
