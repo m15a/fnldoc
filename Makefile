@@ -5,6 +5,7 @@ FENNEL ?= fennel
 FNLPATHS = src cljlib
 FNLSOURCES = $(wildcard src/*.fnl)
 LUASOURCES = $(FNLSOURCES:.fnl=.lua)
+VERSION ?= $(shell git describe --abbrev=0)
 
 .PHONY: build clean help install
 
@@ -27,7 +28,7 @@ clean:
 	rm -f fenneldoc $(wildcard src/*.lua)
 
 docs: fenneldoc
-	./fenneldoc $(FNLSOURCES)
+	./fenneldoc --config --project-version $(VERSION) $(FNLSOURCES)
 
 help:
 	@echo "make         -- create executable lua script" >&2

@@ -15,6 +15,10 @@
                       :license "_LICENSE"
                       :module-name "_MODULE_NAME"
                       :version "_VERSION"}
+               :project-copyright nil
+               :project-version nil
+               :project-license nil
+               :project-doc-order []
                :mode "checkdoc"
                :order "alphabetic"
                :out-dir "./doc"
@@ -50,7 +54,7 @@ Default configuration:
      "
 ```
 
-  # Key descriptions
+# Key descriptions
 
 - `mode` - mode to operate in:
   - `checkdoc` - run checks and generate documentation files if no
@@ -120,7 +124,23 @@ then specify license under this key in you module:
 ```
 
 Now `fenneldoc` will know that information about license is stored
-under `project-license` key."))
+under `project-license` key.
+
+## Project information
+
+You can store project information either in project files directly, as
+described in the section above, or you can specify most (but not all)
+of this information in `.fenneldoc` configuration file. Fenneldoc
+provides the following set of keys for that:
+
+- `project-license` - string that contains project license name or
+  Markdown link.
+- `project-copyright` - copyright string.
+- `project-version` - version information about your project that
+  should appear in each file. This version can be overridden for
+  certain files by specifying version in the module info.
+- `project-doc-order` - an associative table where keys are filenames
+  and values are sequential tables with headings in preferred order."))
 
 process-config
 

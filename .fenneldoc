@@ -1,5 +1,5 @@
 ;; -*- mode: fennel; -*- vi:ft=fennel
-;; Configuration file for Fenneldoc 0.1.2
+;; Configuration file for Fenneldoc v0.1.3
 ;; https://gitlab.com/andreyorst/fenneldoc
 
 {:fennel-path ["cljlib/?.fnl" "src/?.fnl"]
@@ -19,6 +19,11 @@
  :mode "checkdoc"
  :order "alphabetic"
  :out-dir "./doc"
+ :project-copyright "Copyright (C) 2020 Andrey Listopadov"
+ :project-doc-order {:src/markdown.fnl ["gen-markdown"
+                                        "gen-function-signature"]}
+ :project-license "[MIT](https://gitlab.com/andreyorst/fenneldoc/-/raw/master/LICENSE)"
+ :project-version "v0.1.2"
  :sandbox true
  :test-requirements {}
  :toc true}

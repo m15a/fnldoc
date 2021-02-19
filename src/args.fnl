@@ -11,49 +11,53 @@
 
 ;; format: {:key [default-value descr validate-fn]}
 
-(local key-flags {:--license-key     [:_LICENSE "license information of the module."]
-                  :--description-key [:_DESCRIPTION "the description of the module."]
-                  :--copyright-key   [:_COPYRIGHT "copyright information of the module."]
-                  :--doc-order-key   [:_DOC_ORDER "order of items of the module."]
-                  :--version-key     [:_VERSION "the version of the module."]})
+(local key-flags {:--license-key     [:_LICENSE "License information of the module."]
+                  :--description-key [:_DESCRIPTION "The description of the module."]
+                  :--copyright-key   [:_COPYRIGHT "Copyright information of the module."]
+                  :--doc-order-key   [:_DOC_ORDER "Order of items of the module."]
+                  :--version-key     [:_VERSION "The version of the module."]})
 
-(local value-flags {:--out-dir ["./doc" "output directory for generated documentation."]
-                    :--order   ["alphabetic" "sorting of items that were not given particular order.
+(local value-flags {:--out-dir ["./doc" "Output directory for generated documentation."]
+                    :--order   ["alphabetic" "Sorting of items that were not given particular order.
                                               Supported algorithms: alphabetic, reverse-alphabetic.
                                               You also can specify a custom sorting function
                                               in .fenneldoc file."
                                 #(when (not ((hash-set :alphabetic :reverse-alphabetic) $))
                                    (io.stderr:write "Error: wrong value specified for key --order '" $"'\n"
-                                                    "supported orders: alphabetic, reverse-alphabetic\n")
+                                                    "Supported orders: alphabetic, reverse-alphabetic\n")
                                    (os.exit 1))]
-                    :--mode    ["checkdoc" "mode to operate in.  Supported modes:
+                    :--mode    ["checkdoc" "Mode to operate in.  Supported modes:
                                             checkdoc - check documentation and generate markdown;
                                             check    - only check documentation;
                                             doc      - only generate markdown."
                                 #(when (not ((hash-set :checkdoc :check :doc) $))
                                    (io.stderr:write "Error wrong value specified for key --mode '" $"'\n"
-                                                    "supported modes: checkdoc, check, doc.\n")
+                                                    "Supported modes: checkdoc, check, doc.\n")
                                    (os.exit 1))]
-                    :--inline-references ["link" "how to handle inline references. Supported modes:
+                    :--inline-references ["link" "How to handle inline references. Supported modes:
                                                   link - convert inline references to markdown links;
                                                   code - convert inline references to inline code;
                                                   keep - keep inline references as is."
                                           #(when (not ((hash-set :link :code :keep) $))
                                              (io.stderr:write "Error wrong value specified for key --inline-references '" $"'\n"
-                                                              "supported modes: link, code, keep.\n")
-                                             (os.exit 1))]})
+                                                              "Supported modes: link, code, keep.\n")
+                                             (os.exit 1))]
+                    :--project-version ["version" "Project version to include in the documentation files."]
+                    :--project-license ["license" "Project license to include in the documentation files.
+                                                   Markdown style links are supported."]
+                    :--project-copyright ["copyright" "Project copyright to include in the documentation files."]})
 
-(local bool-flags {:--function-signatures [true "(don't) generate function signatures in documentation."]
-                   :--final-comment       [true "(don't) insert final comment with fenneldoc version."]
-                   :--copyright           [true "(don't) insert copyright information."]
-                   :--license             [true "(don't) insert license information from the module."]
-                   :--toc                 [true "(don't) generate table of contents."]
-                   :--sandbox             [true "(don't) sandbox loaded code and documentation tests."]})
+(local bool-flags {:--function-signatures [true "(Don't) generate function signatures in documentation."]
+                   :--final-comment       [true "(Don't) insert final comment with fenneldoc version."]
+                   :--copyright           [true "(Don't) insert copyright information."]
+                   :--license             [true "(Don't) insert license information from the module."]
+                   :--toc                 [true "(Don't) generate table of contents."]
+                   :--sandbox             [true "(Don't) sandbox loaded code and documentation tests."]})
 
 (fn* longest-length [items]
   (var len 0)
   (each [_ x (ipairs items)]
-    (set len (math.max len (length (tostring x)))))
+    (set len (math.max len (length (tostring (or x ""))))))
   (+ len 1))
 
 (fn* gen-help-info [flags]
@@ -100,11 +104,11 @@ Toggle flags:
              "
 
 Other flags:
-  --                treat remaining flags as files.
+  --       treat remaining flags as files.
   --config consume all regular flags and write to config file.
-                    Updates current config if .fenneldoc already exists at
-                    current directory.
-  --help            print this message and exit.
+           Updates current config if .fenneldoc already exists at
+           current directory.
+  --help   print this message and exit.
 
 All keys have corresponding entry in `.fenneldoc' configuration file,
 and args passed via command line have higher precedence, therefore
@@ -199,6 +203,8 @@ passing `--no-toc' will disable generation of contents table, and
         :--check-only (handle-bool-flag :--check-only config)
         :--skip-check (handle-bool-flag :--skip-check config)
         :--help (help)
+        (flag ? (flag:find "^%-%-")) (do (io.stderr:write "fenneldoc: unknown flag '" flag "'\n")
+                                       (os.exit 1))
         file (handle-file file files))
       (set i (inc i)))
 

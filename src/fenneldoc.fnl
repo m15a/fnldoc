@@ -1,7 +1,6 @@
-(local fenneldoc {:_VERSION "0.1.2"
-                  :_COPYRIGHT "Copyright (C) 2020 Andrey Listopadov"
-                  :_LICENSE "[MIT](https://gitlab.com/andreyorst/fenneldoc/-/raw/master/LICENSE)"
-                  :_DESCRIPTION "Fenneldoc - generate documentation for Fennel projects.
+(local fenneldoc-info
+       {:_VERSION "v0.1.3"
+        :_DESCRIPTION "Fenneldoc - generate documentation for Fennel projects.
 
 Generates documentation for Fennel libraries by analyzing project
 metadata at runtime.
@@ -14,6 +13,8 @@ metadata at runtime.
 - [args.fnl](./args.md) - functions for processing command line arguments.
 - [doctest.fnl](./doctest.md) - documentation testing.
 - [writer.fnl](./writer.md) - writing markdown into files."})
+
+(local fenneldoc {})
 
 (local process-config (require :config))
 (local process-args (require :args))
@@ -37,13 +38,13 @@ extension, creating it if not exists."
                    (write-doc markdown file module config))))
     _ (io.stderr:write "skipping " file "\n")))
 
-(let [(files config) (-> fenneldoc._VERSION
+(let [(files config) (-> fenneldoc-info._VERSION
                          process-config
                          process-args)]
   (each [_ file (ipairs files)]
     (process-file file config)))
 
-fenneldoc
+(setmetatable fenneldoc {:__index fenneldoc-info})
 
 ;; LocalWords:  Andrey Listopadov Fenneldoc metadata runtime config md
 ;; LocalWords:  fnl args doctest

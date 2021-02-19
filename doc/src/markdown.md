@@ -1,4 +1,4 @@
-# Markdown.fnl
+# Markdown.fnl (v0.1.2)
 Functions for generating Markdown
 
 **Table of contents**
@@ -36,5 +36,12 @@ Generate documentation from `docstring`, and handle inline references
 based on `mode`.
 
 
-<!-- Generated with Fenneldoc 0.1.2
+---
+
+Copyright (C) 2020 Andrey Listopadov
+
+License: [MIT](https://gitlab.com/andreyorst/fenneldoc/-/raw/master/LICENSE)
+
+
+<!-- Generated with Fenneldoc v0.1.3
      https://gitlab.com/andreyorst/fenneldoc -->

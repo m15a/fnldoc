@@ -181,22 +181,21 @@
         (gen-info-comment config)
         (table.concat "\n"))))
 
-{: gen-markdown
- :gen-item-documentation
- (fn* [docstring mode]
-   "Generate documentation from `docstring`, and handle inline references
+(setmetatable
+ {: gen-markdown
+  :gen-item-documentation
+  (fn* [docstring mode]
+       "Generate documentation from `docstring`, and handle inline references
 based on `mode`."
-   (table.concat
-    (gen-item-documentation [] docstring {} mode)
-    "\n"))
- :gen-function-signature
- (fn* [function arglist config]
-   "Generate function signature for `function` from `arglist` accordingly to `config`."
-   (table.concat
-    (gen-function-signature [] function arglist config)
-    "\n"))
- :_DOC_ORDER [:gen-markdown :gen-function-signature]
- :_DESCRIPTION
- "Functions for generating Markdown"}
+       (table.concat
+        (gen-item-documentation [] docstring {} mode)
+        "\n"))
+  :gen-function-signature
+  (fn* [function arglist config]
+       "Generate function signature for `function` from `arglist` accordingly to `config`."
+       (table.concat
+        (gen-function-signature [] function arglist config)
+        "\n"))}
+ {:__index {:_DESCRIPTION "Functions for generating Markdown"}})
 
 ;; LocalWords:  Fenneldoc Lua's docstring arglist config

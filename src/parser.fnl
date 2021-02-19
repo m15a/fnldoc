@@ -108,7 +108,6 @@ functions to only throw warning, and not error."
 corresponding to pcall result."
   [file config]
   (let [sandbox (when config.sandbox (create-sandbox))]
-    (print (module-from-file file))
     (match (pcall fennel.dofile
                   file
                   {:useMetadata true :env sandbox}
@@ -149,12 +148,13 @@ generated."
                                  :type module-type
                                  :f-table (if (= module-type :macros) {} module)
                                  :requirements (get-in config [:test-requirements file] "")
-                                 :version (get-module-info module config.keys.version)
+                                 :version (or (get-module-info module config.keys.version) config.project-version)
                                  :description (get-module-info module config.keys.description)
-                                 :copyright (get-module-info module config.keys.copyright)
-                                 :license (get-module-info module config.keys.license)
+                                 :copyright (or (get-module-info module config.keys.copyright) config.project-copyright)
+                                 :license (or (get-module-info module config.keys.license) config.project-license)
                                  :items (get-module-docs module config)
-                                 :doc-order (get-module-info module config.keys.doc-order)}
+                                 :doc-order (or (get-module-info module config.keys.doc-order)
+                                                (get-in config [:project-doc-order file] []))}
     ;; function modules have no version, license, or description keys,
     ;; as there's no way of adding this as a metadata or embed into
     ;; function itself.  So module description is set to a combination
@@ -177,8 +177,10 @@ generated."
     (false err) (io.stderr:write "Error loading " file "\n" err "\n")
     _ (io.stderr:write "Error loading " file "\nunhandled error!\n")))
 
-{: create-sandbox
- : module-info}
+(setmetatable
+ {: create-sandbox
+  : module-info}
+ {:__index {:_DESCRIPTION "Module for getting runtime information from fennel files."}})
 
 ; LocalWords:  sandboxed Lua loadfile loadstring rawset os io config
 ; LocalWords:  metadata docstring fenneldoc

@@ -1,3 +1,7 @@
+## Fenneldoc 0.1.3 (2021-02-19)
+
+- Allow shared project information such as license, copyright, and version to be stored in `.fenneldoc` configuration file.
+
 ## Fenneldoc 0.1.2 (2021-02-17)
 
 - Add automatic resolution of inline references.
