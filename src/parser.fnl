@@ -70,7 +70,8 @@ functions to only throw warning, and not error."
               ;; sandboxed modules
               :arg []
               :print (fn []
-                       (io.stderr:write "ERROR: IO detected in file: " file " while loading\n") (os.exit 1))
+                       (io.stderr:write "ERROR: IO detected in file: " file " while loading\n")
+                       (os.exit 1))
               :os (sandbox-module :os file)
               :debug (sandbox-module :debug file)
               :package (sandbox-module :package file)
@@ -81,9 +82,10 @@ functions to only throw warning, and not error."
      env)))
 
 (fn* function-name-from-file [file]
-  (-> file
-      (string.gsub ".*/" "")
-      (string.gsub ".fnl$" "")))
+  (let [sep (package.config:sub 1 1)]
+    (-> file
+        (string.gsub (.. ".*" sep) "")
+        (string.gsub "%.fnl$" ""))))
 
 (fn* get-module-docs [module config]
   (let [docs {}]
@@ -94,17 +96,31 @@ functions to only throw warning, and not error."
                        :arglist (fennel.metadata:get val :fnl/arglist)})))
     docs))
 
+(fn module-from-file [file]
+  (let [sep (package.config:sub 1 1)
+        module (-> file
+                   (string.gsub sep ".")
+                   (string.gsub "%.fnl$" ""))]
+    module))
+
 (fn* require-module
   "Require file as module in protected call.  Returns vector with first value
 corresponding to pcall result."
   [file config]
   (let [sandbox (when config.sandbox (create-sandbox))]
-    (match (pcall fennel.dofile file {:useMetadata true :env sandbox})
+    (print (module-from-file file))
+    (match (pcall fennel.dofile
+                  file
+                  {:useMetadata true :env sandbox}
+                  (module-from-file file))
       (true module) (values (type module) module :functions)
       ;; try again, now with compiler env
-      (false _) (match (pcall fennel.dofile file {:useMetadata true
-                                                  :env :_COMPILER
-                                                  :scope (. compiler :scopes :compiler)})
+      (false _) (match (pcall fennel.dofile
+                              file
+                              {:useMetadata true
+                               :env :_COMPILER
+                               :scope (. compiler :scopes :compiler)}
+                              (module-from-file file))
                   (true module) (values (type module) module :macros)
                   (false msg) (values false msg)))))
 
