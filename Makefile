@@ -7,13 +7,14 @@ FNLSOURCES = $(wildcard src/*.fnl)
 LUASOURCES = $(FNLSOURCES:.fnl=.lua)
 VERSION ?= $(shell git describe --abbrev=0)
 
-.PHONY: build clean help install
+.PHONY: build clean help install docs
 
 build: fenneldoc
 
 fenneldoc: $(LUASOURCES)
 	echo "#!/usr/bin/env $(LUA)" > $@
-	cat src/fenneldoc.lua >> fenneldoc
+	echo "FENNELDOC_VERSION = [[$(VERSION)]]" >> $@
+	cat src/fenneldoc.lua >> $@
 	chmod 755 $@
 
 install: fenneldoc

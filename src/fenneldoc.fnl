@@ -1,6 +1,5 @@
 (local fenneldoc-info
-       {:_VERSION "v0.1.3"
-        :_DESCRIPTION "Fenneldoc - generate documentation for Fennel projects.
+       {:_DESCRIPTION "Fenneldoc - generate documentation for Fennel projects.
 
 Generates documentation for Fennel libraries by analyzing project
 metadata at runtime.
@@ -38,7 +37,7 @@ extension, creating it if not exists."
                    (write-doc markdown file module config))))
     _ (io.stderr:write "skipping " file "\n")))
 
-(let [(files config) (-> fenneldoc-info._VERSION
+(let [(files config) (-> FENNELDOC_VERSION
                          process-config
                          process-args)]
   (each [_ file (ipairs files)]

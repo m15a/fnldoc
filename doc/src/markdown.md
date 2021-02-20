@@ -1,4 +1,4 @@
-# Markdown.fnl (v0.1.2)
+# Markdown.fnl (v0.1.3)
 Functions for generating Markdown
 
 **Table of contents**

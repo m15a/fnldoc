@@ -1,4 +1,4 @@
-# Parser.fnl (v0.1.2)
+# Parser.fnl (v0.1.3)
 Module for getting runtime information from fennel files.
 
 **Table of contents**
