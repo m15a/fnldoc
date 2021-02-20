@@ -43,10 +43,12 @@ This means that all markdown features are supported in the docstring, such as te
 For example, here's how you might define information about your `my-module.fnl` file:
 
 ``` clojure
-(local my-module {:_VERSION "0.1.0"
-                  :_DESCRIPTION "Tag line or short description"
-                  :_COPYRIGHT "Copyright info that appears at the end of the document"
-                  :_LICENSE "[license](Link to your license)"})
+(local my-module-info {:_VERSION "0.1.0"
+                       :_DESCRIPTION "Tag line or short description"
+                       :_COPYRIGHT "Copyright info that appears at the end of the document"
+                       :_LICENSE "[license](Link to your license)"})
+
+(local my-module {})
 
 (fn my-module.foo [args]
   "foo's docstring"
@@ -55,7 +57,7 @@ For example, here's how you might define information about your `my-module.fnl` 
   "bar's docstring, also see [`foo`](#foo)"
   (my-module.foo args))
 
-my-module
+(setmetatable my-module {:__index my-module-info})
 ```
 
 Running `fenneldoc my-module.fnl` with default config will procure `doc/my-module.md` with the following contents:
@@ -102,26 +104,6 @@ License: [license](Link to your license)
 You will also see warnings in the log, indicating that both `foo` and `bar` have undocumented `args` argument.
 
 
-### Documenting macro modules
-
-Fennel features macros, which can live in separate files, that is later loaded with `import-marcos` or `require-macros`.
-Such files can't have arbitrary data in exported table, such as strings, so instead you should provide functions, that return module descriptions.
-
-Luckily for us, Fennel supports amazing `hash-fn` syntax, which can be used like this `#"some string"`.
-This creates anonymous function, that will return `"some string"` when called.
-So macro module table should look like this:
-
-``` clojure
-(local macro-module {:_VERSION #"0.1.0"
-                     :_DESCRIPTION #"Tag line or short description"
-                     :_COPYRIGHT #"Copyright info that appears at the end of the document"
-                     :_LICENSE #"[license](Link to ryour license)"})
-```
-
-Fenneldoc understands that if it got `function` from special module key, it will call it to obtain value.
-Special keys are described in [config.md](./doc/src/config.md)
-
-
 ### Specifying order of documentation items
 
 Since items in Lua tables have arbitrary order, it is impossible to reason about documentation order by inspecting tables returned from modules at runtime.
@@ -137,33 +119,43 @@ For example we have a module with two functions:
   "Do something else with args."
   ...)
 
-{: first-function
- : another-function}
+{:first-function first-function
+ :another-function another-function}
 ```
 
 Because order of the items in exported table is arbitrary, Fenneldoc sorts the table alphabetically by default.
 Thus the order of the documentation will be `another-function` followed by `first-function`.
-You can override this behavior by adding `_DOC_ORDER` key into the map:
+You can override this behavior by adding `_DOC_ORDER` key into the table set to the `__index` metamethod:
 
 ``` clojure
-{: first-function
- : another-function
- :_DOC_ORDER [:first-function :another-function]}
+(setmetatable
+ {:first-function first-function
+  :another-function another-function}
+ {:__index
+  {:_DOC_ORDER [:first-function :another-function]}})
 ```
 
 Now the order will be preserved, and `first-function` will come first in generated documentation.
 Note, that you don't need to specify all the keys of your module if you don't care about some specific functions of you module - any missing keys will be sorted alphabetically.
 
 ``` clojure
-{: first-function
- : another-function
- : some
- : extra
- : stuff
- :_DOC_ORDER [:first-function :another-function]}
+(setmetatable
+ {:first-function first-function
+  :another-function another-function
+  :some some
+  :extra extra
+  :stuff stuff}
+ {:__index
+  {:_DOC_ORDER [:first-function :another-function]}})
 ```
 
 The order of items in the case above will be `first-function`, `another-function`, `extra`, `some`, `stuff`.
+Note, that the doc order also can be specified in `.fenneldoc` config file:
+
+``` clojure
+{;; rest of config
+ :project-doc-order {"path/to/file.fnl" [:first-function :another-function]}}
+```
 
 If you wish to sort items differently from alphabetic order, you can specify either `reverse-alphabetic`, or sorting function.
 You can set this as a value for the `:order` key in configuration file, or by passing it via `--order VALUE` flag.
@@ -190,9 +182,9 @@ For example, suppose we made a change in function but forgot to update the docst
 
 This function claims that it sums three arguments, however the actual body only sums two.
 
-If we run `fenneldoc --check-only sum.fnl`, we'll get the following:
+If we run `fenneldoc --mode check sum.fnl`, we'll get the following:
 
-    $ fenneldoc --check-only sum.fnl
+    $ fenneldoc --mode check sum.fnl
     In file: sum.fnl
     Error in docstring for: sum
     In test:
@@ -266,6 +258,8 @@ Please do.
 You can report issues or feature request at [project's Gitlab repository](https://gitlab.com/andreyorst/fenneldoc).
 Consider reading [contribution guidelines](https://gitlab.com/andreyorst/fenneldoc/-/blob/master/CONTRIBUTING.md) beforehand.
 
-<!--  LocalWords:  backticks docstring Fenneldoc TODO config runtime -->
-<!--  LocalWords:  metadata AST fnl foo's md Lua namespace Gitlab -->
-<!--  LocalWords:  destructure --> backtick backquote
+<!--  LocalWords:  backticks docstring Fenneldoc TODO config runtime
+      LocalWords:  metadata AST fnl foo's md Lua namespace Gitlab
+      LocalWords:  destructure backtick backquote metamethod
+      LocalWords:  LocalWords
+  -->
