@@ -17,16 +17,14 @@ It then forms a `doc` directory, in which documentation files are placed followi
 If module specifies `version` or `_VERSION` keyword, documentation is placed under the directory which corresponds to the version.
 
 **Note!**
-Fenneldoc doesn't parse files, instead it **runs your code** and collects information at runtime.
-It does so in a restricted environment, so if your program has side effects you will get an error.
+Fenneldoc doesn't parse files, instead it **runs your code** by using `fennel.dofile`, and collects runtime information, such as metadata and exported functions.
+It does so in a restricted environment, so if your program has any side effects reachable during file loading, you will get an error.
 Use `--no-sandbox` or `:sandbox` option in config to override this behavior.
 
 
 ## Features
 
 - [x] Load runtime information of the module.
-- [ ] Parsing private (not exported) functions from the module.
-  - [ ] Parsing AST instead of running code.
 - [x] Configurable item order and sorting.
 - [x] Validate documentation:
   - [x] Analyze documentation to contain descriptions arguments of the described function;
