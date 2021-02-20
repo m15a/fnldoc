@@ -54,7 +54,7 @@ For example, here's how you might define information about your `my-module.fnl` 
   "foo's docstring"
   (print args))
 (fn my-module.bar [args]
-  "bar's docstring, also see [`foo`](#foo)"
+  "bar's docstring, also see `foo'"
   (my-module.foo args))
 
 (setmetatable my-module {:__index my-module-info})
@@ -100,6 +100,9 @@ License: [license](Link to your license)
 <!-- Generated with Fenneldoc fenneldoc-version
      https://gitlab.com/andreyorst/fenneldoc -->
 ``````
+
+Note that `bar`'s documentation features a link to `foo`'s documentation.
+For more info see [inline references](#inline-references).
 
 You will also see warnings in the log, indicating that both `foo` and `bar` have undocumented `args` argument.
 
