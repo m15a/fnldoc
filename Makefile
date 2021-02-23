@@ -7,9 +7,12 @@ FNLSOURCES = $(wildcard src/*.fnl)
 LUASOURCES = $(FNLSOURCES:.fnl=.lua)
 VERSION ?= $(shell git describe --abbrev=0)
 
-.PHONY: build clean help install docs
+.PHONY: build clean help install doc
 
 build: fenneldoc
+
+${LUASOURCES}: %.lua: %.fnl
+	$(FENNEL) $(foreach path,$(FNLPATHS),--add-fennel-path $(path)/?.fnl) --no-metadata --require-as-include --compile $< > $@
 
 fenneldoc: $(LUASOURCES)
 	echo "#!/usr/bin/env $(LUA)" > $@
@@ -20,21 +23,16 @@ fenneldoc: $(LUASOURCES)
 install: fenneldoc
 	mkdir -p $(BINDIR) && cp fenneldoc $(BINDIR)/
 
-${LUASOURCES}: $(FNLSOURCES)
-
-%.lua: %.fnl
-	$(FENNEL) $(foreach path,$(FNLPATHS),--add-fennel-path $(path)/?.fnl) --no-metadata --require-as-include --compile $< > $@
-
 clean:
 	rm -f fenneldoc $(wildcard src/*.lua)
 
-docs: fenneldoc
+doc: fenneldoc
 	./fenneldoc --config --project-version $(VERSION) $(FNLSOURCES)
 
 help:
 	@echo "make         -- create executable lua script" >&2
 	@echo "make clean   -- remove lua files" >&2
-	@echo "make docs    -- generate documentation files for fenneldoc" >&2
+	@echo "make doc     -- generate documentation files for fenneldoc" >&2
 	@echo "make install -- install fenneldoc accordingly to \$$PREFIX" >&2
 	@echo "make help    -- print this message and exit" >&2
 
