@@ -19,11 +19,11 @@
  :mode "checkdoc"
  :order "alphabetic"
  :out-dir "./doc"
- :project-copyright "Copyright (C) 2020 Andrey Listopadov"
+ :project-copyright "Copyright (C) 2020-2021 Andrey Listopadov"
  :project-doc-order {:src/markdown.fnl ["gen-markdown"
                                         "gen-function-signature"]}
  :project-license "[MIT](https://gitlab.com/andreyorst/fenneldoc/-/raw/master/LICENSE)"
- :project-version "v0.1.3"
+ :project-version "v0.1.4"
  :sandbox true
  :test-requirements {}
  :toc true}

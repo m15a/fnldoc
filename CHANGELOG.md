@@ -1,3 +1,8 @@
+## Fenneldoc 0.1.4 (2021-02-25)
+
+- Changed makefile to only compile the executable - no more Lua files.
+- Heading link generation for table of contents adjusted to work for some edge cases.
+
 ## Fenneldoc 0.1.3 (2021-02-19)
 
 - Allow shared project information such as license, copyright, and version to be stored in `.fenneldoc` configuration file.

@@ -4,20 +4,18 @@ BINDIR = $(PREFIX)/bin
 FENNEL ?= fennel
 FNLPATHS = src cljlib
 FNLSOURCES = $(wildcard src/*.fnl)
-LUASOURCES = $(FNLSOURCES:.fnl=.lua)
+FNLARGS = $(foreach path,$(FNLPATHS),--add-fennel-path $(path)/?.fnl)
+FNLARGS += --no-metadata --require-as-include --compile
 VERSION ?= $(shell git describe --abbrev=0)
 
 .PHONY: build clean help install doc
 
 build: fenneldoc
 
-${LUASOURCES}: %.lua: %.fnl
-	$(FENNEL) $(foreach path,$(FNLPATHS),--add-fennel-path $(path)/?.fnl) --no-metadata --require-as-include --compile $< > $@
-
-fenneldoc: $(LUASOURCES)
-	echo "#!/usr/bin/env $(LUA)" > $@
-	echo "FENNELDOC_VERSION = [[$(VERSION)]]" >> $@
-	cat src/fenneldoc.lua >> $@
+fenneldoc: $(FNLSOURCES)
+	echo '#!/usr/bin/env $(LUA)' > $@
+	echo 'FENNELDOC_VERSION = [[$(VERSION)]]' >> $@
+	$(FENNEL) $(FNLARGS) src/fenneldoc.fnl >> $@
 	chmod 755 $@
 
 install: fenneldoc
@@ -35,5 +33,3 @@ help:
 	@echo "make doc     -- generate documentation files for fenneldoc" >&2
 	@echo "make install -- install fenneldoc accordingly to \$$PREFIX" >&2
 	@echo "make help    -- print this message and exit" >&2
-
--include .depend.mk

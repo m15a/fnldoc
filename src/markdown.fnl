@@ -94,27 +94,30 @@
                        (table.sort (sorter config)))]
     (into [] (into ordered-items sorted-items))))
 
-
 (fn* heading-link
   "Markdown valid heading."
   [heading]
-  (.. "#"
-      (-> heading
-          (string.gsub " " "-")
-          (string.gsub "[^%w-]" "")
-          (string.gsub "[-]+" "-")
-          (string.gsub "^[-]*(.*)[-]*$" "%1")
-          string.lower)))
+  (let [link (-> heading
+                 (string.gsub "%." "")
+                 (string.gsub " " "-")
+                 (string.gsub "[^%w-]" "")
+                 (string.gsub "[-]+" "-")
+                 (string.gsub "^[-]*(.+)[-]*$" "%1")
+                 string.lower)]
+    (when (not= "" link)
+      ;; Empty links may occur if we pass only restricted chars.
+      ;; Such links are ignored.
+      (.. "#" link))))
 
 (fn* toc-table [items]
   (let [toc {}
         seen-headings {}]
     (each [_ item (ipairs items)]
-      (let [heading (heading-link item)
-            id (. seen-headings heading)
-            link (.. heading (if id (.. "-" id) ""))]
-        (tset seen-headings heading (+ (or id 0) 1))
-        (tset toc item link)))
+      (match (heading-link item)
+        heading (let [id (. seen-headings heading)
+                      link (.. heading (if id (.. "-" id) ""))]
+                  (tset seen-headings heading (+ (or id 0) 1))
+                  (tset toc item link))))
     toc))
 
 (fn* gen-toc [lines toc ordered-items config]
@@ -124,7 +127,8 @@
           "")
     (each [_ item (ipairs ordered-items)]
       (match (. toc item)
-        link (conj lines (.. "- [`" item "`](" link ")"))))
+        link (conj lines (.. "- [`" item "`](" link ")"))
+        _ (conj lines (.. "- `" item "`"))))
     (conj lines ""))
   lines)
 

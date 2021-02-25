@@ -1,4 +1,4 @@
-# Parser.fnl (v0.1.3)
+# Parser.fnl (v0.1.4)
 Module for getting runtime information from fennel files.
 
 **Table of contents**
@@ -42,7 +42,7 @@ generated.
 
 ---
 
-Copyright (C) 2020 Andrey Listopadov
+Copyright (C) 2020-2021 Andrey Listopadov
 
 License: [MIT](https://gitlab.com/andreyorst/fenneldoc/-/raw/master/LICENSE)
 
