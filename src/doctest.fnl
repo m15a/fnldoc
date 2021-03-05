@@ -16,14 +16,14 @@
   (let [sandbox (create-sandbox
                  {:print (fn [...]
                            (io.stderr:write
-                            "\nIn file " file
+                            "\nIn file '" file "'"
                             "\nWARNING: IO in test:\n``` fennel\n" test "\n```\n"))
                   :io (setmetatable
                        {}
                        {:__index
                         (fn []
                           (io.stderr:write
-                           "\nIn file " file
+                           "\nIn file '" file "'"
                            "\nWARNING: 'io' module used in test:\n``` fennel\n" test "\n```\n"))})})
         requirements (or (-?> requirements (.. "\n")) "")]
     (each [fname fval (pairs module-info.f-table)]
@@ -35,7 +35,7 @@
   (each [n test (ipairs (extract-tests docstring))]
     (match (run-test test module-info.requirements module-info sandbox?)
       (false msg) (let [msg (string.gsub (tostring msg) "^%[.-%]:%d+:%s*" "")]
-                    (io.stderr:write "In file: " module-info.file "\n"
+                    (io.stderr:write "In file: '" module-info.file "'\n"
                                      "Error in docstring for: " func "\n"
                                      "In test:\n``` fennel\n" test "\n```\n"
                                      "Error:\n"
@@ -50,12 +50,12 @@
                      (string.find docstring (.. "`" argument-pat "'"))))
         (when (not (seen argument))
           (if (and (string.find docstring (.. "%f[%w_]" argument-pat "%f[^%w_]"))) ;; %f[%w_] emulates \b
-              (io.stderr:write "WARNING: in file " file
-                               " argument '" argument "' should appear in backtics in docstring for '"
+              (io.stderr:write "WARNING: in file '" file
+                               "' argument '" argument "' should appear in backtics in docstring for '"
                                func "'\n")
               (if (not= argument "...")
-                  (io.stderr:write "WARNING: in file " file
-                                   " function '" func "' has undocumented argument '"
+                  (io.stderr:write "WARNING: in file '" file
+                                   "' function '" func "' has undocumented argument '"
                                    argument "'\n"))))))))
 
 (fn skip-arg-check? [argument patterns]
