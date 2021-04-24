@@ -16,15 +16,17 @@
   (let [sandbox (create-sandbox
                  {:print (fn [...]
                            (io.stderr:write
-                            "\nIn file '" file "'"
-                            "\nWARNING: IO in test:\n``` fennel\n" test "\n```\n"))
+                            "WARNING: IO detected in the '"
+                            (or module-info.file "unknown")
+                            "' file in the following test:\n``` fennel\n" test "\n```\n"))
                   :io (setmetatable
                        {}
                        {:__index
                         (fn []
                           (io.stderr:write
-                           "\nIn file '" file "'"
-                           "\nWARNING: 'io' module used in test:\n``` fennel\n" test "\n```\n"))})})
+                           "WARNING: 'io' module access detected in the '"
+                           (or module-info.file "unknown")
+                           "' file in the following test:\n``` fennel\n" test "\n```\n"))})})
         requirements (or (-?> requirements (.. "\n")) "")]
     (each [fname fval (pairs module-info.f-table)]
       (tset sandbox fname fval))
