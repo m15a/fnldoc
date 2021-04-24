@@ -1,3 +1,8 @@
+## Fenneldoc 0.1.5 (2021-04-24)
+
+- Warnings now use generic "value" term instead of calling everything a function.
+- Exported variables are documented, but not tested, unless `fnl/arglist` metadata is found.
+
 ## Fenneldoc 0.1.4 (2021-02-25)
 
 - Changed makefile to only compile the executable - no more Lua files.

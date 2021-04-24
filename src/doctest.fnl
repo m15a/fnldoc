@@ -83,9 +83,10 @@
 (fn* check-function [func docstring arglist module-info config]
   (if (or (not docstring) (= docstring ""))
       (do (if (= module-info.type :function-module)
-              (io.stderr:write "WARNING: file '" module-info.file "' exports undocumented function\n")
-              (io.stderr:write "WARNING: in file '" module-info.file "' undocumented exported function '" func "'\n"))
-          nil) ;; io.stderr:write returns non-nil value, which is treated as mark that errors occured
+              (io.stderr:write "WARNING: file '" module-info.file "' exports undocumented value\n")
+              (io.stderr:write "WARNING: in file '" module-info.file "' undocumented exported value '" func "'\n"))
+          nil) ; io.stderr:write returns non-nil value, which is treated as mark that errors occured
+      arglist
       (do (check-function-arglist func arglist docstring module-info (hash-set) config.ignored-args-patterns)
           (run-tests-for-fn func docstring module-info config.sandbox))))
 
