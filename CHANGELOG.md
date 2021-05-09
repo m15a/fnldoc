@@ -1,3 +1,8 @@
+## Fenneldoc 0.1.6 (2021-05-09)
+
+- Display `unknown` if filename somehow missing.
+- Use `unknown` version name if Git can't figure out tag name.
+
 ## Fenneldoc 0.1.5 (2021-04-24)
 
 - Warnings now use generic "value" term instead of calling everything a function.
