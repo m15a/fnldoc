@@ -15,7 +15,7 @@ build: fenneldoc
 fenneldoc: $(FNLSOURCES)
 	echo '#!/usr/bin/env $(LUA)' > $@
 	echo 'FENNELDOC_VERSION = [[$(VERSION)]]' >> $@
-	$(FENNEL) $(FNLARGS) src/fenneldoc.fnl >> $@
+	FENNEL_MACRO_PATH="cljlib/?.fnl" $(FENNEL) $(FNLARGS) src/fenneldoc.fnl >> $@
 	chmod 755 $@
 
 install: fenneldoc

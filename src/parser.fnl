@@ -5,7 +5,7 @@
         : gen-item-documentation}
        (require :markdown))
 
-(import-macros {: fn*} :cljlib.macros)
+(import-macros {: fn*} :cljlib)
 
 (fn* sandbox-module [module file]
   (setmetatable

@@ -22,7 +22,7 @@ metadata at runtime.
 (local {: module-info} (require :parser))
 (local {: gen-markdown} (require :markdown))
 
-(import-macros {: fn*} :cljlib.macros)
+(import-macros {: fn*} :cljlib)
 
 (fn* process-file
   "Accepts `file` as path to some Fennel module, and `config` table.

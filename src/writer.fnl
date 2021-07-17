@@ -1,5 +1,5 @@
 (local fs (require :lfs))
-(import-macros {: fn*} :cljlib.macros)
+(import-macros {: fn*} :cljlib)
 
 (fn* create-dirs-from-path [file module-info config]
   ;; Creates path up to specified file.

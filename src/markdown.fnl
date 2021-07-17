@@ -1,4 +1,4 @@
-(import-macros {: into : fn*} :cljlib.macros)
+(import-macros {: into : fn*} :cljlib)
 (local {: ordered-set
         : apply
         : seq

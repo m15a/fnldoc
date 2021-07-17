@@ -1,5 +1,5 @@
 (local fennel (require :fennel))
-(import-macros {: fn*} :cljlib.macros)
+(import-macros {: fn*} :cljlib)
 
 (local config {:fennel-path []
                :function-signatures true

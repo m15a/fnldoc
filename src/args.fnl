@@ -1,5 +1,5 @@
 (local fennel (require :fennel))
-(import-macros {: into : fn*} :cljlib.macros)
+(import-macros {: into : fn*} :cljlib)
 (local {: hash-set
         : inc
         : conj

@@ -1,7 +1,7 @@
 (local fennel (require :fennel))
 (local {: keys : hash-set : conj : empty?} (require :cljlib))
 (local {: create-sandbox} (require :parser))
-(import-macros {: when-let : fn*} :cljlib.macros)
+(import-macros {: when-let : fn*} :cljlib)
 
 (fn* extract-tests [fn-doc]
   (icollect [test (fn-doc:gmatch "\n?```%s*fennel.-\n```")]
