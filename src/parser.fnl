@@ -14,7 +14,7 @@
                (io.stderr:write
                 (.. "ERROR: access to '" module
                     "' module detected in file: " file
-                    "while loading\n"))
+                    " while loading\n"))
                (os.exit 1))}))
 
 (defn create-sandbox
@@ -32,9 +32,9 @@ You can provide an `overrides` table, which contains function name as
 a key, and function as a value.  This function will be used instead of
 specified function name in the sandbox.  For example, you can wrap IO
 functions to only throw warning, and not error."
-  ([] (create-sandbox {}))
-  ([overrides]
-   (let [env {;; allowed modules
+  ([file] (create-sandbox file {}))
+  ([file overrides]
+   (let [env { ;; allowed modules
               : assert
               : bit32
               : collectgarbage
@@ -103,9 +103,9 @@ functions to only throw warning, and not error."
                    (string.gsub "%.fnl$" ""))]
     module))
 
-  "Require file as module in protected call.  Returns vector with first value
-corresponding to pcall result."
 (defn require-module
+  "Require file as module in protected call.  Returns multiple values
+with first value corresponding to pcall result."
   [file config]
   (let [sandbox (when config.sandbox (create-sandbox))]
     (match (pcall fennel.dofile
@@ -174,8 +174,10 @@ generated."
                                              (gen-item-documentation docstring config.inline-references))
                             : arglist
                             :items {}})
-    (false err) (io.stderr:write "Error loading " file "\n" err "\n")
-    _ (io.stderr:write "Error loading " file "\nunhandled error!\n")))
+    (false err) (do (io.stderr:write "Error loading " file "\n" err "\n")
+                    nil)
+    _ (do (io.stderr:write "Error loading " file "\nunhandled error!\n")
+          nil)))
 
 (setmetatable
  {: create-sandbox

@@ -3,6 +3,7 @@
 - Ignore `_` argument by default.
 - Remove luafilesystem dependency.
 - Bump cljlib dependency to v0.5.4.
+- Fix error handling when can't process a file.
 
 ## Fenneldoc 0.1.6 (2021-05-09)
 
