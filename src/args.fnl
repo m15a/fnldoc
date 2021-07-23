@@ -1,5 +1,5 @@
 (local fennel (require :fennel))
-(import-macros {: into : fn*} :cljlib)
+(import-macros {: into : defn} :cljlib)
 (local {: hash-set
         : inc
         : conj
@@ -54,13 +54,13 @@
                    :--toc                 [true "(Don't) generate table of contents."]
                    :--sandbox             [true "(Don't) sandbox loaded code and documentation tests."]})
 
-(fn* longest-length [items]
+(defn longest-length [items]
   (var len 0)
   (each [_ x (ipairs items)]
     (set len (math.max len (length (tostring (or x ""))))))
   (+ len 1))
 
-(fn* gen-help-info [flags]
+(defn gen-help-info [flags]
   (let [lines []
         longest-flag (longest-length (keys flags))
         longest-default (longest-length (mapv first (vals flags)))]
@@ -80,7 +80,7 @@
     (table.sort lines)
     (table.concat lines "\n")))
 
-(fn* help []
+(defn help []
   (print (.. "Usage: fenneldoc [flags] [files]
 
 Create documentation for your Fennel project.
@@ -126,14 +126,14 @@ passing `--no-toc' will disable generation of contents table, and
     (let [inverse-flag (flag:gsub "^[-][-]" "--no-")]
       (conj bool-flags-set inverse-flag))))
 
-(fn* handle-bool-flag [flag config]
+(defn handle-bool-flag [flag config]
   ;; Boolean flags can start with `--no-` prefix, meaning that we want to
   ;; disable feature.
   (match (string.sub flag 1 4)
     :--no (tset config (string.sub flag 6) false)
     _ (tset config (string.sub flag 3) true)))
 
-(fn* handle-value-flag [i flag config]
+(defn handle-value-flag [i flag config]
   ;; value flags are followed with value
   (let [[_ _ validate-fn] (. value-flags flag)
         flag (string.sub flag 3 -1)]
@@ -144,7 +144,7 @@ passing `--no-toc' will disable generation of contents table, and
       nil (do (io.stderr:write "fenneldoc: expected value for " flag "\n")
               (os.exit -1)))))
 
-(fn* handle-key-flag [i flag config]
+(defn handle-key-flag [i flag config]
   ;; key flags start with `--` and end with `-key`, and are stored
   ;; under `config.keys` without `-key` suffix. they are also followed with value, therefore
   (let [flag (string.sub flag 3 -5)]
@@ -153,7 +153,7 @@ passing `--no-toc' will disable generation of contents table, and
       nil (do (io.stderr:write "fenneldoc: expected value for " flag "\n")
               (os.exit -1)))))
 
-(fn* handle-file
+(defn handle-file
   ([file files] (handle-file file files false))
   ([file files no-check]
    (when (and (not no-check) (= (string.sub file 1 2) :--))
@@ -161,13 +161,13 @@ passing `--no-toc' will disable generation of contents table, and
      (os.exit -1))
    (table.insert files file)))
 
-(fn* handle-fennel-path [i]
+(defn handle-fennel-path [i]
   (match (. arg (inc i))
     val (set fennel.path (.. val ";" fennel.path))
     nil (do (io.stderr:write "fenneldoc: expected value for --add-fennel-path\n")
             (os.exit -1))))
 
-(fn* write-config [config]
+(defn write-config [config]
   (match (io.open ".fenneldoc" :w)
     f (with-open [file f]
         (let [version config.fenneldoc-version]
@@ -181,7 +181,7 @@ passing `--no-toc' will disable generation of contents table, and
     (nil msg code) (do (io.stderr:write "Error opening file '.fenneldoc': " msg " (" code ")\n")
                        (os.exit code))))
 
-(fn* process-args
+(defn process-args
   "Process command line arguments based on `config`. "
   [config]
   (let [files []

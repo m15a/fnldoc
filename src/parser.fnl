@@ -5,9 +5,9 @@
         : gen-item-documentation}
        (require :markdown))
 
-(import-macros {: fn*} :cljlib)
+(import-macros {: defn} :cljlib)
 
-(fn* sandbox-module [module file]
+(defn sandbox-module [module file]
   (setmetatable
    {}
    {:__index (fn []
@@ -17,8 +17,8 @@
                     "while loading\n"))
                (os.exit 1))}))
 
-(fn* create-sandbox
-  "Create sandboxed environment to run files containing documentation,
+(defn create-sandbox
+  "Create sandboxed environment to run `file` containing documentation,
 and tests from that documentation.
 
 Does not allow any IO, loading files or Lua code via `load`,
@@ -81,17 +81,17 @@ functions to only throw warning, and not error."
        (tset env k v))
      env)))
 
-(fn* function-name-from-file [file]
+(defn function-name-from-file [file]
   (let [sep (package.config:sub 1 1)]
     (-> file
         (string.gsub (.. ".*" sep) "")
         (string.gsub "%.fnl$" ""))))
 
-(fn* get-module-docs [module config]
+(defn get-module-docs [module config]
   (let [docs {}]
     (each [id val (pairs module)]
       (when (and (not= (string.sub id 1 1) :_) ;; ignore keys starting with `_`
-                 (not (. config.keys id)))     ;; ignore special keys, like `:version`
+                 (not (. config.keys id))) ;; ignore special keys, like `:version`
         (tset docs id {:docstring (fennel.metadata:get val :fnl/docstring)
                        :arglist (fennel.metadata:get val :fnl/arglist)})))
     docs))
@@ -103,9 +103,9 @@ functions to only throw warning, and not error."
                    (string.gsub "%.fnl$" ""))]
     module))
 
-(fn* require-module
   "Require file as module in protected call.  Returns vector with first value
 corresponding to pcall result."
+(defn require-module
   [file config]
   (let [sandbox (when config.sandbox (create-sandbox))]
     (match (pcall fennel.dofile
@@ -123,7 +123,7 @@ corresponding to pcall result."
                   (true module) (values (type module) module :macros)
                   (false msg) (values false msg)))))
 
-(fn* get-module-info
+(defn get-module-info
   ([module key] (get-module-info module key nil))
   ([module key fallback]
    (let [info (. module key)]
@@ -134,7 +134,7 @@ corresponding to pcall result."
        :nil fallback
        _ nil))))
 
-(fn* module-info
+(defn module-info
   "Returns table containing all relevant information accordingly to
 `config` about the module in `file` for which documentation is
 generated."

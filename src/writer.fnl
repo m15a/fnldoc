@@ -1,7 +1,7 @@
 (local fs (require :lfs))
-(import-macros {: fn*} :cljlib)
+(import-macros {: defn} :cljlib)
 
-(fn* create-dirs-from-path [file module-info config]
+(defn create-dirs-from-path [file module-info config]
   ;; Creates path up to specified file.
   (let [sep (package.config:sub 1 1)
         path (.. config.out-dir sep (file:gsub (.. "[^" sep "]+.fnl$") ""))
@@ -18,7 +18,7 @@
     (-> (.. p sep fname)
         (string.gsub (.. "[" sep "]+") sep))))
 
-(fn* writer
+(defn writer
   "Accepts `docs` as a vector of lines, and a path to a `file`.
 Concatenates lines in `docs` with newline, and writes result to
 `file`.  `module-info` must contain `module` key with file, and

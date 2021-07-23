@@ -1,9 +1,9 @@
 (local fennel (require :fennel))
 (local {: keys : hash-set : conj : empty?} (require :cljlib))
 (local {: create-sandbox} (require :parser))
-(import-macros {: when-let : fn*} :cljlib)
+(import-macros {: when-let : defn} :cljlib)
 
-(fn* extract-tests [fn-doc]
+(defn extract-tests [fn-doc]
   (icollect [test (fn-doc:gmatch "\n?```%s*fennel.-\n```")]
     (-> test
         (string.gsub "\n?%s*```%s*fennel" "")
@@ -12,7 +12,6 @@
 
 (table.insert (or package.loaders package.searchers) fennel.searcher)
 
-(fn* run-test [test requirements module-info sandbox?]
   (let [sandbox (create-sandbox
                  {:print (fn [...]
                            (io.stderr:write
@@ -27,12 +26,13 @@
                            "WARNING: 'io' module access detected in the '"
                            (or module-info.file "unknown")
                            "' file in the following test:\n``` fennel\n" test "\n```\n"))})})
+(defn run-test [test requirements module-info sandbox?]
         requirements (or (-?> requirements (.. "\n")) "")]
     (each [fname fval (pairs module-info.f-table)]
       (tset sandbox fname fval))
     (pcall fennel.eval (.. requirements test) {:env (if sandbox? sandbox)})))
 
-(fn* run-tests-for-fn [func docstring module-info sandbox?]
+(defn run-tests-for-fn [func docstring module-info sandbox?]
   (var error? false)
   (each [n test (ipairs (extract-tests docstring))]
     (match (run-test test module-info.requirements module-info sandbox?)
@@ -45,7 +45,7 @@
                     (set error? true))))
   error?)
 
-(fn* check-argument [func argument docstring file seen]
+(defn check-argument [func argument docstring file seen]
   (when (not= argument "")
     (let [argument-pat (.. ":?" (argument:gsub "([][().%+-*?$^])" "%%%1"))]
       (when (not (or (string.find docstring (.. "`" argument-pat "`"))
@@ -66,7 +66,7 @@
       empty?
       not))
 
-(fn* check-function-arglist [func arglist docstring {: file} seen patterns]
+(defn check-function-arglist [func arglist docstring {: file} seen patterns]
   (let [docstring (string.gsub docstring "\n?```.-\n```\n?" "")]
     (each [_ argument (ipairs arglist)]
       (let [argument (-> argument
@@ -82,7 +82,7 @@
               (check-argument func argument docstring file seen)))
         (conj seen argument)))))
 
-(fn* check-function [func docstring arglist module-info config]
+(defn check-function [func docstring arglist module-info config]
   (if (or (not docstring) (= docstring ""))
       (do (if (= module-info.type :function-module)
               (io.stderr:write "WARNING: file '" module-info.file "' exports undocumented value\n")
@@ -92,7 +92,7 @@
       (do (check-function-arglist func arglist docstring module-info (hash-set) config.ignored-args-patterns)
           (run-tests-for-fn func docstring module-info config.sandbox))))
 
-(fn* doctest
+(defn doctest
   "Run tests contained in documentations.
 Accepts `module-info` with items to check, and `config` argument."
   [module-info config]

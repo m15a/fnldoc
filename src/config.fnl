@@ -1,5 +1,5 @@
 (local fennel (require :fennel))
-(import-macros {: fn*} :cljlib)
+(import-macros {: defn} :cljlib)
 
 (local config {:fennel-path []
                :function-signatures true
@@ -26,7 +26,7 @@
                :test-requirements {}
                :toc true})
 
-(fn* process-config [version]
+(defn process-config [version]
   (match (pcall fennel.dofile :.fenneldoc)
     (true rc) (each [k v (pairs rc)]
                 (tset config k v))
