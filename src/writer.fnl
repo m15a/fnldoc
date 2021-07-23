@@ -1,5 +1,12 @@
-(local fs (require :lfs))
 (import-macros {: defn} :cljlib)
+
+(fn file-exists? [path]
+  (if (or (= "./" path) (= "../" path))
+      true
+      (match (os.rename path path)
+        (true _ 13) true
+        (true _ _) true
+        _ false)))
 
 (defn create-dirs-from-path [file module-info config]
   ;; Creates path up to specified file.
@@ -12,9 +19,9 @@
     (var p "")
     (each [dir (path:gmatch (.. "[^" sep "]+"))]
       (set p (.. p dir sep))
-      (match (fs.mkdir p)
-        (nil "File exists" 17) nil
-        (nil msg code) (lua "return nil, dir, msg, code")))
+      (when (not (file-exists? p))
+        (match (os.execute (.. "mkdir " p))
+          (nil _ code) (lua "return nil, p"))))
     (-> (.. p sep fname)
         (string.gsub (.. "[" sep "]+") sep))))
 
@@ -32,10 +39,10 @@ Concatenates lines in `docs` with newline, and writes result to
                                (.. "Error opening file '" path "': " msg " (" code ")\n"))
                               (os.exit code)))
 
-    (nil dir msg code) (do (io.stderr:write
-                            (.. "Error creating directory '" dir "': " msg " (" code ")\n"))
-                           (os.exit code))))
+    (nil dir) (do (io.stderr:write
+                   (.. "Error creating directory '" dir))
+                  (os.exit code))))
 
 writer
 
-; LocalWords:  fnl md dir msg config
+;; LocalWords:  fnl md dir msg config
