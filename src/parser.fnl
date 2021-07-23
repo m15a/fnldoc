@@ -107,21 +107,25 @@ functions to only throw warning, and not error."
   "Require file as module in protected call.  Returns multiple values
 with first value corresponding to pcall result."
   [file config]
-  (let [sandbox (when config.sandbox (create-sandbox))]
+  (let [env (when config.sandbox
+              (create-sandbox file))]
     (match (pcall fennel.dofile
                   file
-                  {:useMetadata true :env sandbox}
+                  {:useMetadata true
+                   :env env
+                   :allowedGlobals false}
                   (module-from-file file))
       (true module) (values (type module) module :functions)
       ;; try again, now with compiler env
-      (false _) (match (pcall fennel.dofile
-                              file
-                              {:useMetadata true
-                               :env :_COMPILER
-                               :scope (. compiler :scopes :compiler)}
-                              (module-from-file file))
-                  (true module) (values (type module) module :macros)
-                  (false msg) (values false msg)))))
+      (false) (match (pcall fennel.dofile
+                            file
+                            {:useMetadata true
+                             :env :_COMPILER
+                             :allowedGlobals false
+                             :scope (. compiler :scopes :compiler)}
+                            (module-from-file file))
+                (true module) (values (type module) module :macros)
+                (false msg) (values false msg)))))
 
 (defn get-module-info
   ([module key] (get-module-info module key nil))

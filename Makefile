@@ -17,6 +17,7 @@ fenneldoc: $(FNLSOURCES)
 	echo 'FENNELDOC_VERSION = [[$(VERSION)]]' >> $@
 	FENNEL_MACRO_PATH="cljlib/?.fnl" $(FENNEL) $(FNLARGS) src/fenneldoc.fnl >> $@
 	chmod 755 $@
+	./fenneldoc --config --project-version $(VERSION)
 
 install: fenneldoc
 	mkdir -p $(BINDIR) && cp fenneldoc $(BINDIR)/
@@ -25,7 +26,7 @@ clean:
 	rm -f fenneldoc $(wildcard src/*.lua)
 
 doc: fenneldoc
-	./fenneldoc --config --project-version $(VERSION) $(FNLSOURCES)
+	./fenneldoc --no-sandbox $(FNLSOURCES)
 
 help:
 	@echo "make         -- create executable lua script" >&2

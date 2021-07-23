@@ -12,25 +12,27 @@
 
 (table.insert (or package.loaders package.searchers) fennel.searcher)
 
-  (let [sandbox (create-sandbox
-                 {:print (fn [...]
-                           (io.stderr:write
-                            "WARNING: IO detected in the '"
-                            (or module-info.file "unknown")
-                            "' file in the following test:\n``` fennel\n" test "\n```\n"))
-                  :io (setmetatable
-                       {}
-                       {:__index
-                        (fn []
-                          (io.stderr:write
-                           "WARNING: 'io' module access detected in the '"
-                           (or module-info.file "unknown")
-                           "' file in the following test:\n``` fennel\n" test "\n```\n"))})})
 (defn run-test [test requirements module-info sandbox?]
+  (let [env (if sandbox?
+                (create-sandbox module-info.file
+                                {:print (fn [...]
+                                          (io.stderr:write
+                                           "WARNING: IO detected in the '"
+                                           (or module-info.file "unknown")
+                                           "' file in the following test:\n``` fennel\n" test "\n```\n"))
+                                 :io (setmetatable
+                                      {}
+                                      {:__index
+                                       (fn []
+                                         (io.stderr:write
+                                          "WARNING: 'io' module access detected in the '"
+                                          (or module-info.file "unknown")
+                                          "' file in the following test:\n``` fennel\n" test "\n```\n"))})})
+              _G)
         requirements (or (-?> requirements (.. "\n")) "")]
     (each [fname fval (pairs module-info.f-table)]
-      (tset sandbox fname fval))
-    (pcall fennel.eval (.. requirements test) {:env (if sandbox? sandbox)})))
+      (tset env fname fval))
+    (pcall fennel.eval (.. requirements test) {:env env})))
 
 (defn run-tests-for-fn [func docstring module-info sandbox?]
   (var error? false)

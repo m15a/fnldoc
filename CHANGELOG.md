@@ -1,9 +1,11 @@
 ## Fenneldoc 0.1.7 (2021-07-23)
 
 - Ignore `_` argument by default.
+- Fix doctests not working when sandbox is disabled.
 - Remove luafilesystem dependency.
 - Bump cljlib dependency to v0.5.4.
 - Fix error handling when can't process a file.
+- Disable compiler's strict global checking.
 
 ## Fenneldoc 0.1.6 (2021-05-09)
 
