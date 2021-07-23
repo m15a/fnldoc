@@ -12,5 +12,5 @@ Concatenates lines in `docs` with newline, and writes result to
 
 
 
-<!-- Generated with Fenneldoc v0.1.3
+<!-- Generated with Fenneldoc v0.1.7
      https://gitlab.com/andreyorst/fenneldoc -->

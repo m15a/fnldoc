@@ -1,4 +1,4 @@
-# Markdown.fnl (v0.1.4)
+# Markdown.fnl (v0.1.7)
 Functions for generating Markdown
 
 **Table of contents**
@@ -43,5 +43,5 @@ Copyright (C) 2020-2021 Andrey Listopadov
 License: [MIT](https://gitlab.com/andreyorst/fenneldoc/-/raw/master/LICENSE)
 
 
-<!-- Generated with Fenneldoc v0.1.3
+<!-- Generated with Fenneldoc v0.1.7
      https://gitlab.com/andreyorst/fenneldoc -->

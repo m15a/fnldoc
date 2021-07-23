@@ -1,4 +1,4 @@
-# Parser.fnl (v0.1.4)
+# Parser.fnl (v0.1.7)
 Module for getting runtime information from fennel files.
 
 **Table of contents**
@@ -10,10 +10,10 @@ Module for getting runtime information from fennel files.
 Function signature:
 
 ```
-(create-sandbox ([]) ([overrides]))
+(create-sandbox ([file]) ([file overrides]))
 ```
 
-Create sandboxed environment to run files containing documentation,
+Create sandboxed environment to run `file` containing documentation,
 and tests from that documentation.
 
 Does not allow any IO, loading files or Lua code via `load`,
@@ -47,5 +47,5 @@ Copyright (C) 2020-2021 Andrey Listopadov
 License: [MIT](https://gitlab.com/andreyorst/fenneldoc/-/raw/master/LICENSE)
 
 
-<!-- Generated with Fenneldoc v0.1.3
+<!-- Generated with Fenneldoc v0.1.7
      https://gitlab.com/andreyorst/fenneldoc -->

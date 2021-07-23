@@ -1,5 +1,5 @@
 ;; -*- mode: fennel; -*- vi:ft=fennel
-;; Configuration file for Fenneldoc v0.1.5
+;; Configuration file for Fenneldoc v0.1.7
 ;; https://gitlab.com/andreyorst/fenneldoc
 
 {:fennel-path ["cljlib/?.fnl" "src/?.fnl"]
@@ -23,7 +23,7 @@
  :project-doc-order {:src/markdown.fnl ["gen-markdown"
                                         "gen-function-signature"]}
  :project-license "[MIT](https://gitlab.com/andreyorst/fenneldoc/-/raw/master/LICENSE)"
- :project-version "v0.1.5"
+ :project-version "v0.1.7"
  :sandbox true
  :test-requirements {}
  :toc true}
