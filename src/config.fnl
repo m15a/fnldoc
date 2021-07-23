@@ -3,7 +3,7 @@
 
 (local config {:fennel-path []
                :function-signatures true
-               :ignored-args-patterns ["%.%.%."]
+               :ignored-args-patterns ["%.%.%." "%_"]
                :inline-references :link
                :insert-comment true
                :insert-copyright true

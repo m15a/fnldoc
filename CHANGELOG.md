@@ -1,5 +1,6 @@
 ## Fenneldoc 0.1.7 (2021-07-23)
 
+- Ignore `_` argument by default.
 - Bump cljlib dependency to v0.5.4.
 
 ## Fenneldoc 0.1.6 (2021-05-09)
