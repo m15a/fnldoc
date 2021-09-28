@@ -10,6 +10,10 @@
         (string.gsub "\n%s*```" "")
         (string.gsub "^\n" ""))))
 
+(defn copy-table [t]
+  (collect [k v (pairs t)]
+    (values k v)))
+
 (table.insert (or package.loaders package.searchers) fennel.searcher)
 
 (defn run-test [test requirements module-info sandbox?]
@@ -28,7 +32,7 @@
                                           "WARNING: 'io' module access detected in the '"
                                           (or module-info.file "unknown")
                                           "' file in the following test:\n``` fennel\n" test "\n```\n"))})})
-              _G)
+                (copy-table _G))
         requirements (or (-?> requirements (.. "\n")) "")]
     (each [fname fval (pairs module-info.f-table)]
       (tset env fname fval))
