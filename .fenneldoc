@@ -23,7 +23,7 @@
  :project-doc-order {:src/markdown.fnl ["gen-markdown"
                                         "gen-function-signature"]}
  :project-license "[MIT](https://gitlab.com/andreyorst/fenneldoc/-/raw/master/LICENSE)"
- :project-version "v0.1.7"
+ :project-version "v0.1.8"
  :sandbox true
  :test-requirements {}
  :toc true}

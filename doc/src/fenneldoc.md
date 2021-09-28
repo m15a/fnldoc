@@ -1,4 +1,4 @@
-# Fenneldoc.fnl (v0.1.7)
+# Fenneldoc.fnl (v0.1.8)
 Fenneldoc - generate documentation for Fennel projects.
 
 Generates documentation for Fennel libraries by analyzing project

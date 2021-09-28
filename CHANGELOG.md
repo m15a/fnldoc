@@ -1,3 +1,7 @@
+## Fenneldoc 0.1.8 (20201-28-09)
+
+- Create a shallow copy of `_G` when running tests with sandbox turned off.
+
 ## Fenneldoc 0.1.7 (2021-07-23)
 
 - Ignore `_` argument by default.
