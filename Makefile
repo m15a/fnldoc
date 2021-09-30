@@ -5,7 +5,7 @@ FENNEL ?= fennel
 FNLPATHS = src cljlib
 FNLSOURCES = $(wildcard src/*.fnl)
 FNLARGS = $(foreach path,$(FNLPATHS),--add-fennel-path $(path)/?.fnl)
-FNLARGS += --no-metadata --require-as-include --compile
+FNLARGS += --no-metadata --globals "*" --require-as-include --compile
 VERSION ?= $(shell git describe --abbrev=0 || "unknown")
 
 .PHONY: build clean help install doc

@@ -1,5 +1,5 @@
 ;; -*- mode: fennel; -*- vi:ft=fennel
-;; Configuration file for Fenneldoc v0.1.7
+;; Configuration file for Fenneldoc v0.1.8
 ;; https://gitlab.com/andreyorst/fenneldoc
 
 {:fennel-path ["cljlib/?.fnl" "src/?.fnl"]
