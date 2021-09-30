@@ -40,8 +40,8 @@ Concatenates lines in `docs` with newline, and writes result to
                               (os.exit code)))
 
     (nil dir) (do (io.stderr:write
-                   (.. "Error creating directory '" dir))
-                  (os.exit code))))
+                   (.. "Error creating directory '" dir "\n"))
+                  (os.exit -1))))
 
 writer
 
