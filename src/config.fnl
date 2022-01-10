@@ -3,7 +3,7 @@
 
 (local config {:fennel-path []
                :function-signatures true
-               :ignored-args-patterns ["%.%.%." "%_"]
+               :ignored-args-patterns ["%.%.%." "%_" "%_[^%s]+"]
                :inline-references :link
                :insert-comment true
                :insert-copyright true
@@ -15,6 +15,7 @@
                       :license "_LICENSE"
                       :module-name "_MODULE_NAME"
                       :version "_VERSION"}
+               :modules-info {}
                :project-copyright nil
                :project-version nil
                :project-license nil
@@ -105,22 +106,31 @@ supported by `fenneldoc`:
 - `doc-order-key` - order of items of the module.
 - `version-key` - the version of the module.
 
-When found in exported module, values stored under keys specified by
+When found in exported module, either in the module itself, `__index`,
+or `__fenneldoc` metatable keys, values stored under keys specified by
 these fields will be used as additional information about module. For
 example, if you want your module to specify license in exported table
-under different key, you can set `license-key` to desired value, and
+under a different key, you can set `license-key` to desired value, and
 then specify license under this key in you module:
 
 `.fenneldoc`:
+
 ``` fennel
 {:keys {:license-key \"project-license\"}}
 ```
+
+`identity.fnl`:
 
 ``` fennel
 (fn identity [x] x)
 
 {:project-license \"MIT\"
  : identity}
+
+;; or
+(setmetatable
+ {: identity}
+ {:__fenneldoc {:project-license \"MIT\"}})
 ```
 
 Now `fenneldoc` will know that information about license is stored
@@ -140,7 +150,21 @@ provides the following set of keys for that:
   should appear in each file. This version can be overridden for
   certain files by specifying version in the module info.
 - `project-doc-order` - an associative table where keys are filenames
-  and values are sequential tables with headings in preferred order."))
+  and values are sequential tables with headings in preferred order.
+- `modules-info` - a table that stores all the same data as in
+  [special keys](#special-keys) section for each project module
+  separately.  Handy for storing module information without cluttering
+  the module file and avoiding adding long strings with whole module
+  description at runtime.  Supported keys `:description`,
+  `:copyright`, `:doc-order`, `:license`, `:name`, `:version`.
+  For example:
+
+  ```fennel
+  {:modules-info {:some-module.fnl {:description \"some module description\"
+                                    :license \"GNU GPL\"
+                                    :name \"Some Module\"
+                                    :doc-order [\"some-fn1\" \"some-fn2\" \"etc\"]}}}
+  ```"))
 
 process-config
 

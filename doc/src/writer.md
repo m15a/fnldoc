@@ -1,4 +1,5 @@
 # Writer.fnl
+
 Function signature:
 
 ```
@@ -12,5 +13,5 @@ Concatenates lines in `docs` with newline, and writes result to
 
 
 
-<!-- Generated with Fenneldoc v0.1.7
+<!-- Generated with Fenneldoc v0.1.8
      https://gitlab.com/andreyorst/fenneldoc -->

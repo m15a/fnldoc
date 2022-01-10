@@ -150,18 +150,29 @@ generated."
     ;; Ordinary module that returns a table.  If module has keys that
     ;; are specified within the `:keys` section of `.fenneldoc` those
     ;; are looked up in the module for additional info.
-    (:table module module-type) {:module (get-module-info module config.keys.module-name file)
+    (:table module module-type) {:module (or (get-module-info module config.keys.module-name)
+                                             (get-in config [:modules-info file :name])
+                                             file)
                                  :file file
                                  :type module-type
                                  :f-table (if (= module-type :macros) {} module)
                                  :requirements (get-in config [:test-requirements file] "")
-                                 :version (or (get-module-info module config.keys.version) config.project-version)
-                                 :description (get-module-info module config.keys.description)
-                                 :copyright (or (get-module-info module config.keys.copyright) config.project-copyright)
-                                 :license (or (get-module-info module config.keys.license) config.project-license)
+                                 :version (or (get-module-info module config.keys.version)
+                                              (get-in config [:modules-info file :version])
+                                              config.project-version)
+                                 :description (or (get-module-info module config.keys.description)
+                                                  (get-in config [:modules-info file :description]))
+                                 :copyright (or (get-module-info module config.keys.copyright)
+                                                (get-in config [:modules-info file :copyright])
+                                                config.project-copyright)
+                                 :license (or (get-module-info module config.keys.license)
+                                              (get-in config [:modules-info file :license])
+                                              config.project-license)
                                  :items (get-module-docs module config)
                                  :doc-order (or (get-module-info module config.keys.doc-order)
-                                                (get-in config [:project-doc-order file] []))}
+                                                (get-in config [:modules-info file :doc-order])
+                                                (get-in config [:project-doc-order file])
+                                                [])}
     ;; function modules have no version, license, or description keys,
     ;; as there's no way of adding this as a metadata or embed into
     ;; function itself.  So module description is set to a combination
@@ -170,13 +181,15 @@ generated."
     (:function function) (let [docstring (fennel.metadata:get function :fnl/docstring)
                                arglist (fennel.metadata:get function :fnl/arglist)
                                fname (function-name-from-file file)]
-                           {:module file
+                           {:module (get-in config [:modules-info file :name] file)
                             :file file
                             :f-table {fname function}
                             :type :function-module
                             :requirements (get-in config [:test-requirements file] "")
                             :documented? (not (not docstring)) ;; convert to Boolean
-                            :description (.. (gen-function-signature fname arglist config)
+                            :description (.. (get-in config [:modules-info file :description] "")
+                                             "\n"
+                                             (gen-function-signature fname arglist config)
                                              "\n"
                                              (gen-item-documentation docstring config.inline-references))
                             : arglist
@@ -189,7 +202,7 @@ generated."
 (setmetatable
  {: create-sandbox
   : module-info}
- {:__index {:_DESCRIPTION "Module for getting runtime information from fennel files."}})
+ {:__fenneldoc {:_DESCRIPTION "Module for getting runtime information from fennel files."}})
 
 ; LocalWords:  sandboxed Lua loadfile loadstring rawset os io config
 ; LocalWords:  metadata docstring fenneldoc

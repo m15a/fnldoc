@@ -1,4 +1,5 @@
 # Doctest.fnl
+
 Function signature:
 
 ```
@@ -10,5 +11,5 @@ Accepts `module-info` with items to check, and `config` argument.
 
 
 
-<!-- Generated with Fenneldoc v0.1.7
+<!-- Generated with Fenneldoc v0.1.8
      https://gitlab.com/andreyorst/fenneldoc -->

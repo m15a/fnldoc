@@ -17,6 +17,7 @@
         :module-name "_MODULE_NAME"
         :version "_VERSION"}
  :mode "checkdoc"
+ :modules-info {}
  :order "alphabetic"
  :out-dir "./doc"
  :project-copyright "Copyright (C) 2020-2021 Andrey Listopadov"

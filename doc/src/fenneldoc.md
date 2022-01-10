@@ -21,5 +21,5 @@ Copyright (C) 2020-2021 Andrey Listopadov
 License: [MIT](https://gitlab.com/andreyorst/fenneldoc/-/raw/master/LICENSE)
 
 
-<!-- Generated with Fenneldoc v0.1.7
+<!-- Generated with Fenneldoc v0.1.8
      https://gitlab.com/andreyorst/fenneldoc -->
