@@ -130,7 +130,10 @@ with first value corresponding to pcall result."
 (defn get-module-info
   ([module key] (get-module-info module key nil))
   ([module key fallback]
-   (let [info (. module key)]
+   (let [module (match (getmetatable module)
+                  {:__fenneldoc f} f
+                  _ module)
+         info (. module key)]
      (match (type info)
        :function (info) ;; hack for supporting this in macro modules
        :string info
