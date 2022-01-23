@@ -3,18 +3,9 @@ Functions for generating Markdown
 
 **Table of contents**
 
-- [`gen-markdown`](#gen-markdown)
 - [`gen-function-signature`](#gen-function-signature)
 - [`gen-item-documentation`](#gen-item-documentation)
-
-## `gen-markdown`
-Function signature:
-
-```
-(gen-markdown ([module-info config]))
-```
-
-Generate markdown feom `module-info` accordingly to `config`.
+- [`gen-markdown`](#gen-markdown)
 
 ## `gen-function-signature`
 Function signature:
@@ -34,6 +25,15 @@ Function signature:
 
 Generate documentation from `docstring`, and handle inline references
 based on `mode`.
+
+## `gen-markdown`
+Function signature:
+
+```
+(gen-markdown ([module-info config]))
+```
+
+Generate markdown feom `module-info` accordingly to `config`.
 
 
 ---

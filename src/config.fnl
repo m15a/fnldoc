@@ -1,35 +1,47 @@
 (local fennel (require :fennel))
 (import-macros {: defn} :cljlib)
 
-(local config {:fennel-path []
-               :function-signatures true
-               :ignored-args-patterns ["%.%.%." "%_" "%_[^%s]+"]
-               :inline-references :link
-               :insert-comment true
-               :insert-copyright true
-               :insert-license true
-               :insert-version true
-               :keys {:copyright "_COPYRIGHT"
-                      :description "_DESCRIPTION"
-                      :doc-order "_DOC_ORDER"
-                      :license "_LICENSE"
-                      :module-name "_MODULE_NAME"
-                      :version "_VERSION"}
-               :modules-info {}
-               :project-copyright nil
-               :project-version nil
-               :project-license nil
-               :project-doc-order []
-               :mode "checkdoc"
-               :order "alphabetic"
-               :out-dir "./doc"
-               :sandbox true
-               :test-requirements {}
-               :toc true})
+(local deprecated-keys
+  {:project-doc-order "'project-doc-order' is deprecated - use the 'doc-order' key in the 'modules-info' table. This key will be removed in v1.0.0"
+   :keys "'keys' is deprecated - use the 'modules-info' table to provide module information instead. This key will be removed in v1.0.0"})
+
+(local config
+  {:fennel-path []
+   :function-signatures true
+   :ignored-args-patterns ["%.%.%." "%_" "%_[^%s]+"]
+   :inline-references :link
+   :insert-comment true
+   :insert-copyright true
+   :insert-license true
+   :insert-version true
+   :modules-info {}
+   :project-copyright nil
+   :project-version nil
+   :project-license nil
+   :mode "checkdoc"
+   :order "alphabetic"
+   :out-dir "./doc"
+   :sandbox true
+   :test-requirements {}
+   :toc true
+   ;; TODO remove in v1.0.0
+   :project-doc-order []
+   :keys {:copyright "_COPYRIGHT"
+          :description "_DESCRIPTION"
+          :doc-order "_DOC_ORDER"
+          :license "_LICENSE"
+          :module-name "_MODULE_NAME"
+          :version "_VERSION"}})
+
+(local warned {})
 
 (defn process-config [version]
   (match (pcall fennel.dofile :.fenneldoc)
     (true rc) (each [k v (pairs rc)]
+                (match (. deprecated-keys k)
+                  msg (when (not (. warned k))
+                        (io.stderr:write "WARNING: '.fenneldoc': " msg "\n")
+                        (tset warned k true)))
                 (tset config k v))
     (false msg) (when (not (msg:match ".fenneldoc: No such file or directory"))
                   (io.stderr:write msg "\n")))

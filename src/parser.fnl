@@ -127,11 +127,20 @@ with first value corresponding to pcall result."
                 (true module) (values (type module) module :macros)
                 (false msg) (values false msg)))))
 
+(local warned {})
+
 (defn get-module-info
-  ([module key] (get-module-info module key nil))
-  ([module key fallback]
+  ([file module key] (get-module-info file module key nil))
+  ([file module key fallback]
    (let [module (match (getmetatable module)
-                  {:__fenneldoc f} f
+                  {:__fenneldoc f} (do (match (. warned file)
+                                         true nil
+                                         _ (do (io.stderr:write
+                                                "WARNING: '"
+                                                file
+                                                "': use of '__fenneldoc' key in module metatable is deprecated and will be removed in v1.0.0\n")
+                                               (tset warned file true)))
+                                       f)
                   _ module)
          info (. module key)]
      (match (type info)
@@ -150,26 +159,26 @@ generated."
     ;; Ordinary module that returns a table.  If module has keys that
     ;; are specified within the `:keys` section of `.fenneldoc` those
     ;; are looked up in the module for additional info.
-    (:table module module-type) {:module (or (get-module-info module config.keys.module-name)
+    (:table module module-type) {:module (or (get-module-info file module config.keys.module-name)
                                              (get-in config [:modules-info file :name])
                                              file)
                                  :file file
                                  :type module-type
                                  :f-table (if (= module-type :macros) {} module)
                                  :requirements (get-in config [:test-requirements file] "")
-                                 :version (or (get-module-info module config.keys.version)
+                                 :version (or (get-module-info file module config.keys.version)
                                               (get-in config [:modules-info file :version])
                                               config.project-version)
-                                 :description (or (get-module-info module config.keys.description)
+                                 :description (or (get-module-info file module config.keys.description)
                                                   (get-in config [:modules-info file :description]))
-                                 :copyright (or (get-module-info module config.keys.copyright)
+                                 :copyright (or (get-module-info file module config.keys.copyright)
                                                 (get-in config [:modules-info file :copyright])
                                                 config.project-copyright)
-                                 :license (or (get-module-info module config.keys.license)
+                                 :license (or (get-module-info file module config.keys.license)
                                               (get-in config [:modules-info file :license])
                                               config.project-license)
                                  :items (get-module-docs module config)
-                                 :doc-order (or (get-module-info module config.keys.doc-order)
+                                 :doc-order (or (get-module-info file module config.keys.doc-order)
                                                 (get-in config [:modules-info file :doc-order])
                                                 (get-in config [:project-doc-order file])
                                                 [])}
@@ -199,10 +208,8 @@ generated."
     _ (do (io.stderr:write "Error loading " file "\nunhandled error!\n")
           nil)))
 
-(setmetatable
- {: create-sandbox
-  : module-info}
- {:__fenneldoc {:_DESCRIPTION "Module for getting runtime information from fennel files."}})
+{: create-sandbox
+ : module-info}
 
-; LocalWords:  sandboxed Lua loadfile loadstring rawset os io config
-; LocalWords:  metadata docstring fenneldoc
+;; LocalWords:  sandboxed Lua loadfile loadstring rawset os io config
+;; LocalWords:  metadata docstring fenneldoc

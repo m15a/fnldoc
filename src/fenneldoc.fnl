@@ -1,18 +1,3 @@
-(local fenneldoc-info
-       {:_DESCRIPTION "Fenneldoc - generate documentation for Fennel projects.
-
-Generates documentation for Fennel libraries by analyzing project
-metadata at runtime.
-
-**Documentation for other modules**
-
-- [config.fnl](./config.md) - processes configuration file.
-- [parser.fnl](./parser.md) - loads the file and analyzes its metadata providing `module-info`.
-- [markdown.fnl](./markdown.md) - generates Markdown from `module-info`.
-- [args.fnl](./args.md) - functions for processing command line arguments.
-- [doctest.fnl](./doctest.md) - documentation testing.
-- [writer.fnl](./writer.md) - writing markdown into files."})
-
 (local fenneldoc {})
 
 (local process-config (require :config))
@@ -43,7 +28,7 @@ extension, creating it if not exists."
   (each [_ file (ipairs files)]
     (process-file file config)))
 
-(setmetatable fenneldoc {:__index fenneldoc-info})
+fenneldoc
 
 ;; LocalWords:  Andrey Listopadov Fenneldoc metadata runtime config md
 ;; LocalWords:  fnl args doctest

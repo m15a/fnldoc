@@ -10,19 +10,24 @@
  :insert-copyright true
  :insert-license true
  :insert-version true
- :keys {:copyright "_COPYRIGHT"
-        :description "_DESCRIPTION"
-        :doc-order "_DOC_ORDER"
-        :license "_LICENSE"
-        :module-name "_MODULE_NAME"
-        :version "_VERSION"}
  :mode "checkdoc"
- :modules-info {}
+ :modules-info {:src/fenneldoc.fnl {:description "Fenneldoc - generate documentation for Fennel projects.
+
+Generates documentation for Fennel libraries by analyzing project
+metadata at runtime.
+
+**Documentation for other modules**
+
+- [config.fnl](./config.md) - processes configuration file.
+- [parser.fnl](./parser.md) - loads the file and analyzes its metadata providing `module-info`.
+- [markdown.fnl](./markdown.md) - generates Markdown from `module-info`.
+- [args.fnl](./args.md) - functions for processing command line arguments.
+- [doctest.fnl](./doctest.md) - documentation testing.
+- [writer.fnl](./writer.md) - writing markdown into files."}
+                :src/parser.fnl {:description "Module for getting runtime information from fennel files."}}
  :order "alphabetic"
  :out-dir "./doc"
  :project-copyright "Copyright (C) 2020-2021 Andrey Listopadov"
- :project-doc-order {:src/markdown.fnl ["gen-markdown"
-                                        "gen-function-signature"]}
  :project-license "[MIT](https://gitlab.com/andreyorst/fenneldoc/-/raw/master/LICENSE)"
  :project-version "v0.1.8"
  :sandbox true

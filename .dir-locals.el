@@ -5,6 +5,7 @@
                           'fennel-mode
                           `((,(rx word-start
                                   (group (or "fn*"
+                                             "defn"
                                              "try"
                                              "catch"
                                              "finally"
@@ -40,7 +41,9 @@
                  (eval . (put 'when-let 'fennel-indent-function 1))
                  (eval . (put 'if-let 'fennel-indent-function 1))
                  (eval . (put 'fn* 'fennel-indent-function 'defun))
+                 (eval . (put 'defn 'fennel-indent-function 'defun))
                  (eval . (put 'fn* 'fennel-doc-string-elt 2))
+                 (eval . (put 'defn 'fennel-doc-string-elt 2))
                  (eval . (put 'defmulti 'fennel-doc-string-elt 2))
                  (eval . (put 'try 'fennel-indent-function 0))
                  (eval . (put 'catch 'fennel-indent-function 1))
