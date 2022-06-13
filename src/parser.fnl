@@ -87,14 +87,20 @@ functions to only throw warning, and not error."
         (string.gsub (.. ".*" sep) "")
         (string.gsub "%.fnl$" ""))))
 
-(defn get-module-docs [module config]
-  (let [docs {}]
-    (each [id val (pairs module)]
-      (when (and (not= (string.sub id 1 1) :_) ;; ignore keys starting with `_`
-                 (not (. config.keys id))) ;; ignore special keys, like `:version`
-        (tset docs id {:docstring (fennel.metadata:get val :fnl/docstring)
-                       :arglist (fennel.metadata:get val :fnl/arglist)})))
-    docs))
+(defn get-module-docs
+  ([module config]
+   (get-module-docs {} module config nil))
+  ([docs module config parent]
+   (each [id val (pairs module)]
+     (when (and (not= (string.sub id 1 1) :_) ;; ignore keys starting with `_`
+                (not (. config.keys id))) ;; ignore special keys, like `:version`
+       (match (type val)
+         :table (get-module-docs docs val config id)
+         _ (tset docs
+                 (if parent (.. parent "." id) id)
+                 {:docstring (fennel.metadata:get val :fnl/docstring)
+                  :arglist (fennel.metadata:get val :fnl/arglist)}))))
+   docs))
 
 (fn module-from-file [file]
   (let [sep (package.config:sub 1 1)
