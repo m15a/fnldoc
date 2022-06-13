@@ -1,4 +1,11 @@
-## Fenneldoc 0.1.8 (20201-28-09)
+## Fenneldoc 0.1.9 (2022-13-06)
+
+- Deprecate `:keys` config entry.
+- Support for storing module info in the `.fenneldoc` config file.
+- Support `__fenneldoc` metatable key for module info.
+- Support nested modules.
+
+## Fenneldoc 0.1.8 (2021-28-09)
 
 - Create a shallow copy of `_G` when running tests with sandbox turned off.
 
