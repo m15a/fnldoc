@@ -1,4 +1,4 @@
-# Writer.fnl (v0.1.9)
+# Writer.fnl (v1.0.0)
 
 **Table of contents**
 

@@ -1,4 +1,4 @@
-# Parser.fnl (v0.1.9)
+# Parser.fnl (v1.0.0)
 
 **Table of contents**
 

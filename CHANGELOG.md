@@ -1,3 +1,9 @@
+## Fenneldoc 1.0.0 (2022-31-10)
+
+- Migrate to the latest cljlib, rewriting code to use namespaces, and immutable data structures.
+- Remove `:keys`, and `:project-doc-order`.
+- Allow test skipping via the `:skip-test` metadata for code blocks.
+
 ## Fenneldoc 0.1.9 (2022-13-06)
 
 - Deprecate `:keys` config entry.

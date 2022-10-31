@@ -1,4 +1,4 @@
-# Markdown.fnl (v0.1.9)
+# Markdown.fnl (v1.0.0)
 
 **Table of contents**
 

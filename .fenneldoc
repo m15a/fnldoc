@@ -28,7 +28,7 @@ metadata at runtime.
  :out-dir "./doc"
  :project-copyright "Copyright (C) 2020-2022 Andrey Listopadov"
  :project-license "[MIT](https://gitlab.com/andreyorst/fenneldoc/-/raw/master/LICENSE)"
- :project-version "v0.1.9"
+ :project-version "v1.0.0"
  :sandbox true
  :test-requirements {}
  :toc true}

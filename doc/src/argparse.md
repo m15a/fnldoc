@@ -1,4 +1,4 @@
-# Argparse.fnl (v0.1.9)
+# Argparse.fnl (v1.0.0)
 
 **Table of contents**
 

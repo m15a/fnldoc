@@ -1,4 +1,4 @@
-# Doctest.fnl (v0.1.9)
+# Doctest.fnl (v1.0.0)
 
 **Table of contents**
 

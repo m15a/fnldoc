@@ -1,4 +1,4 @@
-# Config.fnl (v0.1.9)
+# Config.fnl (v1.0.0)
 
 **Table of contents**
 
