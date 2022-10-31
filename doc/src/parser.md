@@ -1,5 +1,4 @@
-# Parser.fnl (v0.1.8)
-Module for getting runtime information from fennel files.
+# Parser.fnl (v0.1.9)
 
 **Table of contents**
 
@@ -32,7 +31,7 @@ functions to only throw warning, and not error.
 Function signature:
 
 ```
-(module-info ([file config]))
+(module-info [file config])
 ```
 
 Returns table containing all relevant information accordingly to
@@ -42,10 +41,10 @@ generated.
 
 ---
 
-Copyright (C) 2020-2021 Andrey Listopadov
+Copyright (C) 2020-2022 Andrey Listopadov
 
 License: [MIT](https://gitlab.com/andreyorst/fenneldoc/-/raw/master/LICENSE)
 
 
-<!-- Generated with Fenneldoc v0.1.8
+<!-- Generated with Fenneldoc v0.1.9
      https://gitlab.com/andreyorst/fenneldoc -->

@@ -1,4 +1,4 @@
-# Fenneldoc.fnl (v0.1.8)
+# Fenneldoc.fnl (v0.1.9)
 Fenneldoc - generate documentation for Fennel projects.
 
 Generates documentation for Fennel libraries by analyzing project
@@ -14,12 +14,13 @@ metadata at runtime.
 - [writer.fnl](./writer.md) - writing markdown into files.
 
 
+
 ---
 
-Copyright (C) 2020-2021 Andrey Listopadov
+Copyright (C) 2020-2022 Andrey Listopadov
 
 License: [MIT](https://gitlab.com/andreyorst/fenneldoc/-/raw/master/LICENSE)
 
 
-<!-- Generated with Fenneldoc v0.1.8
+<!-- Generated with Fenneldoc v0.1.9
      https://gitlab.com/andreyorst/fenneldoc -->

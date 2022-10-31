@@ -1,22 +1,29 @@
-(local fennel (require :fennel))
-(local {: keys : hash-set : conj : empty?} (require :cljlib))
-(local {: create-sandbox} (require :parser))
-(import-macros {: when-let : defn} :cljlib)
+(import-macros {: when-let : defn : defn- : ns} :cljlib)
 
-(defn extract-tests [fn-doc]
+(ns doctest
+  "Documentation testing facilities."
+  (:require
+   [cljlib :refer [keys hash-set conj empty?]]
+   [parser :refer [create-sandbox]]
+   [fennel]))
+
+(defn- extract-tests [name fn-doc]
   (icollect [test (fn-doc:gmatch "\n?```%s*fennel.-\n```")]
-    (-> test
-        (string.gsub "\n?%s*```%s*fennel" "")
-        (string.gsub "\n%s*```" "")
-        (string.gsub "^\n" ""))))
+    (if (not (string.match test "\n?%s*```%s*fennel[ \t]+:skip%-test"))
+        (-> test
+            (string.gsub "\n?%s*```%s*fennel" "")
+            (string.gsub "\n%s*```" "")
+            (string.gsub "^\n" ""))
+        (do (io.stderr:write "skipping test in '" (tostring name) "'\n")
+            nil))))
 
-(defn copy-table [t]
+(defn- copy-table [t]
   (collect [k v (pairs t)]
     (values k v)))
 
 (table.insert (or package.loaders package.searchers) fennel.searcher)
 
-(defn run-test [test requirements module-info sandbox?]
+(defn- run-test [test requirements module-info sandbox?]
   (let [env (if sandbox?
                 (create-sandbox module-info.file
                                 {:print (fn [...]
@@ -38,20 +45,20 @@
       (tset env fname fval))
     (pcall fennel.eval (.. requirements test) {:env env})))
 
-(defn run-tests-for-fn [func docstring module-info sandbox?]
+(defn- run-tests-for-fn [func docstring module-info sandbox?]
   (var error? false)
-  (each [n test (ipairs (extract-tests docstring))]
+  (each [n test (ipairs (extract-tests func docstring))]
     (match (run-test test module-info.requirements module-info sandbox?)
       (false msg) (let [msg (string.gsub (tostring msg) "^%[.-%]:%d+:%s*" "")]
                     (io.stderr:write "In file: '" module-info.file "'\n"
-                                     "Error in docstring for: " func "\n"
+                                     "Error in docstring for: '" func "'\n"
                                      "In test:\n``` fennel\n" test "\n```\n"
                                      "Error:\n"
                                      msg "\n\n")
                     (set error? true))))
   error?)
 
-(defn check-argument [func argument docstring file seen]
+(defn- check-argument [func argument docstring file seen]
   (when (not= argument "")
     (let [argument-pat (.. ":?" (argument:gsub "([][().%+-*?$^])" "%%%1"))]
       (when (not (or (string.find docstring (.. "`" argument-pat "`"))
@@ -72,7 +79,7 @@
       empty?
       not))
 
-(defn check-function-arglist [func arglist docstring {: file} seen patterns]
+(defn- check-function-arglist [func arglist docstring {: file} seen patterns]
   (let [docstring (string.gsub docstring "\n?```.-\n```\n?" "")]
     (each [_ argument (ipairs arglist)]
       (let [argument (-> argument
@@ -88,7 +95,7 @@
               (check-argument func argument docstring file seen)))
         (conj seen argument)))))
 
-(defn check-function [func docstring arglist module-info config]
+(defn- check-function [func docstring arglist module-info config]
   (if (or (not docstring) (= docstring ""))
       (do (if (= module-info.type :function-module)
               (io.stderr:write "WARNING: file '" module-info.file "' exports undocumented value\n")
@@ -98,7 +105,7 @@
       (do (check-function-arglist func arglist docstring module-info (hash-set) config.ignored-args-patterns)
           (run-tests-for-fn func docstring module-info config.sandbox))))
 
-(defn doctest
+(defn test
   "Run tests contained in documentations.
 Accepts `module-info` with items to check, and `config` argument."
   [module-info config]
@@ -121,4 +128,4 @@ Accepts `module-info` with items to check, and `config` argument."
 
 doctest
 
-; LocalWords:  docstring backtics
+;; LocalWords:  docstring backtics

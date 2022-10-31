@@ -6,6 +6,9 @@ FNLPATHS = src cljlib
 FNLSOURCES = $(wildcard src/*.fnl)
 FNLARGS = $(foreach path,$(FNLPATHS),--add-fennel-path $(path)/?.fnl)
 FNLARGS += --no-metadata --globals "*" --require-as-include --compile
+FNLARGS += --add-fennel-path "cljlib/?/init.fnl"
+FNLARGS += --add-package-path "cljlib/?/init.lua"
+FNLARGS += --add-macro-path "cljlib/?.fnl"
 VERSION ?= $(shell git describe --abbrev=0 || "unknown")
 
 .PHONY: build clean help install doc
@@ -15,7 +18,7 @@ build: fenneldoc
 fenneldoc: $(FNLSOURCES)
 	echo '#!/usr/bin/env $(LUA)' > $@
 	echo 'FENNELDOC_VERSION = [[$(VERSION)]]' >> $@
-	FENNEL_MACRO_PATH="cljlib/?.fnl" $(FENNEL) $(FNLARGS) --add-package-path ./?.lua src/fenneldoc.fnl >> $@
+	$(FENNEL) $(FNLARGS) --add-package-path ./?.lua src/fenneldoc.fnl >> $@
 	chmod 755 $@
 	./fenneldoc --config --project-version $(VERSION)
 

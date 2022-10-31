@@ -41,11 +41,6 @@ This means that all markdown features are supported in the docstring, such as te
 For example, here's how you might define information about your `my-module.fnl` file:
 
 ``` clojure
-(local my-module-info {:_VERSION "0.1.0"
-                       :_DESCRIPTION "Tag line or short description"
-                       :_COPYRIGHT "Copyright info that appears at the end of the document"
-                       :_LICENSE "[license](Link to your license)"})
-
 (local my-module {})
 
 (fn my-module.foo [args]
@@ -55,10 +50,21 @@ For example, here's how you might define information about your `my-module.fnl` 
   "bar's docstring, also see `foo'"
   (my-module.foo args))
 
-(setmetatable my-module {:__index my-module-info})
+my-module
 ```
 
-Running `fenneldoc my-module.fnl` with default config will procure `doc/my-module.md` with the following contents:
+Additionally, you can add a description for the entire module, as well as the author name, copyright, and license via the project-wide `.fenneldoc` configuration file:
+
+```clojure
+{:modules-info
+ {"my-module.fnl"
+  {:version "0.1.0"
+   :description "Tag line or short description"
+   :copyright "Copyright info that appears at the end of the document"
+   :license "[license](Link to your license)"}}}
+```
+
+Running `fenneldoc my-module.fnl` with this config will procure `doc/my-module.md` with the following contents:
 
 `````` markdown
 # My-module.fnl (0.1.0)
@@ -124,38 +130,13 @@ For example we have a module with two functions:
  :another-function another-function}
 ```
 
-Because order of the items in exported table is arbitrary, Fenneldoc sorts the table alphabetically by default.
+Because order of the items in the exported table is arbitrary, Fenneldoc sorts the table alphabetically by default to achieve reproducible results.
 Thus the order of the documentation will be `another-function` followed by `first-function`.
-You can override this behavior by adding `_DOC_ORDER` key into the table set to the `__index` metamethod:
-
-``` clojure
-(setmetatable
- {:first-function first-function
-  :another-function another-function}
- {:__index
-  {:_DOC_ORDER [:first-function :another-function]}})
-```
-
-Now the order will be preserved, and `first-function` will come first in generated documentation.
-Note, that you don't need to specify all the keys of your module if you don't care about some specific functions of you module - any missing keys will be sorted alphabetically.
-
-``` clojure
-(setmetatable
- {:first-function first-function
-  :another-function another-function
-  :some some
-  :extra extra
-  :stuff stuff}
- {:__index
-  {:_DOC_ORDER [:first-function :another-function]}})
-```
-
-The order of items in the case above will be `first-function`, `another-function`, `extra`, `some`, `stuff`.
-Note, that the doc order also can be specified in `.fenneldoc` config file:
+You can override this behavior by specifying the `:doc-order` key into the respecting file entry under the `:modules-info` key in the configuration file:
 
 ``` clojure
 {;; rest of config
- :project-doc-order {"path/to/file.fnl" [:first-function :another-function]}}
+ :modules-info {"path/to/the/file.fnl" {:doc-order [:first-function :another-function]}}}
 ```
 
 If you wish to sort items differently from alphabetic order, you can specify either `reverse-alphabetic`, or sorting function.
@@ -212,6 +193,27 @@ You do so by writing piece of code as a string under the key, which represents f
 ```
 
 
+#### Skipping tests
+
+Sometimes, you'll want to write a general piece of example code in your documentation that you just don't want to (or it is just impossible) test, but still have the syntax highlighting for the code block in the generated documentation.
+For this purpose you can use `:skip-test` right after the first code fence:
+
+```clojure
+(fn random-number []
+  "Generates a random number between 0 and 100.
+# Examples
+Here's a typical representation of a REPL session in the documentation:
+
+``` fennel :skip-test
+>> (random-number)
+42
+```"
+  (math.random 100))
+```
+
+This test will not be evaluated.
+
+
 ## Inline references
 
 Fenneldoc supports automatic resolution of inline references in documentation strings.
@@ -230,13 +232,11 @@ Configuration file is simply a fennel file without extension, which exports a ta
 Example of configuration file:
 
 ``` clojure
-{:keys {:version :VERSION}
- :toc false
+{:toc false
  :out-dir "./documentation"}
 ```
 
-Here, we configure Fenneldoc to look for module version via `:VERSION` key, as opposed to default `:_VERSION`.
-Next we say that we do not need table of contents, by specifying `:toc false`, change output directory to `./documentation`, and suppress all messages and error reports.
+Here, we configure Fenneldoc to omit table of contents, by specifying `:toc false`, and change output directory to `./documentation`.
 
 There are other options that can be set up on per project basis, see [config.md](./doc/src/config.md) file for more info.
 Full set of available options can also be seen by calling `fenneldoc --help`.

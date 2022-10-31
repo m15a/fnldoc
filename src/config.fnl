@@ -1,11 +1,17 @@
-(local fennel (require :fennel))
-(import-macros {: defn} :cljlib)
+(import-macros
+ {: defn : ns : defn- : def}
+ :cljlib)
 
-(local deprecated-keys
-  {:project-doc-order "'project-doc-order' is deprecated - use the 'doc-order' key in the 'modules-info' table. This key will be removed in v1.0.0"
-   :keys "'keys' is deprecated - use the 'modules-info' table to provide module information instead. This key will be removed in v1.0.0"})
+(ns config-utils
+  (:require [fennel :refer [view dofile] :as fennel]))
 
-(local config
+(def :private
+  deprecated-keys
+  {:project-doc-order "'project-doc-order' was deprecated and no longer supported - use the 'doc-order' key in the 'modules-info' table."
+   :keys "'keys' was deprecated and no longer supported - use the 'modules-info' table to provide module information instead."})
+
+(def :private
+  config
   {:fennel-path []
    :function-signatures true
    :ignored-args-patterns ["%.%.%." "%_" "%_[^%s]+"]
@@ -23,20 +29,13 @@
    :out-dir "./doc"
    :sandbox true
    :test-requirements {}
-   :toc true
-   ;; TODO remove in v1.0.0
-   :project-doc-order []
-   :keys {:copyright "_COPYRIGHT"
-          :description "_DESCRIPTION"
-          :doc-order "_DOC_ORDER"
-          :license "_LICENSE"
-          :module-name "_MODULE_NAME"
-          :version "_VERSION"}})
+   :toc true})
 
-(local warned {})
+(def :private
+  warned {})
 
 (defn process-config [version]
-  (match (pcall fennel.dofile :.fenneldoc)
+  (match (pcall dofile :.fenneldoc)
     (true rc) (each [k v (pairs rc)]
                 (match (. deprecated-keys k)
                   msg (when (not (. warned k))
@@ -63,7 +62,7 @@ Default configuration:
 
 ``` fennel
 "
-     (fennel.view config)
+     (view config)
      "
 ```
 
@@ -100,53 +99,10 @@ Default configuration:
 - `license` - whether to insert license information from the module.
 - `toc` - whether to generate table of contents.
 - `out-dir` - path where to put documentation files.
-- `keys` - a table of [special keys](#special-keys).
 - `order` - sorting of items that were not given particular order.
 Supported algorithms: alphabetic, reverse-alphabetic.
 You also can specify a custom sorting function for this key.
 - `sandbox` - whether to sandbox loading code and running documentation tests.
-
-## Special keys
-
-Special keys, are considered special, because they alter how
-information about you module is gathered.  The following keys are
-supported by `fenneldoc`:
-
-- `license-key` -  license information of the module.
-- `description-key` - the description of the module.
-- `copyright-key` - copyright information of the module.
-- `doc-order-key` - order of items of the module.
-- `version-key` - the version of the module.
-
-When found in exported module, either in the module itself, `__index`,
-or `__fenneldoc` metatable keys, values stored under keys specified by
-these fields will be used as additional information about module. For
-example, if you want your module to specify license in exported table
-under a different key, you can set `license-key` to desired value, and
-then specify license under this key in you module:
-
-`.fenneldoc`:
-
-``` fennel
-{:keys {:license-key \"project-license\"}}
-```
-
-`identity.fnl`:
-
-``` fennel
-(fn identity [x] x)
-
-{:project-license \"MIT\"
- : identity}
-
-;; or
-(setmetatable
- {: identity}
- {:__fenneldoc {:project-license \"MIT\"}})
-```
-
-Now `fenneldoc` will know that information about license is stored
-under `project-license` key.
 
 ## Project information
 
@@ -161,15 +117,10 @@ provides the following set of keys for that:
 - `project-version` - version information about your project that
   should appear in each file. This version can be overridden for
   certain files by specifying version in the module info.
-- `project-doc-order` - an associative table where keys are filenames
-  and values are sequential tables with headings in preferred order.
-- `modules-info` - a table that stores all the same data as in
-  [special keys](#special-keys) section for each project module
-  separately.  Handy for storing module information without cluttering
-  the module file and avoiding adding long strings with whole module
-  description at runtime.  Supported keys `:description`,
-  `:copyright`, `:doc-order`, `:license`, `:name`, `:version`.
-  For example:
+- `modules-info` - an associative table that holds file names and
+  information about the modules, contained in those.  Supported keys
+  `:description`, `:copyright`, `:doc-order`, `:license`, `:name`,
+  `:version`.  For example:
 
   ```fennel
   {:modules-info {:some-module.fnl {:description \"some module description\"
@@ -178,6 +129,6 @@ provides the following set of keys for that:
                                     :doc-order [\"some-fn1\" \"some-fn2\" \"etc\"]}}}
   ```"))
 
-process-config
+config-utils
 
-; LocalWords:  checkdoc fenneldoc config
+;; LocalWords:  checkdoc fenneldoc config

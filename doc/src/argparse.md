@@ -1,18 +1,17 @@
-# Doctest.fnl (v0.1.9)
+# Argparse.fnl (v0.1.9)
 
 **Table of contents**
 
-- [`test`](#test)
+- [`process-args`](#process-args)
 
-## `test`
+## `process-args`
 Function signature:
 
 ```
-(test [module-info config])
+(process-args [config])
 ```
 
-Run tests contained in documentations.
-Accepts `module-info` with items to check, and `config` argument.
+Process command line arguments based on `config`.
 
 
 ---

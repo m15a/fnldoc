@@ -1,50 +1,19 @@
-;;; Directory Local Variables
-;;; For more information see (info "(emacs) Directory Variables")
-
-((fennel-mode . ((eval . (font-lock-add-keywords
-                          'fennel-mode
-                          `((,(rx word-start
-                                  (group (or "fn*"
-                                             "defn"
-                                             "try"
-                                             "catch"
-                                             "finally"
-                                             "if-let"
-                                             "if-some"
-                                             "when-let"
-                                             "when-some"
-                                             "empty"
-                                             "into"
-                                             "when-meta"
-                                             "with-meta"
-                                             "meta"
-                                             "meta"
-                                             "def"
-                                             "defmulti"
-                                             "defmethod"
-                                             "defonce"
-                                             "deftest"
-                                             "testing"
-                                             "assert-eq"
-                                             "assert-ne"
-                                             "assert-is"
-                                             "assert-not"))
-                                  word-end)
-                             1 'font-lock-keyword-face))))
-                 (eval . (put 'when-meta 'fennel-indent-function 'defun))
-                 (eval . (put 'defmethod 'fennel-indent-function 'defun))
-                 (eval . (put 'defmulti 'bfennel-indent-function 'defun))
-                 (eval . (put 'deftest 'fennel-indent-function 'defun))
-                 (eval . (put 'testing 'fennel-indent-function 'defun))
-                 (eval . (put 'when-some 'fennel-indent-function 1))
-                 (eval . (put 'if-some 'fennel-indent-function 1))
-                 (eval . (put 'when-let 'fennel-indent-function 1))
-                 (eval . (put 'if-let 'fennel-indent-function 1))
-                 (eval . (put 'fn* 'fennel-indent-function 'defun))
+((fennel-mode . ((eval . (put 'ns 'fennel-doc-string-elt 2))
+                 (eval . (put 'ns 'fennel-indent-function 1))
+                 (eval . (put 'def 'fennel-indent-function 'defun))
                  (eval . (put 'defn 'fennel-indent-function 'defun))
-                 (eval . (put 'fn* 'fennel-doc-string-elt 2))
                  (eval . (put 'defn 'fennel-doc-string-elt 2))
-                 (eval . (put 'defmulti 'fennel-doc-string-elt 2))
-                 (eval . (put 'try 'fennel-indent-function 0))
-                 (eval . (put 'catch 'fennel-indent-function 1))
-                 (eval . (put 'finally 'fennel-indent-function 0)))))
+                 (eval . (put 'defn- 'fennel-indent-function 'defun))
+                 (eval . (put 'defn- 'fennel-doc-string-elt 2))
+                 (eval . (put 'fn* 'fennel-indent-function 'defun))
+                 (eval . (put 'fn* 'fennel-doc-string-elt 2))
+                 (eval . (put 'if-let 'fennel-indent-function 1))
+                 (eval . (put 'when-let 'fennel-indent-function 1))
+                 (eval . (put 'if-some 'fennel-indent-function 1))
+                 (eval . (put 'when-some 'fennel-indent-function 1))
+                 (eval . (put 'defmulti 'fennel-indent-function 'defun))
+                 (eval . (put 'defmethod 'fennel-indent-function 2))
+                 (eval . (put 'defmethod 'fennel-doc-string-elt 2))
+                 (eval . (font-lock-add-keywords 'fennel-mode '(("\\<\\(?:def\\(?:m\\(?:ethod\\|ulti\\)\\|n-?\\)?\\|fn\\*\\|if-\\(?:let\\|some\\)\\|ns\\|time\\|when-\\(?:let\\|some\\)\\)\\>" . 'font-lock-keyword-face))))
+                 (eval . (font-lock-add-keywords 'fennel-mode '(("\\s(\\(?:defn-?\\|fn\\*\\)[[:space:]]+\\(\\(?:\\sw\\|\\s_\\|-\\|_\\)+\\)" 1 'font-lock-function-name-face))))
+                 (eval . (add-to-list 'imenu-generic-expression `(nil "\\s(\\(?:defn-?\\|fn\\*\\)[[:space:]]+\\(\\(?:\\sw\\|\\s_\\|-\\|_\\)+\\)" 1))))))

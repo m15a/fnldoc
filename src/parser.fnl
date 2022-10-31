@@ -1,13 +1,15 @@
-(local fennel (require :fennel))
-(local compiler (require :fennel.compiler))
-(local {: get-in} (require :cljlib))
-(local {: gen-function-signature
-        : gen-item-documentation}
-       (require :markdown))
+(import-macros {: defn : defn- : ns : def} :cljlib)
 
-(import-macros {: defn} :cljlib)
+(ns parser
+  "A module that evaluates Fennel code and obtains documentation for each
+item in the module.  Supports sandboxing."
+  (:require
+   [fennel :refer [dofile metadata]]
+   [fennel.compiler]
+   [cljlib :refer [get-in]]
+   [markdown :refer [gen-function-signature gen-item-signature]]))
 
-(defn sandbox-module [module file]
+(defn- sandbox-module [module file]
   (setmetatable
    {}
    {:__index (fn []
@@ -34,8 +36,7 @@ specified function name in the sandbox.  For example, you can wrap IO
 functions to only throw warning, and not error."
   ([file] (create-sandbox file {}))
   ([file overrides]
-   (let [env { ;; allowed modules
-              : assert
+   (let [env {: assert                  ; allowed modules
               : bit32
               : collectgarbage
               : coroutine
@@ -60,15 +61,15 @@ functions to only throw warning, and not error."
               : unpack
               : utf8
               : xpcall
-              ;; disallowed modules
-              :load nil
+
+              :load nil                 ; disallowed modules
               :loadfile nil
               :loadstring nil
               :rawget nil
               :rawset nil
               :module nil
-              ;; sandboxed modules
-              :arg []
+
+              :arg []                   ; sandboxed modules
               :print (fn []
                        (io.stderr:write "ERROR: IO detected in file: " file " while loading\n")
                        (os.exit 1))
@@ -81,49 +82,49 @@ functions to only throw warning, and not error."
        (tset env k v))
      env)))
 
-(defn function-name-from-file [file]
+(defn- function-name-from-file [file]
   (let [sep (package.config:sub 1 1)]
     (-> file
         (string.gsub (.. ".*" sep) "")
         (string.gsub "%.fnl$" ""))))
 
-(defn get-module-docs
+(defn- get-module-docs
   ([module config]
    (get-module-docs {} module config nil))
   ([docs module config parent]
    (each [id val (pairs module)]
-     (when (and (not= (string.sub id 1 1) :_) ;; ignore keys starting with `_`
-                (not (. config.keys id))) ;; ignore special keys, like `:version`
+     (when (not= (string.sub id 1 1) :_)
        (match (type val)
          :table (get-module-docs docs val config id)
          _ (tset docs
                  (if parent (.. parent "." id) id)
-                 {:docstring (fennel.metadata:get val :fnl/docstring)
-                  :arglist (fennel.metadata:get val :fnl/arglist)}))))
+                 {:docstring (metadata:get val :fnl/docstring)
+                  :arglist (metadata:get val :fnl/arglist)}))))
    docs))
 
-(fn module-from-file [file]
+(defn- module-from-file [file]
   (let [sep (package.config:sub 1 1)
         module (-> file
                    (string.gsub sep ".")
                    (string.gsub "%.fnl$" ""))]
     module))
 
-(defn require-module
+(defn- require-module
   "Require file as module in protected call.  Returns multiple values
 with first value corresponding to pcall result."
   [file config]
   (let [env (when config.sandbox
               (create-sandbox file))]
-    (match (pcall fennel.dofile
+    (match (pcall dofile
                   file
                   {:useMetadata true
                    :env env
                    :allowedGlobals false}
                   (module-from-file file))
-      (true module) (values (type module) module :functions)
+      (true ?module) (let [module (or ?module {})]
+                       (values (type module) module :functions))
       ;; try again, now with compiler env
-      (false) (match (pcall fennel.dofile
+      (false) (match (pcall dofile
                             file
                             {:useMetadata true
                              :env :_COMPILER
@@ -133,28 +134,8 @@ with first value corresponding to pcall result."
                 (true module) (values (type module) module :macros)
                 (false msg) (values false msg)))))
 
-(local warned {})
-
-(defn get-module-info
-  ([file module key] (get-module-info file module key nil))
-  ([file module key fallback]
-   (let [module (match (getmetatable module)
-                  {:__fenneldoc f} (do (match (. warned file)
-                                         true nil
-                                         _ (do (io.stderr:write
-                                                "WARNING: '"
-                                                file
-                                                "': use of '__fenneldoc' key in module metatable is deprecated and will be removed in v1.0.0\n")
-                                               (tset warned file true)))
-                                       f)
-                  _ module)
-         info (. module key)]
-     (match (type info)
-       :function (info) ;; hack for supporting this in macro modules
-       :string info
-       :table info
-       :nil fallback
-       _ nil))))
+(def :private
+  warned {})
 
 (defn module-info
   "Returns table containing all relevant information accordingly to
@@ -162,30 +143,21 @@ with first value corresponding to pcall result."
 generated."
   [file config]
   (match (require-module file config)
-    ;; Ordinary module that returns a table.  If module has keys that
-    ;; are specified within the `:keys` section of `.fenneldoc` those
-    ;; are looked up in the module for additional info.
-    (:table module module-type) {:module (or (get-module-info file module config.keys.module-name)
-                                             (get-in config [:modules-info file :name])
+    (:table module module-type) {:module (or (get-in config [:modules-info file :name])
                                              file)
                                  :file file
                                  :type module-type
                                  :f-table (if (= module-type :macros) {} module)
                                  :requirements (get-in config [:test-requirements file] "")
-                                 :version (or (get-module-info file module config.keys.version)
-                                              (get-in config [:modules-info file :version])
+                                 :version (or (get-in config [:modules-info file :version])
                                               config.project-version)
-                                 :description (or (get-module-info file module config.keys.description)
-                                                  (get-in config [:modules-info file :description]))
-                                 :copyright (or (get-module-info file module config.keys.copyright)
-                                                (get-in config [:modules-info file :copyright])
+                                 :description (get-in config [:modules-info file :description])
+                                 :copyright (or (get-in config [:modules-info file :copyright])
                                                 config.project-copyright)
-                                 :license (or (get-module-info file module config.keys.license)
-                                              (get-in config [:modules-info file :license])
+                                 :license (or (get-in config [:modules-info file :license])
                                               config.project-license)
                                  :items (get-module-docs module config)
-                                 :doc-order (or (get-module-info file module config.keys.doc-order)
-                                                (get-in config [:modules-info file :doc-order])
+                                 :doc-order (or (get-in config [:modules-info file :doc-order])
                                                 (get-in config [:project-doc-order file])
                                                 [])}
     ;; function modules have no version, license, or description keys,
@@ -193,8 +165,8 @@ generated."
     ;; function itself.  So module description is set to a combination
     ;; of function docstring and signature if allowed by config.
     ;; Table of contents is also omitted.
-    (:function function) (let [docstring (fennel.metadata:get function :fnl/docstring)
-                               arglist (fennel.metadata:get function :fnl/arglist)
+    (:function function) (let [docstring (metadata:get function :fnl/docstring)
+                               arglist (metadata:get function :fnl/arglist)
                                fname (function-name-from-file file)]
                            {:module (get-in config [:modules-info file :name] file)
                             :file file
@@ -211,11 +183,10 @@ generated."
                             :items {}})
     (false err) (do (io.stderr:write "Error loading " file "\n" err "\n")
                     nil)
-    _ (do (io.stderr:write "Error loading " file "\nunhandled error!\n")
+    _ (do (io.stderr:write "Error loading " file "\nunhandled error!\n" (tostring _))
           nil)))
 
-{: create-sandbox
- : module-info}
+parser
 
 ;; LocalWords:  sandboxed Lua loadfile loadstring rawset os io config
 ;; LocalWords:  metadata docstring fenneldoc

@@ -2,20 +2,14 @@
 ;; Configuration file for Fenneldoc v0.1.9
 ;; https://gitlab.com/andreyorst/fenneldoc
 
-{:fennel-path ["cljlib/?.fnl" "src/?.fnl"]
+{:fennel-path {}
  :function-signatures true
- :ignored-args-patterns ["%.%.%."]
+ :ignored-args-patterns ["%.%.%." "%_" "%_[^%s]+"]
  :inline-references "link"
  :insert-comment true
  :insert-copyright true
  :insert-license true
  :insert-version true
- :keys {:copyright "_COPYRIGHT"
-        :description "_DESCRIPTION"
-        :doc-order "_DOC_ORDER"
-        :license "_LICENSE"
-        :module-name "_MODULE_NAME"
-        :version "_VERSION"}
  :mode "checkdoc"
  :modules-info {:src/fenneldoc.fnl {:description "Fenneldoc - generate documentation for Fennel projects.
 
@@ -29,12 +23,10 @@ metadata at runtime.
 - [markdown.fnl](./markdown.md) - generates Markdown from `module-info`.
 - [args.fnl](./args.md) - functions for processing command line arguments.
 - [doctest.fnl](./doctest.md) - documentation testing.
-- [writer.fnl](./writer.md) - writing markdown into files."}
-                :src/parser.fnl {:description "Module for getting runtime information from fennel files."}}
+- [writer.fnl](./writer.md) - writing markdown into files."}}
  :order "alphabetic"
  :out-dir "./doc"
- :project-copyright "Copyright (C) 2020-2021 Andrey Listopadov"
- :project-doc-order {}
+ :project-copyright "Copyright (C) 2020-2022 Andrey Listopadov"
  :project-license "[MIT](https://gitlab.com/andreyorst/fenneldoc/-/raw/master/LICENSE)"
  :project-version "v0.1.9"
  :sandbox true

@@ -1,13 +1,13 @@
-(local fenneldoc {})
-
-(local process-config (require :config))
-(local process-args (require :args))
-(local test-module (require :doctest))
-(local write-doc (require :writer))
-(local {: module-info} (require :parser))
-(local {: gen-markdown} (require :markdown))
-
-(import-macros {: defn} :cljlib)
+(import-macros {: defn : ns} :cljlib)
+(ns fenneldoc
+  "main ns"
+  (:require
+   [config :refer [process-config]]
+   [argparse :refer [process-args]]
+   [doctest :refer [test]]
+   [parser :refer [module-info]]
+   [markdown :refer [gen-markdown]]
+   [writer :refer [write-docs]]))
 
 (defn process-file
   "Accepts `file` as path to some Fennel module, and `config` table.
@@ -16,10 +16,10 @@ extension, creating it if not exists."
   [file config]
   (match (module-info file config)
     module (do (when (not= config.mode :doc)
-                 (test-module module config))
+                 (test module config))
                (let [markdown (gen-markdown module config)]
                  (when (not= config.mode :check)
-                   (write-doc markdown file module config))))
+                   (write-docs markdown file module config))))
     _ (io.stderr:write "skipping " file "\n")))
 
 (let [(files config) (-> FENNELDOC_VERSION
@@ -27,8 +27,6 @@ extension, creating it if not exists."
                          process-args)]
   (each [_ file (ipairs files)]
     (process-file file config)))
-
-fenneldoc
 
 ;; LocalWords:  Andrey Listopadov Fenneldoc metadata runtime config md
 ;; LocalWords:  fnl args doctest

@@ -1,9 +1,14 @@
-# Writer.fnl
+# Writer.fnl (v0.1.9)
 
+**Table of contents**
+
+- [`write-docs`](#write-docs)
+
+## `write-docs`
 Function signature:
 
 ```
-(writer ([docs file module-info config]))
+(write-docs [docs file module-info config])
 ```
 
 Accepts `docs` as a vector of lines, and a path to a `file`.
@@ -12,6 +17,12 @@ Concatenates lines in `docs` with newline, and writes result to
 `config` must contain `out-dir` key.
 
 
+---
 
-<!-- Generated with Fenneldoc v0.1.8
+Copyright (C) 2020-2022 Andrey Listopadov
+
+License: [MIT](https://gitlab.com/andreyorst/fenneldoc/-/raw/master/LICENSE)
+
+
+<!-- Generated with Fenneldoc v0.1.9
      https://gitlab.com/andreyorst/fenneldoc -->
