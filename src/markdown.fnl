@@ -1,5 +1,5 @@
 (import-macros
- {: defn- : defn : fn* : ns}
+ {: defn- : defn : fn* : ns : if-let}
  :cljlib)
 
 (ns markdown
@@ -22,16 +22,17 @@
 (defn- gen-function-signature*
   "Generate function signature for `function` from `arglist` accordingly to `config`."
   [lines item arglist config]
-  (if (and config.function-signatures arglist)
-      (let [arglist (table.concat arglist " ")]
-        (conj lines
-              "Function signature:"
-              ""
-              "```"
-              (.. "(" item (if (= arglist "") "" " ")  arglist ")")
-              "```"
-              ""))
-      lines))
+  (if-let [arglist (and config.function-signatures
+                        arglist
+                        (table.concat arglist " "))]
+    (conj lines
+          "Function signature:"
+          ""
+          "```"
+          (.. "(" item (if (= arglist "") "" " ")  arglist ")")
+          "```"
+          "")
+    lines))
 
 
 (defn- gen-license-info [lines license config]

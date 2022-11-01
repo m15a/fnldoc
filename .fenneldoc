@@ -1,5 +1,5 @@
 ;; -*- mode: fennel; -*- vi:ft=fennel
-;; Configuration file for Fenneldoc v0.1.9
+;; Configuration file for Fenneldoc v1.0.0
 ;; https://gitlab.com/andreyorst/fenneldoc
 
 {:fennel-path {}

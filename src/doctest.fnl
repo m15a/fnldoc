@@ -3,7 +3,7 @@
 (ns doctest
   "Documentation testing facilities."
   (:require
-   [cljlib :refer [keys hash-set conj empty?]]
+   [cljlib :refer [keys hash-set conj empty? keep reduce filter]]
    [parser :refer [create-sandbox]]
    [fennel]))
 
@@ -74,26 +74,42 @@
                                    argument "'\n"))))))))
 
 (fn skip-arg-check? [argument patterns]
-  (-> (icollect [_ pattern (ipairs patterns)]
-        (string.find (argument:gsub "^%s*(.-)%s*$" "%1") (.. "^%f[%w_]" pattern "%f[^%w_]$")))
+  (->> patterns
+       (keep (fn [pattern]
+               (string.find (argument:gsub "^%s*(.-)%s*$" "%1")
+                            (.. "^%f[%w_]" pattern "%f[^%w_]$"))))
       empty?
       not))
 
+(defn- remove-code-blocks [docstring]
+  (pick-values 1 (string.gsub docstring "\n?```.-\n```\n?" "")))
+
+(defn- normalize-name
+  "Remove symbols that can't be used in names, and strip strings."
+  [name]
+  (-> name
+      (: :gsub "[\n\r()&]+" "") ; strip symbols that can't be used in names
+      (: :gsub "\"[^\"]-\"" "")))
+
+(defn- extract-destructured-args [argument]
+  (icollect [arg (argument:gmatch "[^][ \n\r{}}]+")]
+    (when (not (string.match arg "^:")) arg)))
+
 (defn- check-function-arglist [func arglist docstring {: file} seen patterns]
-  (let [docstring (string.gsub docstring "\n?```.-\n```\n?" "")]
-    (each [_ argument (ipairs arglist)]
-      (let [argument (-> argument
-                         (: :gsub "[\n\r()&]+" "") ;; strip symbols that can't be used in variable name
-                         (: :gsub "\"[^\"]-\"" ""))] ;; strip strings
-        (if (argument:find "[][{}]")
-            (each [argument (argument:gmatch "[^][ \n\r{}}]+")]
-              (when (not (string.find argument "^:"))
-                (when (not (skip-arg-check? argument patterns))
-                  (check-argument func argument docstring file seen))
-                (conj seen argument)))
-            (when (not (skip-arg-check? argument patterns))
-              (check-argument func argument docstring file seen)))
-        (conj seen argument)))))
+  (let [docstring (remove-code-blocks docstring)]
+    (->> arglist
+         (reduce
+          (fn [seen argument]
+            (let [argument (normalize-name argument)]
+              (->> (filter #(not (skip-arg-check? $ patterns))
+                           (if (argument:find "[][{}]")
+                               (extract-destructured-args argument)
+                               [argument]))
+                   (reduce (fn [seen argument]
+                             (check-argument func argument docstring file seen)
+                             (conj seen argument))
+                           seen))))
+          seen))))
 
 (defn- check-function [func docstring arglist module-info config]
   (if (or (not docstring) (= docstring ""))
