@@ -131,17 +131,20 @@
     toc))
 
 (defn- gen-toc [lines toc ordered-items config]
-  (let [lines (if (and config.toc toc (next toc))
-                  (conj lines
-                        "**Table of contents**"
-                        "")
-                  lines)
-        lines (reduce (fn [lines item]
-                        (match (. toc item)
-                          link (conj lines (.. "- [`" item "`](" link ")"))
-                          _ (conj lines (.. "- `" item "`"))))
-                      lines (seq ordered-items))]
-    (conj lines "")))
+  (if (and config.toc toc (next toc))
+      (let [lines (if (and config.toc toc (next toc))
+                      (conj lines
+                            "**Table of contents**"
+                            "")
+                      lines)
+            lines (if (and config.toc toc (next toc))
+                      (reduce (fn [lines item]
+                                (match (. toc item)
+                                  link (conj lines (.. "- [`" item "`](" link ")"))
+                                  _ (conj lines (.. "- `" item "`"))))
+                              lines (seq ordered-items))
+                      lines)]
+        (conj lines ""))))
 
 
 (defn- gen-items-doc [lines ordered-items toc module-info config]
