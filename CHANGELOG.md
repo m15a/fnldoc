@@ -1,3 +1,9 @@
+## Fenneldoc 1.0.0 (2023-05-16)
+
+- Fix unconditional TOC generation
+- fix iterations reuse results from conj
+- Update cljlib
+
 ## Fenneldoc 1.0.0 (2022-31-10)
 
 - Migrate to the latest cljlib, rewriting code to use namespaces, and immutable data structures.
