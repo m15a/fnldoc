@@ -1,3 +1,0 @@
-[submodule "cljlib"]
-	path = cljlib
-	url = https://gitlab.com/andreyorst/fennel-cljlib.git

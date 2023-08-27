@@ -1,6 +1,6 @@
 (import-macros
  {: defn : ns : defn- : def}
- :cljlib)
+ (doto :lib.cljlib require))
 
 (ns config-utils
   (:require [fennel :refer [view dofile] :as fennel]))

@@ -1,11 +1,11 @@
 (import-macros
  {: defn- : defn : fn* : ns : if-let}
- :cljlib)
+ (doto :lib.cljlib require))
 
 (ns markdown
   "Functions for generating Markdown"
   (:require
-   [cljlib
+   [lib.cljlib
     :refer
     [distinct apply reduce seq sort conj keys string? concat]]))
 

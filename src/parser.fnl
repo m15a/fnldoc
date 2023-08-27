@@ -1,4 +1,4 @@
-(import-macros {: defn : defn- : ns : def} :cljlib)
+(import-macros {: defn : defn- : ns : def} (doto :lib.cljlib require))
 
 (ns parser
   "A module that evaluates Fennel code and obtains documentation for each
@@ -6,7 +6,7 @@ item in the module.  Supports sandboxing."
   (:require
    [fennel :refer [dofile metadata]]
    [fennel.compiler]
-   [cljlib :refer [get-in]]
+   [lib.cljlib :refer [get-in]]
    [markdown :refer [gen-function-signature gen-item-signature gen-item-documentation]]))
 
 (defn- sandbox-module [module file]

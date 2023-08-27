@@ -6,10 +6,6 @@ FNLPATHS = src cljlib
 FNLSOURCES = $(wildcard src/*.fnl)
 FNLARGS = $(foreach path,$(FNLPATHS),--add-fennel-path $(path)/?.fnl)
 FNLARGS += --no-metadata --globals "*" --require-as-include --compile
-FNLARGS += --add-fennel-path "cljlib/?/init.fnl"
-FNLARGS += --add-package-path "cljlib/?/init.lua"
-FNLARGS += --add-macro-path "cljlib/?.fnl"
-FNLARGS += --add-package-path "cljlib/lazy-seq/?.lua"
 VERSION ?= $(shell git describe --abbrev=0 || "unknown")
 
 .PHONY: build clean help install doc

@@ -1,10 +1,10 @@
 (import-macros
  {: defn : defn- : def : ns}
- :cljlib)
+ (doto :lib.cljlib require))
 
 (ns argparse
   (:require
-   [cljlib
+   [lib.cljlib
     :refer
     [conj first hash-map hash-set inc into keys map reduce vals]]
    [fennel]))

@@ -1,3 +1,7 @@
+## Fenneldoc 1.0.1 (???)
+
+- Update cljlib
+
 ## Fenneldoc 1.0.0 (2023-05-16)
 
 - Fix unconditional TOC generation

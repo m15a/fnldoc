@@ -1,6 +1,6 @@
 (import-macros
  {: defn : defn- : ns}
- :cljlib)
+ (doto :lib.cljlib require))
 
 (ns writer
   "Functions related to writing generated documentation into respecting files.")

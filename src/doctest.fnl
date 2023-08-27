@@ -1,9 +1,11 @@
-(import-macros {: when-let : defn : defn- : ns} :cljlib)
+(import-macros
+ {: when-let : defn : defn- : ns}
+ (doto :lib.cljlib require))
 
 (ns doctest
   "Documentation testing facilities."
   (:require
-   [cljlib :refer [keys hash-set conj empty? keep reduce filter]]
+   [lib.cljlib :refer [keys hash-set conj empty? keep reduce filter]]
    [parser :refer [create-sandbox]]
    [fennel]))
 

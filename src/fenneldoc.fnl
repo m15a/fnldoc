@@ -1,4 +1,4 @@
-(import-macros {: defn : ns} :cljlib)
+(import-macros {: defn : ns} (doto :lib.cljlib require))
 (ns fenneldoc
   "main ns"
   (:require
