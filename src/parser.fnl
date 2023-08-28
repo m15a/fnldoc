@@ -4,7 +4,7 @@
   "A module that evaluates Fennel code and obtains documentation for each
 item in the module.  Supports sandboxing."
   (:require
-   [fennel :refer [dofile metadata]]
+   [fennel :refer [dofile metadata macro-loaded]]
    [fennel.compiler]
    [lib.cljlib :refer [get-in]]
    [markdown :refer [gen-function-signature gen-item-signature gen-item-documentation]]))
@@ -109,6 +109,12 @@ functions to only throw warning, and not error."
                    (string.gsub "%.fnl$" ""))]
     module))
 
+(defn- merge [t1 t2]
+  (collect [k v (pairs (or t2 {}))
+            :into (collect [k v (pairs t1)]
+                    k v)]
+    k v))
+
 (defn- require-module
   "Require file as module in protected call.  Returns multiple values
 with first value corresponding to pcall result."
@@ -122,7 +128,8 @@ with first value corresponding to pcall result."
                    :allowedGlobals false}
                   (module-from-file file))
       (true ?module) (let [module (or ?module {})]
-                       (values (type module) module :functions))
+                       (values (type module) module :functions
+                               (. macro-loaded (module-from-file file))))
       ;; try again, now with compiler env
       (false) (match (pcall dofile
                             file
@@ -143,44 +150,46 @@ with first value corresponding to pcall result."
 generated."
   [file config]
   (match (require-module file config)
-    (:table module module-type) {:module (or (get-in config [:modules-info file :name])
-                                             file)
-                                 :file file
-                                 :type module-type
-                                 :f-table (if (= module-type :macros) {} module)
-                                 :requirements (get-in config [:test-requirements file] "")
-                                 :version (or (get-in config [:modules-info file :version])
-                                              config.project-version)
-                                 :description (get-in config [:modules-info file :description])
-                                 :copyright (or (get-in config [:modules-info file :copyright])
-                                                config.project-copyright)
-                                 :license (or (get-in config [:modules-info file :license])
-                                              config.project-license)
-                                 :items (get-module-docs module config)
-                                 :doc-order (or (get-in config [:modules-info file :doc-order])
-                                                (get-in config [:project-doc-order file])
-                                                [])}
+    (:table module module-type ?macros)
+    {:module (or (get-in config [:modules-info file :name])
+                 file)
+     :file file
+     :type module-type
+     :f-table (if (= module-type :macros) {} module)
+     :requirements (get-in config [:test-requirements file] "")
+     :version (or (get-in config [:modules-info file :version])
+                  config.project-version)
+     :description (get-in config [:modules-info file :description])
+     :copyright (or (get-in config [:modules-info file :copyright])
+                    config.project-copyright)
+     :license (or (get-in config [:modules-info file :license])
+                  config.project-license)
+     :items (get-module-docs (merge module ?macros) config)
+     :doc-order (or (get-in config [:modules-info file :doc-order])
+                    (get-in config [:project-doc-order file])
+                    [])}
     ;; function modules have no version, license, or description keys,
     ;; as there's no way of adding this as a metadata or embed into
     ;; function itself.  So module description is set to a combination
     ;; of function docstring and signature if allowed by config.
     ;; Table of contents is also omitted.
-    (:function function) (let [docstring (metadata:get function :fnl/docstring)
-                               arglist (metadata:get function :fnl/arglist)
-                               fname (function-name-from-file file)]
-                           {:module (get-in config [:modules-info file :name] file)
-                            :file file
-                            :f-table {fname function}
-                            :type :function-module
-                            :requirements (get-in config [:test-requirements file] "")
-                            :documented? (not (not docstring)) ;; convert to Boolean
-                            :description (.. (get-in config [:modules-info file :description] "")
-                                             "\n"
-                                             (gen-function-signature fname arglist config)
-                                             "\n"
-                                             (gen-item-documentation docstring config.inline-references))
-                            : arglist
-                            :items {}})
+    (:function function)
+    (let [docstring (metadata:get function :fnl/docstring)
+          arglist (metadata:get function :fnl/arglist)
+          fname (function-name-from-file file)]
+      {:module (get-in config [:modules-info file :name] file)
+       :file file
+       :f-table {fname function}
+       :type :function-module
+       :requirements (get-in config [:test-requirements file] "")
+       :documented? (not (not docstring)) ;; convert to Boolean
+       :description (.. (get-in config [:modules-info file :description] "")
+                        "\n"
+                        (gen-function-signature fname arglist config)
+                        "\n"
+                        (gen-item-documentation docstring config.inline-references))
+       : arglist
+       :items {}})
     (false err) (do (io.stderr:write "Error loading " file "\n" err "\n")
                     nil)
     _ (do (io.stderr:write "Error loading " file "\nunhandled error!\n" (tostring _))
