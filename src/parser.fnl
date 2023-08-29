@@ -92,10 +92,23 @@ functions to only throw warning, and not error."
   ([module config]
    (get-module-docs {} module config nil))
   ([docs module config parent]
+   (get-module-docs docs module config parent {}))
+  ([docs module config parent seen]
    (each [id val (pairs module)]
      (when (not= (string.sub id 1 1) :_)
        (match (type val)
-         :table (get-module-docs docs val config id)
+         :table
+         (if (. seen val)
+             ;; value is probably a self-referencing table, maybe with
+             ;; a docstring or other meta
+             (let [docstring (metadata:get val :fnl/docstring)
+                   arglist (metadata:get val :fnl/arglist)]
+               (when (or docstring arglist)
+                 (tset docs
+                       (if parent (.. parent "." id) id)
+                       {:docstring (metadata:get val :fnl/docstring)
+                        :arglist (metadata:get val :fnl/arglist)})))
+             (get-module-docs docs val config id (doto seen (tset val true))))
          _ (tset docs
                  (if parent (.. parent "." id) id)
                  {:docstring (metadata:get val :fnl/docstring)
@@ -120,16 +133,17 @@ functions to only throw warning, and not error."
 with first value corresponding to pcall result."
   [file config]
   (let [env (when config.sandbox
-              (create-sandbox file))]
+              (create-sandbox file))
+        module-name (module-from-file file)]
     (match (pcall dofile
                   file
                   {:useMetadata true
                    :env env
                    :allowedGlobals false}
-                  (module-from-file file))
+                  module-name)
       (true ?module) (let [module (or ?module {})]
                        (values (type module) module :functions
-                               (. macro-loaded (module-from-file file))))
+                               (. macro-loaded module-name)))
       ;; try again, now with compiler env
       (false) (match (pcall dofile
                             file
@@ -137,7 +151,7 @@ with first value corresponding to pcall result."
                              :env :_COMPILER
                              :allowedGlobals false
                              :scope (. compiler :scopes :compiler)}
-                            (module-from-file file))
+                            module-name)
                 (true module) (values (type module) module :macros)
                 (false msg) (values false msg)))))
 
