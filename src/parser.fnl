@@ -98,21 +98,19 @@ functions to only throw warning, and not error."
      (when (not= (string.sub id 1 1) :_)
        (match (type val)
          :table
-         (if (. seen val)
-             ;; value is probably a self-referencing table, maybe with
-             ;; a docstring or other meta
-             (let [docstring (metadata:get val :fnl/docstring)
-                   arglist (metadata:get val :fnl/arglist)]
-               (when (or docstring arglist)
-                 (tset docs
-                       (if parent (.. parent "." id) id)
-                       {:docstring (metadata:get val :fnl/docstring)
-                        :arglist (metadata:get val :fnl/arglist)})))
-             (get-module-docs docs val config id (doto seen (tset val true))))
-         _ (tset docs
-                 (if parent (.. parent "." id) id)
-                 {:docstring (metadata:get val :fnl/docstring)
-                  :arglist (metadata:get val :fnl/arglist)}))))
+         (when (not (. seen val))
+           (let [docstring (metadata:get val :fnl/docstring)
+                 arglist (metadata:get val :fnl/arglist)]
+             (when (or docstring arglist)
+               (tset docs
+                     (if parent (.. parent "." id) id)
+                     {:docstring docstring :arglist arglist})))
+           (get-module-docs docs val config id (doto seen (tset val true))))
+         :function
+         (tset docs
+               (if parent (.. parent "." id) id)
+               {:docstring (metadata:get val :fnl/docstring)
+                :arglist (metadata:get val :fnl/arglist)}))))
    docs))
 
 (defn- module-from-file [file]
