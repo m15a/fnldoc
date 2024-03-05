@@ -7,7 +7,7 @@
   (:require
    [lib.cljlib
     :refer
-    [apply seq sort conj string?]]))
+    [apply seq sort conj]]))
 
 (defn- gen-info-comment [lines config]
   (if config.insert-comment
@@ -87,7 +87,7 @@
 `mode` is a mode to handle inline references."
   [lines docstring toc mode]
   (conj lines
-        (if (string? docstring)
+        (if (= :string (type docstring))
             (-> docstring
                 (remove-test-skip)
                 (increment-section-header-level)
