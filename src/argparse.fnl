@@ -4,9 +4,6 @@
 
 (ns argparse
   (:require
-   [lib.cljlib
-    :refer
-    [conj hash-map hash-set]]
    [fennel]))
 
 ;; format: {:key [default-value descr validate-fn]}
@@ -25,7 +22,7 @@
                                               Supported algorithms: alphabetic, reverse-alphabetic.
                                               You also can specify a custom sorting function
                                               in .fenneldoc file."
-               #(when (not ((hash-set :alphabetic :reverse-alphabetic) $))
+               #(when (not (. {:alphabetic true :reverse-alphabetic true} $))
                   (io.stderr:write "Error: wrong value specified for key --order '" $"'\n"
                                    "Supported orders: alphabetic, reverse-alphabetic\n")
                   (os.exit 1))]
@@ -33,7 +30,7 @@
                                             checkdoc - check documentation and generate markdown;
                                             check    - only check documentation;
                                             doc      - only generate markdown."
-               #(when (not ((hash-set :checkdoc :check :doc) $))
+               #(when (not (. {:checkdoc true :check true :doc true} $))
                   (io.stderr:write "Error wrong value specified for key --mode '" $"'\n"
                                    "Supported modes: checkdoc, check, doc.\n")
                   (os.exit 1))]
@@ -41,7 +38,7 @@
                                                   link - convert inline references to markdown links;
                                                   code - convert inline references to inline code;
                                                   keep - keep inline references as is."
-                         #(when (not ((hash-set :link :code :keep) $))
+                         #(when (not (. {:link true :code true :keep true} $))
                             (io.stderr:write "Error wrong value specified for key --inline-references '" $"'\n"
                                              "Supported modes: link, code, keep.\n")
                             (os.exit 1))]
@@ -103,8 +100,9 @@ Option flags:
 Toggle flags:
 "
              (gen-help-info
-               (accumulate [acc (hash-map) k [default docstring] (pairs bool-flags)]
-                 (conj acc [(k:gsub "^[-][-]" "--[no-]") ["" docstring]])))
+               (accumulate [acc {} k [default docstring] (pairs bool-flags)]
+                 (doto acc
+                   (tset (k:gsub "^[-][-]" "--[no-]") ["" docstring]))))
              "
 
 Other flags:
@@ -125,11 +123,11 @@ passing `--no-toc' will disable generation of contents table, and
 
 (def :private
   bool-flags-set
-  (accumulate [flags (hash-set) flag [toggle? _] (pairs bool-flags)]
-    (let [flags (conj flags flag)]
+  (accumulate [flags {} flag [toggle? _] (pairs bool-flags)]
+    (let [flags (doto flags (tset flag true))]
       (if toggle?
           (let [inverse-flag (flag:gsub "^[-][-]" "--no-")]
-            (conj flags inverse-flag))
+            (doto flags (tset inverse-flag true)))
           flags))))
 
 (defn- handle-bool-flag [flag config]

@@ -5,7 +5,6 @@
 (ns doctest
   "Documentation testing facilities."
   (:require
-   [lib.cljlib :refer [hash-set conj]]
    [parser :refer [create-sandbox]]
    [fennel]))
 
@@ -65,7 +64,7 @@
     (let [argument-pat (.. ":?" (argument:gsub "([][().%+-*?$^])" "%%%1"))]
       (when (not (or (string.find docstring (.. "`" argument-pat "`"))
                      (string.find docstring (.. "`" argument-pat "'"))))
-        (when (not (seen argument))
+        (when (not (. seen argument))
           (if (and (string.find docstring (.. "%f[%w_]" argument-pat "%f[^%w_]"))) ;; %f[%w_] emulates \b
               (io.stderr:write "WARNING: in file '" file
                                "' argument '" argument "' should appear in backtics in docstring for '"
@@ -108,7 +107,8 @@
         (accumulate [seen seen _ argument (ipairs filtered)]
           (do
             (check-argument func argument docstring file seen)
-            (conj seen argument)))))))
+            (doto seen
+              (tset argument true))))))))
 
 (defn- check-function [func docstring arglist module-info config]
   (if (or (not docstring) (= docstring ""))
@@ -117,7 +117,7 @@
               (io.stderr:write "WARNING: in file '" module-info.file "' undocumented exported value '" func "'\n"))
           nil) ; io.stderr:write returns non-nil value, which is treated as mark that errors occured
       arglist
-      (do (check-function-arglist func arglist docstring module-info (hash-set) config.ignored-args-patterns)
+      (do (check-function-arglist func arglist docstring module-info {} config.ignored-args-patterns)
           (run-tests-for-fn func docstring module-info config.sandbox))))
 
 (defn test
