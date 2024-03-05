@@ -6,7 +6,7 @@
   (:require
    [lib.cljlib
     :refer
-    [conj first hash-map hash-set keys vals]]
+    [conj hash-map hash-set keys vals]]
    [fennel]))
 
 ;; format: {:key [default-value descr validate-fn]}
