@@ -6,7 +6,7 @@
   (:require
    [lib.cljlib
     :refer
-    [conj first hash-map hash-set inc keys vals]]
+    [conj first hash-map hash-set keys vals]]
    [fennel]))
 
 ;; format: {:key [default-value descr validate-fn]}
@@ -168,7 +168,7 @@ passing `--no-toc' will disable generation of contents table, and
    (table.insert files file)))
 
 (defn- handle-fennel-path [i]
-  (match (. arg (inc i))
+  (match (. arg (+ 1 i))
     val (set fennel.path (.. val ";" fennel.path))
     nil (do (io.stderr:write "fenneldoc: expected value for --add-fennel-path\n")
             (os.exit -1))))
@@ -197,14 +197,14 @@ passing `--no-toc' will disable generation of contents table, and
     (while (<= i arglen)
       (match (. arg i)
         (flag ? (. bool-flags-set flag)) (handle-bool-flag flag config)
-        (flag ? (. key-flags flag)) (do (set i (inc i))
+        (flag ? (. key-flags flag)) (do (set i (+ 1 i))
                                         (handle-key-flag i flag config))
-        (flag ? (. value-flags flag)) (do (set i (inc i))
+        (flag ? (. value-flags flag)) (do (set i (+ 1 i))
                                           (handle-value-flag i flag config))
-        :--add-fennel-path (do (set i (inc i))
+        :--add-fennel-path (do (set i (+ 1 i))
                                (handle-fennel-path i))
         :--config (set write-config? true)
-        :-- (do (set i (inc i))
+        :-- (do (set i (+ 1 i))
                 (lua :break))
         :--check-only (handle-bool-flag :--check-only config)
         :--skip-check (handle-bool-flag :--skip-check config)
@@ -212,7 +212,7 @@ passing `--no-toc' will disable generation of contents table, and
         (flag ? (flag:find "^%-%-")) (do (io.stderr:write "fenneldoc: unknown flag '" flag "'\n")
                                          (os.exit 1))
         file (handle-file file files))
-      (set i (inc i)))
+      (set i (+ 1 i)))
 
     (when write-config?
       (write-config config))
@@ -220,7 +220,7 @@ passing `--no-toc' will disable generation of contents table, and
     ;; in case `--` was passed we need to add remaining keys as files
     (while (<= i arglen)
       (handle-file (. arg i) files true)
-      (set i (inc i)))
+      (set i (+ 1 i)))
 
     (for [i 1 arglen]
       (tset arg i nil))
