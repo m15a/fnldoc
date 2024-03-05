@@ -5,7 +5,7 @@
 (ns doctest
   "Documentation testing facilities."
   (:require
-   [lib.cljlib :refer [keys hash-set conj empty? keep filter]]
+   [lib.cljlib :refer [keys hash-set conj empty? keep]]
    [parser :refer [create-sandbox]]
    [fennel]))
 
@@ -94,17 +94,17 @@
       (: :gsub "\"[^\"]-\"" "")))
 
 (defn- extract-destructured-args [argument]
-  (icollect [arg (argument:gmatch "[^][ \n\r{}}]+")]
-    (when (not (string.match arg "^:")) arg)))
+  (if (argument:find "[][{}]")
+      (icollect [arg (argument:gmatch "[^][ \n\r{}}]+")]
+        (when (not (string.match arg "^:")) arg))
+      [argument]))
 
 (defn- check-function-arglist [func arglist docstring {: file} seen patterns]
   (let [docstring (remove-code-blocks docstring)]
     (accumulate [seen seen _ argument (ipairs arglist)]
       (let [argument (normalize-name argument)
-            filtered (filter #(not (skip-arg-check? $ patterns))
-                             (if (argument:find "[][{}]")
-                                 (extract-destructured-args argument)
-                                 [argument]))]
+            filtered (icollect [_ arg (ipairs (extract-destructured-args argument))]
+                       (when (not (skip-arg-check? arg patterns)) arg))]
         (accumulate [seen seen _ argument (ipairs filtered)]
           (do
             (check-argument func argument docstring file seen)
