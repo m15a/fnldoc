@@ -5,7 +5,7 @@
 (ns doctest
   "Documentation testing facilities."
   (:require
-   [lib.cljlib :refer [keys hash-set conj empty?]]
+   [lib.cljlib :refer [keys hash-set conj]]
    [parser :refer [create-sandbox]]
    [fennel]))
 
@@ -76,10 +76,12 @@
                                    argument "'\n"))))))))
 
 (fn skip-arg-check? [argument patterns]
-  (not (empty? (icollect [_ pattern (ipairs patterns)]
-                 (when (string.find (argument:gsub "^%s*(.-)%s*$" "%1")
-                                    (.. "^%f[%w_]" pattern "%f[^%w_]$"))
-                   pattern)))))
+  (if (next (icollect [_ pattern (ipairs patterns)]
+              (when (string.find (argument:gsub "^%s*(.-)%s*$" "%1")
+                                 (.. "^%f[%w_]" pattern "%f[^%w_]$"))
+                pattern)))
+      true
+      false))
 
 (defn- remove-code-blocks [docstring]
   (pick-values 1 (string.gsub docstring "\n?```.-\n```\n?" "")))
