@@ -5,7 +5,7 @@
 (ns doctest
   "Documentation testing facilities."
   (:require
-   [lib.cljlib :refer [keys hash-set conj]]
+   [lib.cljlib :refer [hash-set conj]]
    [parser :refer [create-sandbox]]
    [fennel]))
 
@@ -132,7 +132,7 @@ Accepts `module-info` with items to check, and `config` argument."
           arglist module-info.arglist]
       (set error? (check-function fname docstring arglist module-info config)))
     _
-    (let [funcs (keys module-info.items)]
+    (let [funcs (icollect [k _ (pairs module-info.items)] k)]
       (each [_ func (ipairs funcs)]
         (when-let [{: docstring : arglist} (. module-info.items func)]
           (let [res (check-function func docstring arglist module-info config)]

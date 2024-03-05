@@ -6,7 +6,7 @@
   (:require
    [lib.cljlib
     :refer
-    [conj hash-map hash-set keys vals]]
+    [conj hash-map hash-set]]
    [fennel]))
 
 ;; format: {:key [default-value descr validate-fn]}
@@ -67,7 +67,7 @@
 
 (defn- gen-help-info [flags]
   (let [lines []
-        longest-flag (longest-length (keys flags))
+        longest-flag (longest-length (icollect [k _ (pairs flags)] k))
         longest-default (longest-length (icollect [_ v (pairs flags)] (. v 1)))]
     (each [flag [default docstring] (pairs flags)]
       (let [default (tostring (or default ""))
