@@ -3,11 +3,7 @@
  (doto :lib.cljlib require))
 
 (ns markdown
-  "Functions for generating Markdown"
-  (:require
-   [lib.cljlib
-    :refer
-    [seq]]))
+  "Functions for generating Markdown")
 
 (defn- gen-info-comment [lines config]
   (if config.insert-comment
@@ -162,7 +158,7 @@
                         (table.insert ""))
                       lines)
             lines (if (and config.toc toc (next toc))
-                      (accumulate [lines lines _ item (ipairs (seq ordered-items))]
+                      (accumulate [lines lines _ item (ipairs ordered-items)]
                         (match (. toc item)
                           link (doto lines (table.insert (.. "- [`" item "`](" link ")")))
                           _ (doto lines (table.insert (.. "- `" item "`")))))
@@ -172,7 +168,7 @@
 
 
 (defn- gen-items-doc [lines ordered-items toc module-info config]
-  (accumulate [lines lines _ item (ipairs (seq ordered-items))]
+  (accumulate [lines lines _ item (ipairs ordered-items)]
     (match (. module-info.items item)
       info (-> (doto lines (table.insert (.. "## `" item "`")))
                (gen-function-signature* item info.arglist config)
