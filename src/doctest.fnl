@@ -1,5 +1,5 @@
 (import-macros
- {: when-let : defn : defn- : ns}
+ {: defn : defn- : ns}
  (doto :lib.cljlib require))
 
 (ns doctest
@@ -134,7 +134,8 @@ Accepts `module-info` with items to check, and `config` argument."
     _
     (let [funcs (icollect [k _ (pairs module-info.items)] k)]
       (each [_ func (ipairs funcs)]
-        (when-let [{: docstring : arglist} (. module-info.items func)]
+        (case (. module-info.items func)
+          {: docstring : arglist}
           (let [res (check-function func docstring arglist module-info config)]
             (set error? (or error? res)))))))
   (when error?
