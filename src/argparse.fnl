@@ -6,7 +6,7 @@
   (:require
    [lib.cljlib
     :refer
-    [conj first hash-map hash-set inc into keys map vals]]
+    [conj first hash-map hash-set inc keys vals]]
    [fennel]))
 
 ;; format: {:key [default-value descr validate-fn]}
@@ -68,7 +68,7 @@
 (defn- gen-help-info [flags]
   (let [lines []
         longest-flag (longest-length (keys flags))
-        longest-default (longest-length (map first (vals flags)))]
+        longest-default (longest-length (icollect [_ v (pairs flags)] (. v 1)))]
     (each [flag [default docstring] (pairs flags)]
       (let [default (tostring (or default ""))
             flag-pad (string.rep " " (- longest-flag (length flag)))
@@ -103,10 +103,8 @@ Option flags:
 Toggle flags:
 "
              (gen-help-info
-              (into (hash-map)
-                    (map (fn [[k [default docstring]]]
-                           [(k:gsub "^[-][-]" "--[no-]") ["" docstring]]))
-                    bool-flags))
+               (accumulate [acc (hash-map) k [default docstring] (pairs bool-flags)]
+                 (conj acc [(k:gsub "^[-][-]" "--[no-]") ["" docstring]])))
              "
 
 Other flags:
