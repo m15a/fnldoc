@@ -7,7 +7,7 @@
   (:require
    [lib.cljlib
     :refer
-    [apply seq]]))
+    [seq]]))
 
 (defn- gen-info-comment [lines config]
   (if config.insert-comment
