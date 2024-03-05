@@ -6,7 +6,6 @@ item in the module.  Supports sandboxing."
   (:require
    [fennel :refer [dofile metadata macro-loaded]]
    [fennel.compiler]
-   [lib.cljlib :refer [get-in]]
    [markdown :refer [gen-function-signature gen-item-signature gen-item-documentation]]))
 
 (defn- sandbox-module [module file]
@@ -163,22 +162,22 @@ generated."
   [file config]
   (match (require-module file config)
     (:table module module-type ?macros)
-    {:module (or (get-in config [:modules-info file :name])
+    {:module (or (?. config :modules-info file :name)
                  file)
      :file file
      :type module-type
      :f-table (if (= module-type :macros) {} module)
-     :requirements (get-in config [:test-requirements file] "")
-     :version (or (get-in config [:modules-info file :version])
+     :requirements (or (?. config :test-requirements file) "")
+     :version (or (?. config :modules-info file :version)
                   config.project-version)
-     :description (get-in config [:modules-info file :description])
-     :copyright (or (get-in config [:modules-info file :copyright])
+     :description (?. config :modules-info file :description)
+     :copyright (or (?. config :modules-info file :copyright)
                     config.project-copyright)
-     :license (or (get-in config [:modules-info file :license])
+     :license (or (?. config :modules-info file :license)
                   config.project-license)
      :items (get-module-docs (merge module ?macros) config)
-     :doc-order (or (get-in config [:modules-info file :doc-order])
-                    (get-in config [:project-doc-order file])
+     :doc-order (or (?. config :modules-info file :doc-order)
+                    (?. config :project-doc-order file)
                     [])}
     ;; function modules have no version, license, or description keys,
     ;; as there's no way of adding this as a metadata or embed into
@@ -189,13 +188,13 @@ generated."
     (let [docstring (metadata:get function :fnl/docstring)
           arglist (metadata:get function :fnl/arglist)
           fname (function-name-from-file file)]
-      {:module (get-in config [:modules-info file :name] file)
+      {:module (or (?. config :modules-info file :name) file)
        :file file
        :f-table {fname function}
        :type :function-module
-       :requirements (get-in config [:test-requirements file] "")
+       :requirements (or (?. config :test-requirements file) "")
        :documented? (not (not docstring)) ;; convert to Boolean
-       :description (.. (get-in config [:modules-info file :description] "")
+       :description (.. (or (?. config :modules-info file :description) "")
                         "\n"
                         (gen-function-signature fname arglist config)
                         "\n"
