@@ -7,7 +7,7 @@
   (:require
    [lib.cljlib
     :refer
-    [apply seq sort]]))
+    [apply seq]]))
 
 (defn- gen-info-comment [lines config]
   (if config.insert-comment
@@ -114,7 +114,8 @@
 
 (defn- get-ordered-items [module-info config]
   (let [ordered-items (or module-info.doc-order [])
-        sorted-items (sort (sorter config) (icollect [k _ (pairs module-info.items)] k))
+        sorted-items (doto (icollect [k _ (pairs module-info.items)] k)
+                       (table.sort (sorter config)))
         found {}
         result []]
     (each [_ item (ipairs ordered-items)]
