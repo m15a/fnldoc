@@ -70,6 +70,15 @@
       (pick-values 1 (string.gsub docstring "(\n?%s*```%s*fennel)[ \t]+:skip%-test" "%1"))
       docstring))
 
+(defn- increment-section-header-level [docstring]
+  (let [increment-top-section-header-level
+        #(if (: $ :match "^%s*#+ ") (: $ :gsub "(^%s*#+) " "%1## ") $)
+        increment-line-start-section-header-level
+        #(if (: $ :match "\n%s*#+ ") (: $ :gsub "(\n%s*#+) " "%1## ") $)]
+    (-> docstring
+        (increment-top-section-header-level)
+        (increment-line-start-section-header-level))))
+
 (defn- gen-item-documentation*
   "Generate documentation from `docstring` and `conj` it to `lines`.
 
@@ -81,7 +90,7 @@
         (if (string? docstring)
             (-> docstring
                 (remove-test-skip)
-                (: :gsub "# " "### ")
+                (increment-section-header-level)
                 (gen-cross-links toc mode))
             "**Undocumented**")
         ""))

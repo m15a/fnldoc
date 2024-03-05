@@ -1,5 +1,6 @@
 ## Fenneldoc 1.0.1 (???)
 
+- Fix gensym hash increment (e.g. `x#` -> `x###`) in markdown fences.
 - Update cljlib
 
 ## Fenneldoc 1.0.0 (2023-05-16)
