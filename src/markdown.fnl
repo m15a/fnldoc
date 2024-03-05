@@ -7,7 +7,7 @@
   (:require
    [lib.cljlib
     :refer
-    [distinct apply seq sort conj string? concat]]))
+    [apply seq sort conj string?]]))
 
 (defn- gen-info-comment [lines config]
   (if config.insert-comment
@@ -110,8 +110,18 @@
 
 (defn- get-ordered-items [module-info config]
   (let [ordered-items (or module-info.doc-order [])
-        sorted-items (sort (sorter config) (icollect [k _ (pairs module-info.items)] k))]
-    (distinct (concat ordered-items sorted-items))))
+        sorted-items (sort (sorter config) (icollect [k _ (pairs module-info.items)] k))
+        found {}
+        result []]
+    (each [_ item (ipairs ordered-items)]
+      (when (not (. found item))
+        (tset found item true)
+        (table.insert result item)))
+    (each [_ item (ipairs sorted-items)]
+      (when (not (. found item))
+        (tset found item true)
+        (table.insert result item)))
+    result))
 
 (defn- heading-link
   "Markdown valid heading."
