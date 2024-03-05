@@ -6,7 +6,7 @@
   (:require
    [lib.cljlib
     :refer
-    [conj first hash-map hash-set inc into keys map reduce vals]]
+    [conj first hash-map hash-set inc into keys map vals]]
    [fennel]))
 
 ;; format: {:key [default-value descr validate-fn]}
@@ -127,13 +127,12 @@ passing `--no-toc' will disable generation of contents table, and
 
 (def :private
   bool-flags-set
-  (reduce (fn [flags [flag toggle?]]
-            (let [flags (conj flags flag)]
-              (if toggle?
-                  (let [inverse-flag (flag:gsub "^[-][-]" "--no-")]
-                    (conj flags inverse-flag))
-                  flags)))
-          (hash-set) bool-flags))
+  (accumulate [flags (hash-set) flag [toggle? _] (pairs bool-flags)]
+    (let [flags (conj flags flag)]
+      (if toggle?
+          (let [inverse-flag (flag:gsub "^[-][-]" "--no-")]
+            (conj flags inverse-flag))
+          flags))))
 
 (defn- handle-bool-flag [flag config]
   ;; Boolean flags can start with `--no-` prefix, meaning that we want to

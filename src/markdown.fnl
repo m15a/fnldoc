@@ -7,7 +7,7 @@
   (:require
    [lib.cljlib
     :refer
-    [distinct apply reduce seq sort conj keys string? concat]]))
+    [distinct apply seq sort conj keys string? concat]]))
 
 (defn- gen-info-comment [lines config]
   (if config.insert-comment
@@ -147,25 +147,23 @@
                             "")
                       lines)
             lines (if (and config.toc toc (next toc))
-                      (reduce (fn [lines item]
-                                (match (. toc item)
-                                  link (conj lines (.. "- [`" item "`](" link ")"))
-                                  _ (conj lines (.. "- `" item "`"))))
-                              lines (seq ordered-items))
+                      (accumulate [lines lines _ item (ipairs (seq ordered-items))]
+                        (match (. toc item)
+                          link (conj lines (.. "- [`" item "`](" link ")"))
+                          _ (conj lines (.. "- `" item "`"))))
                       lines)]
         (conj lines ""))
       lines))
 
 
 (defn- gen-items-doc [lines ordered-items toc module-info config]
-  (reduce (fn [lines item]
-            (match (. module-info.items item)
-              info (-> (conj lines (.. "## `" item "`"))
-                       (gen-function-signature* item info.arglist config)
-                       (gen-item-documentation* info.docstring toc config.inline-references))
-              nil (do (print (.. "WARNING: Could not find '" item "' in " module-info.module))
-                      lines)))
-          lines (seq ordered-items)))
+  (accumulate [lines lines _ item (ipairs (seq ordered-items))]
+    (match (. module-info.items item)
+      info (-> (conj lines (.. "## `" item "`"))
+               (gen-function-signature* item info.arglist config)
+               (gen-item-documentation* info.docstring toc config.inline-references))
+      nil (do (print (.. "WARNING: Could not find '" item "' in " module-info.module))
+              lines))))
 
 
 (defn- module-version [module-info]

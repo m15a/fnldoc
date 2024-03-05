@@ -5,7 +5,7 @@
 (ns doctest
   "Documentation testing facilities."
   (:require
-   [lib.cljlib :refer [keys hash-set conj empty? keep reduce filter]]
+   [lib.cljlib :refer [keys hash-set conj empty? keep filter]]
    [parser :refer [create-sandbox]]
    [fennel]))
 
@@ -99,19 +99,16 @@
 
 (defn- check-function-arglist [func arglist docstring {: file} seen patterns]
   (let [docstring (remove-code-blocks docstring)]
-    (->> arglist
-         (reduce
-          (fn [seen argument]
-            (let [argument (normalize-name argument)]
-              (->> (filter #(not (skip-arg-check? $ patterns))
-                           (if (argument:find "[][{}]")
-                               (extract-destructured-args argument)
-                               [argument]))
-                   (reduce (fn [seen argument]
-                             (check-argument func argument docstring file seen)
-                             (conj seen argument))
-                           seen))))
-          seen))))
+    (accumulate [seen seen _ argument (ipairs arglist)]
+      (let [argument (normalize-name argument)
+            filtered (filter #(not (skip-arg-check? $ patterns))
+                             (if (argument:find "[][{}]")
+                                 (extract-destructured-args argument)
+                                 [argument]))]
+        (accumulate [seen seen _ argument (ipairs filtered)]
+          (do
+            (check-argument func argument docstring file seen)
+            (conj seen argument)))))))
 
 (defn- check-function [func docstring arglist module-info config]
   (if (or (not docstring) (= docstring ""))
