@@ -27,8 +27,7 @@
               fennel.lua
               pkgs.gnumake
               pkgs.fnlfmt-unstable
-              # NOTE: Cannot handle cljlib. Skip this for now.
-              # pkgs.fennel-ls
+              pkgs.fennel-ls
             ] ++ (with fennel.lua.pkgs; [
               readline
             ]);
