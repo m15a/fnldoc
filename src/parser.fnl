@@ -37,7 +37,7 @@ functions to only throw warning, and not error."
   ([file] (create-sandbox file {}))
   ([file overrides]
    (let [env {: assert                  ; allowed modules
-              : bit32
+              :bit32 _G.bit32 ; Lua 5.2 only
               : collectgarbage
               : coroutine
               : dofile
@@ -49,7 +49,7 @@ functions to only throw warning, and not error."
               : pairs
               : pcall
               : rawequal
-              : rawlen
+              :rawlen _G.rawlen ; Lua >=5.2
               : require
               : select
               : setmetatable
@@ -58,8 +58,8 @@ functions to only throw warning, and not error."
               : tonumber
               : tostring
               : type
-              : unpack
-              : utf8
+              :unpack _G.unpack ; Lua 5.1 only
+              :utf8 _G.utf8 ; Lua >= 5.3
               : xpcall
 
               :load nil                 ; disallowed modules
