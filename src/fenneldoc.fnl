@@ -10,11 +10,12 @@
 Generates module documentation and writes it to `file` with `.md`
 extension, creating it if not exists."
   (match (module-info file config)
-    module (do (when (not= config.mode :doc)
-                 (test module config))
-               (let [markdown (gen-markdown module config)]
-                 (when (not= config.mode :check)
-                   (write-docs markdown file module config))))
+    module (do
+             (when (not= config.mode :doc)
+               (test module config))
+             (let [markdown (gen-markdown module config)]
+               (when (not= config.mode :check)
+                 (write-docs markdown file module config))))
     _ (io.stderr:write "skipping " file "\n")))
 
 (let [(files config) (-> FENNELDOC_VERSION

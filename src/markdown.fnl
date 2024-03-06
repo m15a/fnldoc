@@ -4,26 +4,23 @@
   (if config.insert-comment
       (doto lines
         (table.insert "")
-        (table.insert (.. "<!-- Generated with Fenneldoc " config.fenneldoc-version))
+        (table.insert (.. "<!-- Generated with Fenneldoc "
+                          config.fenneldoc-version))
         (table.insert "     https://gitlab.com/andreyorst/fenneldoc -->")
         (table.insert ""))
       lines))
 
-
 (fn gen-function-signature* [lines item arglist config]
   "Generate function signature for `function` from `arglist` accordingly to `config`."
-  (case (and config.function-signatures
-             arglist
-             (table.concat arglist " "))
+  (case (and config.function-signatures arglist (table.concat arglist " "))
     arglist (doto lines
               (table.insert "Function signature:")
               (table.insert "")
               (table.insert "```")
-              (table.insert (.. "(" item (if (= arglist "") "" " ")  arglist ")"))
+              (table.insert (.. "(" item (if (= arglist "") "" " ") arglist ")"))
               (table.insert "```")
               (table.insert ""))
     _ lines))
-
 
 (fn gen-license-info [lines license config]
   (if (and config.insert-license license)
@@ -32,7 +29,6 @@
         (table.insert ""))
       lines))
 
-
 (fn gen-copyright-info [lines copyright config]
   (if (and config.insert-copyright copyright)
       (doto lines
@@ -40,35 +36,40 @@
         (table.insert ""))
       lines))
 
-
 (fn extract-inline-code-references [docstring]
   (icollect [s (docstring:gmatch "`([%a_][^`']-)'")]
     s))
-
 
 (fn gen-cross-links [docstring toc mode]
   (var docstring docstring)
   (each [_ item (ipairs (extract-inline-code-references docstring))]
     (let [pat (item:gsub "([().%+-*?[^$])" "%%%1")] ; escaping Lua's patterns with `%`
-      (set docstring
-           (match mode
-             :link (match (. toc item)
-                     link-id (docstring:gsub (.. "`" pat "'") (.. "[`" item "`](" link-id ")"))
-                     _ (docstring:gsub (.. "`" pat "'") (.. "`" item "`")))
-             :code (docstring:gsub (.. "`" pat "'") (.. "`" item "`"))
-             _ docstring))))
+      (set docstring (match mode
+                       :link (match (. toc item)
+                               link-id (docstring:gsub (.. "`" pat "'")
+                                                       (.. "[`" item "`]("
+                                                           link-id ")"))
+                               _ (docstring:gsub (.. "`" pat "'")
+                                                 (.. "`" item "`")))
+                       :code (docstring:gsub (.. "`" pat "'") (.. "`" item "`"))
+                       _ docstring))))
   docstring)
 
 (fn remove-test-skip [docstring]
   (if (string.match docstring "\n?%s*```%s*fennel[ \t]+:skip%-test")
-      (pick-values 1 (string.gsub docstring "(\n?%s*```%s*fennel)[ \t]+:skip%-test" "%1"))
+      (pick-values 1
+                   (string.gsub docstring
+                                "(\n?%s*```%s*fennel)[ \t]+:skip%-test" "%1"))
       docstring))
 
 (fn increment-section-header-level [docstring]
-  (let [increment-top-section-header-level
-        #(if (: $ :match "^%s*#+ ") (: $ :gsub "(^%s*#+) " "%1## ") $)
-        increment-line-start-section-header-level
-        #(if (: $ :match "\n%s*#+ ") (: $ :gsub "(\n%s*#+) " "%1## ") $)]
+  (let [increment-top-section-header-level #(if (: $ :match "^%s*#+ ")
+                                                (: $ :gsub "(^%s*#+) " "%1## ")
+                                                $)
+        increment-line-start-section-header-level #(if (: $ :match "\n%s*#+ ")
+                                                       (: $ :gsub "(\n%s*#+) "
+                                                          "%1## ")
+                                                       $)]
     (-> docstring
         (increment-top-section-header-level)
         (increment-line-start-section-header-level))))
@@ -85,21 +86,20 @@
                           (remove-test-skip)
                           (increment-section-header-level)
                           (gen-cross-links toc mode))
-                      "**Undocumented**"))
+                      :**Undocumented**))
     (table.insert "")))
-
 
 (fn sorter [config]
   (match config.doc-order
     :alphabetic nil
     :reverse-alphabetic #(> $1 $2)
     (func ? (= (type func) :function)) func
-    else (do (io.stderr:write "Unsupported sorting algorithm: '"
-                              else
-                              "'\nSupported algorithms: alphabetic, reverse-alphabetic, or function.\n")
-             (os.exit -1))
+    else (do
+           (io.stderr:write "Unsupported sorting algorithm: '" else "'
+Supported algorithms: alphabetic, reverse-alphabetic, or function.
+")
+           (os.exit -1))
     nil nil))
-
 
 (fn get-ordered-items [module-info config]
   (let [ordered-items (or module-info.doc-order [])
@@ -152,32 +152,32 @@
             lines (if (and config.toc toc (next toc))
                       (accumulate [lines lines _ item (ipairs ordered-items)]
                         (match (. toc item)
-                          link (doto lines (table.insert (.. "- [`" item "`](" link ")")))
+                          link (doto lines
+                                 (table.insert (.. "- [`" item "`](" link ")")))
                           _ (doto lines (table.insert (.. "- `" item "`")))))
                       lines)]
         (doto lines (table.insert "")))
       lines))
-
 
 (fn gen-items-doc [lines ordered-items toc module-info config]
   (accumulate [lines lines _ item (ipairs ordered-items)]
     (match (. module-info.items item)
       info (-> (doto lines (table.insert (.. "## `" item "`")))
                (gen-function-signature* item info.arglist config)
-               (gen-item-documentation* info.docstring toc config.inline-references))
-      nil (do (print (.. "WARNING: Could not find '" item "' in " module-info.module))
-              lines))))
-
+               (gen-item-documentation* info.docstring toc
+                                        config.inline-references))
+      nil (do
+            (print (.. "WARNING: Could not find '" item "' in "
+                       module-info.module))
+            lines))))
 
 (fn module-version [module-info]
   (match module-info.version
     version (.. " (" version ")")
     _ ""))
 
-
 (fn capitalize [str]
   (.. (string.upper (str:sub 1 1)) (str:sub 2 -1)))
-
 
 (fn module-heading [file]
   (.. "# " (capitalize (pick-values 1 (string.gsub file ".*/" "")))))
@@ -186,7 +186,8 @@
   "Generate markdown feom `module-info` accordingly to `config`."
   (let [ordered-items (get-ordered-items module-info config)
         toc-table (toc-table ordered-items)
-        lines [(.. (module-heading module-info.module) (module-version module-info))]
+        lines [(.. (module-heading module-info.module)
+                   (module-version module-info))]
         lines (if module-info.description
                   (doto lines
                     (table.insert (gen-cross-links module-info.description
@@ -196,7 +197,6 @@
         lines (-> (doto lines (table.insert ""))
                   (gen-toc toc-table ordered-items config)
                   (gen-items-doc ordered-items toc-table module-info config))
-
         lines (if (and (or module-info.copyright module-info.license)
                        (or config.insert-copyright config.insert-license))
                   (-> (doto lines
@@ -213,15 +213,11 @@
 (fn gen-item-documentation [docstring mode]
   "Generate documentation from `docstring`, and handle inline references
 based on `mode`."
-  (table.concat
-   (gen-item-documentation* [] docstring {} mode)
-   "\n"))
+  (table.concat (gen-item-documentation* [] docstring {} mode) "\n"))
 
 (fn gen-function-signature [function arglist config]
   "Generate function signature for `function` from `arglist` accordingly to `config`."
-  (table.concat
-   (gen-function-signature* [] function arglist config)
-   "\n"))
+  (table.concat (gen-function-signature* [] function arglist config) "\n"))
 
 {: gen-markdown : gen-item-documentation : gen-function-signature}
 

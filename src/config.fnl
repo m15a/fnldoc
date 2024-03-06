@@ -1,34 +1,30 @@
 (local fennel (require :fennel))
 (local {: view : dofile} fennel)
 
-(local
-  deprecated-keys
-  {:project-doc-order "'project-doc-order' was deprecated and no longer supported - use the 'doc-order' key in the 'modules-info' table."
-   :keys "'keys' was deprecated and no longer supported - use the 'modules-info' table to provide module information instead."})
+(local deprecated-keys
+       {:project-doc-order "'project-doc-order' was deprecated and no longer supported - use the 'doc-order' key in the 'modules-info' table."
+        :keys "'keys' was deprecated and no longer supported - use the 'modules-info' table to provide module information instead."})
 
-(local
-  config
-  {:fennel-path []
-   :function-signatures true
-   :ignored-args-patterns ["%.%.%." "%_" "%_[^%s]+"]
-   :inline-references :link
-   :insert-comment true
-   :insert-copyright true
-   :insert-license true
-   :insert-version true
-   :modules-info {}
-   :project-copyright nil
-   :project-version nil
-   :project-license nil
-   :mode "checkdoc"
-   :order "alphabetic"
-   :out-dir "./doc"
-   :sandbox true
-   :test-requirements {}
-   :toc true})
+(local config {:fennel-path []
+               :function-signatures true
+               :ignored-args-patterns ["%.%.%." "%_" "%_[^%s]+"]
+               :inline-references :link
+               :insert-comment true
+               :insert-copyright true
+               :insert-license true
+               :insert-version true
+               :modules-info {}
+               :project-copyright nil
+               :project-version nil
+               :project-license nil
+               :mode :checkdoc
+               :order :alphabetic
+               :out-dir :./doc
+               :sandbox true
+               :test-requirements {}
+               :toc true})
 
-(local
-  warned {})
+(local warned {})
 
 (fn process-config [version]
   (match (pcall dofile :.fenneldoc)
@@ -40,26 +36,19 @@
                 (tset config k v))
     (false msg) (when (not (msg:match ".fenneldoc: No such file or directory"))
                   (io.stderr:write msg "\n")))
-
   (each [_ path (pairs config.fennel-path)]
     (set fennel.path (.. path ";" fennel.path)))
-
   (set config.fenneldoc-version version)
   config)
 
-(fennel.metadata:set
- process-config
- :fnl/docstring
- (.. "Process configuration file and merge it with default configuration.
+(fennel.metadata:set process-config :fnl/docstring (.. "Process configuration file and merge it with default configuration.
 Configuration is stored in `.fenneldoc` which is looked up in the
 working directory.  Injects private `version` field in config.
 
 Default configuration:
 
 ``` fennel
-"
-     (view config)
-     "
+" (view config) "
 ```
 
 # Key descriptions

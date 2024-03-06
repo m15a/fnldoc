@@ -1,8 +1,7 @@
 ;;;; Functions related to writing generated documentation into respecting files.
 
 (fn file-exists? [path]
-  (if (or (= "./" path) (= "../" path))
-      true
+  (if (or (= "./" path) (= "../" path)) true
       (match (os.rename path path)
         (true _ 13) true
         (true _ _) true
@@ -14,8 +13,8 @@
         path (.. config.out-dir sep (file:gsub (.. "[^" sep "]+.fnl$") ""))
         fname (-> (or module-info.module file)
                   (string.gsub (.. ".*[" sep "]+") "")
-                  (string.gsub ".fnl$" "")
-                  (.. ".md"))]
+                  (string.gsub :.fnl$ "")
+                  (.. :.md))]
     (var p "")
     (each [dir (path:gmatch (.. "[^" sep "]+"))]
       (set p (.. p dir sep))
@@ -34,13 +33,13 @@ Concatenates lines in `docs` with newline, and writes result to
     path (match (io.open path :w)
            f (with-open [file f]
                (file:write docs))
-           (nil msg code) (do (io.stderr:write
-                               (.. "Error opening file '" path "': " msg " (" code ")\n"))
-                              (os.exit code)))
-
-    (nil dir) (do (io.stderr:write
-                   (.. "Error creating directory '" dir "\n"))
-                  (os.exit -1))))
+           (nil msg code) (do
+                            (io.stderr:write (.. "Error opening file '" path
+                                                 "': " msg " (" code ")\n"))
+                            (os.exit code)))
+    (nil dir) (do
+                (io.stderr:write (.. "Error creating directory '" dir "\n"))
+                (os.exit -1))))
 
 {: write-docs}
 

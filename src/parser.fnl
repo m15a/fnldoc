@@ -6,14 +6,11 @@
 (local {: gen-function-signature : gen-item-documentation} (require :markdown))
 
 (fn sandbox-module [module file]
-  (setmetatable
-   {}
-   {:__index (fn []
-               (io.stderr:write
-                (.. "ERROR: access to '" module
-                    "' module detected in file: " file
-                    " while loading\n"))
-               (os.exit 1))}))
+  (setmetatable {} {:__index (fn []
+                               (io.stderr:write (.. "ERROR: access to '" module
+                                                    "' module detected in file: "
+                                                    file " while loading\n"))
+                               (os.exit 1))}))
 
 (fn create-sandbox [file overrides]
   "Create sandboxed environment to run `file` containing documentation,
@@ -31,52 +28,57 @@ a key, and function as a value.  This function will be used instead of
 specified function name in the sandbox.  For example, you can wrap IO
 functions to only throw warning, and not error."
   (case overrides
-    overrides
-    (let [env {: assert                  ; allowed modules
-               :bit32 _G.bit32 ; Lua 5.2 only
-               : collectgarbage
-               : coroutine
-               : dofile
-               : error
-               : getmetatable
-               : ipairs
-               : math
-               : next
-               : pairs
-               : pcall
-               : rawequal
-               :rawlen _G.rawlen ; Lua >=5.2
-               : require
-               : select
-               : setmetatable
-               : string
-               : table
-               : tonumber
-               : tostring
-               : type
-               :unpack _G.unpack ; Lua 5.1 only
-               :utf8 _G.utf8 ; Lua >= 5.3
-               : xpcall
-
-               :load nil                 ; disallowed modules
-               :loadfile nil
-               :loadstring nil
-               :rawget nil
-               :rawset nil
-               :module nil
-
-               :arg []                   ; sandboxed modules
-               :print (fn []
-                        (io.stderr:write "ERROR: IO detected in file: " file " while loading\n")
-                        (os.exit 1))
-               :os (sandbox-module :os file)
-               :debug (sandbox-module :debug file)
-               :package (sandbox-module :package file)
-               :io (sandbox-module :io file)}]
-      (set env._G env)
-      (each [k v (pairs overrides)]
-        (tset env k v))
-      env)
+    overrides (let [env {: assert
+                         ; allowed modules
+                         :bit32 _G.bit32
+                         ; Lua 5.2 only
+                         : collectgarbage
+                         : coroutine
+                         : dofile
+                         : error
+                         : getmetatable
+                         : ipairs
+                         : math
+                         : next
+                         : pairs
+                         : pcall
+                         : rawequal
+                         :rawlen _G.rawlen
+                         ; Lua >=5.2
+                         : require
+                         : select
+                         : setmetatable
+                         : string
+                         : table
+                         : tonumber
+                         : tostring
+                         : type
+                         :unpack _G.unpack
+                         ; Lua 5.1 only
+                         :utf8 _G.utf8
+                         ; Lua >= 5.3
+                         : xpcall
+                         :load nil
+                         ; disallowed modules
+                         :loadfile nil
+                         :loadstring nil
+                         :rawget nil
+                         :rawset nil
+                         :module nil
+                         :arg []
+                         ; sandboxed modules
+                         :print (fn []
+                                  (io.stderr:write "ERROR: IO detected in file: "
+                                                   file " while loading\n")
+                                  (os.exit 1))
+                         :os (sandbox-module :os file)
+                         :debug (sandbox-module :debug file)
+                         :package (sandbox-module :package file)
+                         :io (sandbox-module :io file)}]
+                (set env._G env)
+                (each [k v (pairs overrides)]
+                  (tset env k v))
+                env)
     _ (create-sandbox file {})))
 
 (fn function-name-from-file [file]
@@ -87,22 +89,19 @@ functions to only throw warning, and not error."
 
 (fn get-module-docs [docs module config parent seen]
   (each [id val (pairs module)]
-   (when (not= (string.sub id 1 1) :_)
-     (match (type val)
-       :table
-       (when (not (. seen val))
-         (let [docstring (metadata:get val :fnl/docstring)
-               arglist (metadata:get val :fnl/arglist)]
-           (when (or docstring arglist)
-             (tset docs
-                   (if parent (.. parent "." id) id)
-                   {:docstring docstring :arglist arglist})))
-         (get-module-docs docs val config id (doto seen (tset val true))))
-       :function
-       (tset docs
-             (if parent (.. parent "." id) id)
-             {:docstring (metadata:get val :fnl/docstring)
-              :arglist (metadata:get val :fnl/arglist)}))))
+    (when (not= (string.sub id 1 1) "_")
+      (match (type val)
+        :table (when (not (. seen val))
+                 (let [docstring (metadata:get val :fnl/docstring)
+                       arglist (metadata:get val :fnl/arglist)]
+                   (when (or docstring arglist)
+                     (tset docs (if parent (.. parent "." id) id)
+                           {: docstring : arglist})))
+                 (get-module-docs docs val config id
+                                  (doto seen (tset val true))))
+        :function (tset docs (if parent (.. parent "." id) id)
+                        {:docstring (metadata:get val :fnl/docstring)
+                         :arglist (metadata:get val :fnl/arglist)}))))
   docs)
 
 (fn module-from-file [file]
@@ -113,10 +112,11 @@ functions to only throw warning, and not error."
     module))
 
 (fn merge [t1 t2]
-  (collect [k v (pairs (or t2 {}))
-            :into (collect [k v (pairs t1)]
-                    k v)]
-    k v))
+  (collect [k v (pairs (or t2 {})) :into (collect [k v (pairs t1)]
+                                           k
+                                           v)]
+    k
+    v))
 
 (fn require-module [file config]
   "Require file as module in protected call.  Returns multiple values
@@ -124,28 +124,23 @@ with first value corresponding to pcall result."
   (let [env (when config.sandbox
               (create-sandbox file))
         module-name (module-from-file file)]
-    (match (pcall dofile
-                  file
-                  {:useMetadata true
-                   :env env
-                   :allowedGlobals false}
+    (match (pcall dofile file {:useMetadata true : env :allowedGlobals false}
                   module-name)
-      (true ?module) (let [module (or ?module {})]
-                       (values (type module) module :functions
-                               (. macro-loaded module-name)))
+      (true ?module)
+      (let [module (or ?module {})]
+        (values (type module) module :functions (. macro-loaded module-name)))
       ;; try again, now with compiler env
-      (false) (match (pcall dofile
-                            file
-                            {:useMetadata true
-                             :env :_COMPILER
-                             :allowedGlobals false
-                             :scope (. compiler :scopes :compiler)}
-                            module-name)
-                (true module) (values (type module) module :macros)
-                (false msg) (values false msg)))))
+      (false)
+      (match (pcall dofile file
+                    {:useMetadata true
+                     :env :_COMPILER
+                     :allowedGlobals false
+                     :scope (. compiler :scopes :compiler)}
+                    module-name)
+        (true module) (values (type module) module :macros)
+        (false msg) (values false msg)))))
 
-(local
-  warned {})
+(local warned {})
 
 (fn module-info [file config]
   "Returns table containing all relevant information accordingly to
@@ -153,9 +148,8 @@ with first value corresponding to pcall result."
 generated."
   (match (require-module file config)
     (:table module module-type ?macros)
-    {:module (or (?. config :modules-info file :name)
-                 file)
-     :file file
+    {:module (or (?. config :modules-info file :name) file)
+     : file
      :type module-type
      :f-table (if (= module-type :macros) {} module)
      :requirements (or (?. config :test-requirements file) "")
@@ -168,8 +162,7 @@ generated."
                   config.project-license)
      :items (get-module-docs {} (merge module ?macros) config nil {})
      :doc-order (or (?. config :modules-info file :doc-order)
-                    (?. config :project-doc-order file)
-                    [])}
+                    (?. config :project-doc-order file) [])}
     ;; function modules have no version, license, or description keys,
     ;; as there's no way of adding this as a metadata or embed into
     ;; function itself.  So module description is set to a combination
@@ -180,22 +173,27 @@ generated."
           arglist (metadata:get function :fnl/arglist)
           fname (function-name-from-file file)]
       {:module (or (?. config :modules-info file :name) file)
-       :file file
+       : file
        :f-table {fname function}
        :type :function-module
        :requirements (or (?. config :test-requirements file) "")
-       :documented? (not (not docstring)) ;; convert to Boolean
+       :documented? (not (not docstring))
+       ;; convert to Boolean
        :description (.. (or (?. config :modules-info file :description) "")
-                        "\n"
-                        (gen-function-signature fname arglist config)
-                        "\n"
-                        (gen-item-documentation docstring config.inline-references))
+                        "\n" (gen-function-signature fname arglist config) "\n"
+                        (gen-item-documentation docstring
+                                                config.inline-references))
        : arglist
        :items {}})
-    (false err) (do (io.stderr:write "Error loading " file "\n" err "\n")
-                    nil)
-    _ (do (io.stderr:write "Error loading " file "\nunhandled error!\n" (tostring _))
-          nil)))
+    (false err)
+    (do
+      (io.stderr:write "Error loading " file "\n" err "\n")
+      nil)
+    _
+    (do
+      (io.stderr:write "Error loading " file "\nunhandled error!\n"
+                       (tostring _))
+      nil)))
 
 {: create-sandbox : module-info}
 
