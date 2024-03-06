@@ -21,6 +21,7 @@ VERSION ?= $(shell git describe --abbrev=0 || "unknown")
 DESTDIR ?=
 PREFIX ?= /usr/local
 BINDIR = $(PREFIX)/bin
+DOCDIR ?= doc
 
 .PHONY: build
 build: $(EXECUTABLE)
@@ -42,7 +43,8 @@ clean:
 
 .PHONY: doc
 doc: $(EXECUTABLE)
-	$(LUA) $< --no-sandbox $(SRCS)
+	rm -rf $(DOCDIR)
+	$(LUA) $< --no-sandbox --out-dir $(DOCDIR) $(SRCS)
 
 .PHONY: format
 format:
