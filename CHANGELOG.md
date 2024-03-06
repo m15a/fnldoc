@@ -1,11 +1,11 @@
-## Fenneldoc 1.0.1 (???)
+## Fenneldoc 1.0.2 (???)
 
 - Remove dependency to cljlib
 - Fix unknown identifier error in sandbox environment depending on Lua version.
 - Fix a bug in ToC generation.
 - Fix gensym hash increment (e.g. `x#` -> `x###`) in markdown fences.
 
-## Fenneldoc 1.0.0 (2023-05-16)
+## Fenneldoc 1.0.1 (2023-05-16)
 
 - Fix unconditional TOC generation
 - fix iterations reuse results from conj
