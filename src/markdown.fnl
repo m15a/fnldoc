@@ -153,7 +153,8 @@
                                   _ (conj lines (.. "- `" item "`"))))
                               lines (seq ordered-items))
                       lines)]
-        (conj lines ""))))
+        (conj lines ""))
+      lines))
 
 
 (defn- gen-items-doc [lines ordered-items toc module-info config]

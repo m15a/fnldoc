@@ -1,5 +1,6 @@
 ## Fenneldoc 1.0.1 (???)
 
+- Fix a bug in ToC generation.
 - Fix gensym hash increment (e.g. `x#` -> `x###`) in markdown fences.
 - Update cljlib
 
