@@ -220,5 +220,3 @@ based on `mode`."
   (table.concat (gen-function-signature* [] function arglist config) "\n"))
 
 {: gen-markdown : gen-item-documentation : gen-function-signature}
-
-;; LocalWords:  Fenneldoc Lua's docstring arglist config

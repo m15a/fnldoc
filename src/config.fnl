@@ -115,5 +115,3 @@ provides the following set of keys for that:
   ```"))
 
 {: process-config}
-
-;; LocalWords:  checkdoc fenneldoc config

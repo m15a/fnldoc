@@ -196,6 +196,3 @@ generated."
       nil)))
 
 {: create-sandbox : module-info}
-
-;; LocalWords:  sandboxed Lua loadfile loadstring rawset os io config
-;; LocalWords:  metadata docstring fenneldoc

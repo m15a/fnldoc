@@ -23,6 +23,3 @@ extension, creating it if not exists."
                          process-args)]
   (each [_ file (ipairs files)]
     (process-file file config)))
-
-;; LocalWords:  Andrey Listopadov Fenneldoc metadata runtime config md
-;; LocalWords:  fnl args doctest

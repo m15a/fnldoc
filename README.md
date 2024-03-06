@@ -258,9 +258,3 @@ This will permanently disable table of contents, function signatures and documen
 Please do.
 You can report issues or feature request at [project's Gitlab repository](https://gitlab.com/andreyorst/fenneldoc).
 Consider reading [contribution guidelines](https://gitlab.com/andreyorst/fenneldoc/-/blob/master/CONTRIBUTING.md) beforehand.
-
-<!--  LocalWords:  backticks docstring Fenneldoc TODO config runtime
-      LocalWords:  metadata AST fnl foo's md Lua namespace Gitlab
-      LocalWords:  destructure backtick backquote metamethod
-      LocalWords:  LocalWords
-  -->

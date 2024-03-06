@@ -57,7 +57,6 @@ Please make sure to follow existing style of documentation, which can be shortly
     -   Double empty lines before top level headings.
     -   Single empty lines before other headings.
 -   Consider using spell checking.
-    If you find a word not known by the dictionary, please add it to the `LocalWords` section at the bottom of the document.
 
 ## Working with Git
 
@@ -77,6 +76,3 @@ For a more comprehensive explanation please check [Conventional Commits](https:/
 
 When creating merge request consider squashing your commits at merge.
 You may do this manually, or use Gitlab's "Squash commits" button.
-
-<!-- LocalWords:  bugfix docstring comitting VSCode SublimeText Gitlab's LocalWords
- -->

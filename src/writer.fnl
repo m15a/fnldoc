@@ -42,5 +42,3 @@ Concatenates lines in `docs` with newline, and writes result to
                 (os.exit -1))))
 
 {: write-docs}
-
-;; LocalWords:  fnl md dir msg config

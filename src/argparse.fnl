@@ -229,5 +229,3 @@ passing `--no-toc' will disable generation of contents table, and
     (values files config)))
 
 {: process-args}
-
-;; LocalWords:  descr fn fenneldoc checkdoc config args
