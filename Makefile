@@ -1,48 +1,69 @@
 LUA ?= lua
-PREFIX ?= /usr/local
-BINDIR = $(PREFIX)/bin
 FENNEL ?= fennel
-FNLPATHS = src
-FNLSOURCES = $(wildcard src/*.fnl)
-FNLARGS = $(foreach path,$(FNLPATHS),--add-fennel-path $(path)/?.fnl)
-FNLARGS += --no-metadata --globals "*" --require-as-include --compile
+
+FENNEL_PATHS := src
+FENNEL_MACRO_PATHS := src
+FENNEL_FLAGS = --no-metadata --globals '*' --require-as-include --compile
+FENNEL_FLAGS +=\
+	$(foreach path,$(FENNEL_PATHS),\
+		--add-fennel-path $(path)/?.fnl\
+		--add-fennel-path $(path)/?/init.fnl)
+FENNEL_FLAGS +=\
+	$(foreach path,$(FENNEL_MACRO_PATHS),\
+		--add-macro-path $(path)/?.fnl\
+		--add-macro-path $(path)/?/init-macros.fnl)
+
+SRCS = $(wildcard src/*.fnl)
+MAIN_SRC := src/fenneldoc.fnl
+EXECUTABLE := fenneldoc
 VERSION ?= $(shell git describe --abbrev=0 || "unknown")
 
-.PHONY: build clean help install doc format check-format lint
+DESTDIR ?=
+PREFIX ?= /usr/local
+BINDIR = $(PREFIX)/bin
 
-build: fenneldoc
+.PHONY: build
+build: $(EXECUTABLE)
 
-fenneldoc: $(FNLSOURCES)
+$(EXECUTABLE): $(SRCS)
 	echo '#!/usr/bin/env $(LUA)' > $@
 	echo 'FENNELDOC_VERSION = [[$(VERSION)]]' >> $@
-	$(FENNEL) $(FNLARGS) --add-package-path ./?.lua src/fenneldoc.fnl >> $@
+	$(FENNEL) $(FENNEL_FLAGS) $(MAIN_SRC) >> $@
 	chmod 755 $@
-	./fenneldoc --config --project-version $(VERSION)
+	$(LUA) $@ --config --project-version $(VERSION)
 
-install: fenneldoc
-	mkdir -p $(BINDIR) && cp fenneldoc $(BINDIR)/
+.PHONY: install
+install: $(EXECUTABLE)
+	install -D -t $(DESTDIR)$(BINDIR) $<
 
+.PHONY: clean
 clean:
-	rm -f fenneldoc $(wildcard src/*.lua)
+	rm -f $(EXECUTABLE)
 
-doc: fenneldoc
-	./fenneldoc --no-sandbox $(FNLSOURCES)
+.PHONY: doc
+doc: $(EXECUTABLE)
+	$(LUA) $< --no-sandbox $(SRCS)
 
+.PHONY: format
 format:
-	fnlfmt --fix src/*.fnl
+	fnlfmt --fix $(SRCS)
 
+.PHONY: check-format
 check-format:
-	fnlfmt --check src/*.fnl
+	fnlfmt --check $(SRCS)
 
+.PHONY: lint
 lint:
-	fennel-ls --check src/*.fnl
+	fennel-ls --check $(SRCS)
 
+.PHONY: help
 help:
-	@echo "make               -- create executable lua script" >&2
-	@echo "make clean         -- remove lua files" >&2
-	@echo "make doc           -- generate documentation files for fenneldoc" >&2
-	@echo "make format        -- format source files" >&2
-	@echo "make check-format  -- check if source files are formatted" >&2
-	@echo "make lint          -- lint source files using fennel-ls" >&2
-	@echo "make install       -- install fenneldoc accordingly to \$$PREFIX" >&2
-	@echo "make help          -- print this message and exit" >&2
+	@echo >&2 "make              -- Run make build."
+	@echo >&2 "make build        -- Build Lua executable."
+	@echo >&2 "make install      -- Install executable to \$$DESTDIR\$$PREFIX/bin"
+	@echo >&2 "make clean        -- Clean up built files."
+	@echo >&2 "make doc          -- Generate documentation for fenneldoc."
+	@echo >&2 "make format       -- Format source files."
+	@echo >&2 "make check-format -- Check if source files are formatted."
+	@echo >&2 "make lint         -- Lint source files using fennel-ls."
+	@echo >&2 "make help         -- Print this message and exit."
