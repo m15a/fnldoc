@@ -1,19 +1,14 @@
-(import-macros {: defn : ns} (doto :lib.cljlib require))
-(ns fenneldoc
-  "main ns"
-  (:require
-   [config :refer [process-config]]
-   [argparse :refer [process-args]]
-   [doctest :refer [test]]
-   [parser :refer [module-info]]
-   [markdown :refer [gen-markdown]]
-   [writer :refer [write-docs]]))
+(local {: process-config} (require :config))
+(local {: process-args} (require :argparse))
+(local {: test} (require :doctest))
+(local {: module-info} (require :parser))
+(local {: gen-markdown} (require :markdown))
+(local {: write-docs} (require :writer))
 
-(defn process-file
+(fn process-file [file config]
   "Accepts `file` as path to some Fennel module, and `config` table.
 Generates module documentation and writes it to `file` with `.md`
 extension, creating it if not exists."
-  [file config]
   (match (module-info file config)
     module (do (when (not= config.mode :doc)
                  (test module config))

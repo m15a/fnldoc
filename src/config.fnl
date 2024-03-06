@@ -1,16 +1,12 @@
-(import-macros
- {: defn : ns : defn- : def}
- (doto :lib.cljlib require))
+(local fennel (require :fennel))
+(local {: view : dofile} fennel)
 
-(ns config-utils
-  (:require [fennel :refer [view dofile] :as fennel]))
-
-(def :private
+(local
   deprecated-keys
   {:project-doc-order "'project-doc-order' was deprecated and no longer supported - use the 'doc-order' key in the 'modules-info' table."
    :keys "'keys' was deprecated and no longer supported - use the 'modules-info' table to provide module information instead."})
 
-(def :private
+(local
   config
   {:fennel-path []
    :function-signatures true
@@ -31,10 +27,10 @@
    :test-requirements {}
    :toc true})
 
-(def :private
+(local
   warned {})
 
-(defn process-config [version]
+(fn process-config [version]
   (match (pcall dofile :.fenneldoc)
     (true rc) (each [k v (pairs rc)]
                 (match (. deprecated-keys k)
@@ -129,6 +125,6 @@ provides the following set of keys for that:
                                     :doc-order [\"some-fn1\" \"some-fn2\" \"etc\"]}}}
   ```"))
 
-config-utils
+{: process-config}
 
 ;; LocalWords:  checkdoc fenneldoc config

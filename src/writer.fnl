@@ -1,11 +1,6 @@
-(import-macros
- {: defn : defn- : ns}
- (doto :lib.cljlib require))
+;;;; Functions related to writing generated documentation into respecting files.
 
-(ns writer
-  "Functions related to writing generated documentation into respecting files.")
-
-(defn- file-exists? [path]
+(fn file-exists? [path]
   (if (or (= "./" path) (= "../" path))
       true
       (match (os.rename path path)
@@ -13,7 +8,7 @@
         (true _ _) true
         _ false)))
 
-(defn- create-dirs-from-path [file module-info config]
+(fn create-dirs-from-path [file module-info config]
   ;; Creates path up to specified file.
   (let [sep (package.config:sub 1 1)
         path (.. config.out-dir sep (file:gsub (.. "[^" sep "]+.fnl$") ""))
@@ -30,12 +25,11 @@
     (-> (.. p sep fname)
         (string.gsub (.. "[" sep "]+") sep))))
 
-(defn write-docs
+(fn write-docs [docs file module-info config]
   "Accepts `docs` as a vector of lines, and a path to a `file`.
 Concatenates lines in `docs` with newline, and writes result to
 `file`.  `module-info` must contain `module` key with file, and
 `config` must contain `out-dir` key."
-  [docs file module-info config]
   (match (create-dirs-from-path file module-info config)
     path (match (io.open path :w)
            f (with-open [file f]
@@ -48,6 +42,6 @@ Concatenates lines in `docs` with newline, and writes result to
                    (.. "Error creating directory '" dir "\n"))
                   (os.exit -1))))
 
-writer
+{: write-docs}
 
 ;; LocalWords:  fnl md dir msg config

@@ -1,16 +1,7 @@
-(import-macros
- {: defn : defn- : def : ns}
- (doto :lib.cljlib require))
-
-(ns argparse
-  (:require
-   [lib.cljlib
-    :refer
-    [conj first hash-map hash-set inc into keys map reduce vals]]
-   [fennel]))
+(local fennel (require :fennel))
 
 ;; format: {:key [default-value descr validate-fn]}
-(def :private
+(local
   key-flags
   {:--license-key     [:_LICENSE "License information of the module."]
    :--description-key [:_DESCRIPTION "The description of the module."]
@@ -18,14 +9,14 @@
    :--doc-order-key   [:_DOC_ORDER "Order of items of the module."]
    :--version-key     [:_VERSION "The version of the module."]})
 
-(def :private
+(local
   value-flags
   {:--out-dir ["./doc" "Output directory for generated documentation."]
    :--order   ["alphabetic" "Sorting of items that were not given particular order.
                                               Supported algorithms: alphabetic, reverse-alphabetic.
                                               You also can specify a custom sorting function
                                               in .fenneldoc file."
-               #(when (not ((hash-set :alphabetic :reverse-alphabetic) $))
+               #(when (not (. {:alphabetic true :reverse-alphabetic true} $))
                   (io.stderr:write "Error: wrong value specified for key --order '" $"'\n"
                                    "Supported orders: alphabetic, reverse-alphabetic\n")
                   (os.exit 1))]
@@ -33,7 +24,7 @@
                                             checkdoc - check documentation and generate markdown;
                                             check    - only check documentation;
                                             doc      - only generate markdown."
-               #(when (not ((hash-set :checkdoc :check :doc) $))
+               #(when (not (. {:checkdoc true :check true :doc true} $))
                   (io.stderr:write "Error wrong value specified for key --mode '" $"'\n"
                                    "Supported modes: checkdoc, check, doc.\n")
                   (os.exit 1))]
@@ -41,7 +32,7 @@
                                                   link - convert inline references to markdown links;
                                                   code - convert inline references to inline code;
                                                   keep - keep inline references as is."
-                         #(when (not ((hash-set :link :code :keep) $))
+                         #(when (not (. {:link true :code true :keep true} $))
                             (io.stderr:write "Error wrong value specified for key --inline-references '" $"'\n"
                                              "Supported modes: link, code, keep.\n")
                             (os.exit 1))]
@@ -50,7 +41,7 @@
                                                    Markdown style links are supported."]
    :--project-copyright ["copyright" "Project copyright to include in the documentation files."]})
 
-(def :private
+(local
   bool-flags
   {:--function-signatures [true "(Don't) generate function signatures in documentation."]
    :--final-comment       [true "(Don't) insert final comment with fenneldoc version."]
@@ -59,16 +50,16 @@
    :--toc                 [true "(Don't) generate table of contents."]
    :--sandbox             [true "(Don't) sandbox loaded code and documentation tests."]})
 
-(defn- longest-length [items]
+(fn longest-length [items]
   (var len 0)
   (each [_ x (ipairs items)]
     (set len (math.max len (length (tostring (or x ""))))))
   (+ len 1))
 
-(defn- gen-help-info [flags]
+(fn gen-help-info [flags]
   (let [lines []
-        longest-flag (longest-length (keys flags))
-        longest-default (longest-length (map first (vals flags)))]
+        longest-flag (longest-length (icollect [k _ (pairs flags)] k))
+        longest-default (longest-length (icollect [_ v (pairs flags)] (. v 1)))]
     (each [flag [default docstring] (pairs flags)]
       (let [default (tostring (or default ""))
             flag-pad (string.rep " " (- longest-flag (length flag)))
@@ -85,7 +76,7 @@
     (table.sort lines)
     (table.concat lines "\n")))
 
-(defn- help []
+(fn help []
   (print (.. "Usage: fenneldoc [flags] [files]
 
 Create documentation for your Fennel project.
@@ -103,10 +94,9 @@ Option flags:
 Toggle flags:
 "
              (gen-help-info
-              (into (hash-map)
-                    (map (fn [[k [default docstring]]]
-                           [(k:gsub "^[-][-]" "--[no-]") ["" docstring]]))
-                    bool-flags))
+               (accumulate [acc {} k [default docstring] (pairs bool-flags)]
+                 (doto acc
+                   (tset (k:gsub "^[-][-]" "--[no-]") ["" docstring]))))
              "
 
 Other flags:
@@ -125,24 +115,23 @@ passing `--no-toc' will disable generation of contents table, and
 `--toc` will enable it."))
   (os.exit 0))
 
-(def :private
+(local
   bool-flags-set
-  (reduce (fn [flags [flag toggle?]]
-            (let [flags (conj flags flag)]
-              (if toggle?
-                  (let [inverse-flag (flag:gsub "^[-][-]" "--no-")]
-                    (conj flags inverse-flag))
-                  flags)))
-          (hash-set) bool-flags))
+  (accumulate [flags {} flag [toggle? _] (pairs bool-flags)]
+    (let [flags (doto flags (tset flag true))]
+      (if toggle?
+          (let [inverse-flag (flag:gsub "^[-][-]" "--no-")]
+            (doto flags (tset inverse-flag true)))
+          flags))))
 
-(defn- handle-bool-flag [flag config]
+(fn handle-bool-flag [flag config]
   ;; Boolean flags can start with `--no-` prefix, meaning that we want to
   ;; disable feature.
   (match (string.sub flag 1 4)
     :--no (tset config (string.sub flag 6) false)
     _ (tset config (string.sub flag 3) true)))
 
-(defn- handle-value-flag [i flag config]
+(fn handle-value-flag [i flag config]
   ;; value flags are followed with value
   (let [[_ _ validate-fn] (. value-flags flag)
         flag (string.sub flag 3 -1)]
@@ -153,7 +142,7 @@ passing `--no-toc' will disable generation of contents table, and
       nil (do (io.stderr:write "fenneldoc: expected value for " flag "\n")
               (os.exit -1)))))
 
-(defn- handle-key-flag [i flag config]
+(fn handle-key-flag [i flag config]
   ;; key flags start with `--` and end with `-key`, and are stored
   ;; under `config.keys` without `-key` suffix. they are also followed with value, therefore
   (let [flag (string.sub flag 3 -5)]
@@ -162,21 +151,24 @@ passing `--no-toc' will disable generation of contents table, and
       nil (do (io.stderr:write "fenneldoc: expected value for " flag "\n")
               (os.exit -1)))))
 
-(defn- handle-file
-  ([file files] (handle-file file files false))
-  ([file files no-check]
-   (when (and (not no-check) (= (string.sub file 1 2) :--))
-     (io.stderr:write "fenneldoc: unknown flag " file "\n")
-     (os.exit -1))
-   (table.insert files file)))
+(fn handle-file [file files ?no-check]
+  (case ?no-check
+    no-check
+    (do
+      (when (and (not no-check) (= (string.sub file 1 2) :--))
+        (io.stderr:write "fenneldoc: unknown flag " file "\n")
+        (os.exit -1))
+      (table.insert files file))
+    _
+    (handle-file file files false)))
 
-(defn- handle-fennel-path [i]
-  (match (. arg (inc i))
+(fn handle-fennel-path [i]
+  (match (. arg (+ 1 i))
     val (set fennel.path (.. val ";" fennel.path))
     nil (do (io.stderr:write "fenneldoc: expected value for --add-fennel-path\n")
             (os.exit -1))))
 
-(defn- write-config [config]
+(fn write-config [config]
   (match (io.open ".fenneldoc" :w)
     f (with-open [file f]
         (let [version config.fenneldoc-version]
@@ -190,9 +182,8 @@ passing `--no-toc' will disable generation of contents table, and
     (nil msg code) (do (io.stderr:write "Error opening file '.fenneldoc': " msg " (" code ")\n")
                        (os.exit code))))
 
-(defn process-args
+(fn process-args [config]
   "Process command line arguments based on `config`. "
-  [config]
   (let [files []
         arglen (length arg)]
     (var i 1)
@@ -200,14 +191,14 @@ passing `--no-toc' will disable generation of contents table, and
     (while (<= i arglen)
       (match (. arg i)
         (flag ? (. bool-flags-set flag)) (handle-bool-flag flag config)
-        (flag ? (. key-flags flag)) (do (set i (inc i))
+        (flag ? (. key-flags flag)) (do (set i (+ 1 i))
                                         (handle-key-flag i flag config))
-        (flag ? (. value-flags flag)) (do (set i (inc i))
+        (flag ? (. value-flags flag)) (do (set i (+ 1 i))
                                           (handle-value-flag i flag config))
-        :--add-fennel-path (do (set i (inc i))
+        :--add-fennel-path (do (set i (+ 1 i))
                                (handle-fennel-path i))
         :--config (set write-config? true)
-        :-- (do (set i (inc i))
+        :-- (do (set i (+ 1 i))
                 (lua :break))
         :--check-only (handle-bool-flag :--check-only config)
         :--skip-check (handle-bool-flag :--skip-check config)
@@ -215,7 +206,7 @@ passing `--no-toc' will disable generation of contents table, and
         (flag ? (flag:find "^%-%-")) (do (io.stderr:write "fenneldoc: unknown flag '" flag "'\n")
                                          (os.exit 1))
         file (handle-file file files))
-      (set i (inc i)))
+      (set i (+ 1 i)))
 
     (when write-config?
       (write-config config))
@@ -223,13 +214,13 @@ passing `--no-toc' will disable generation of contents table, and
     ;; in case `--` was passed we need to add remaining keys as files
     (while (<= i arglen)
       (handle-file (. arg i) files true)
-      (set i (inc i)))
+      (set i (+ 1 i)))
 
     (for [i 1 arglen]
       (tset arg i nil))
 
     (values files config)))
 
-argparse
+{: process-args}
 
 ;; LocalWords:  descr fn fenneldoc checkdoc config args
