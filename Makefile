@@ -3,8 +3,7 @@ FENNEL ?= fennel
 
 FENNEL_PATHS := src
 FENNEL_MACRO_PATHS := src
-FENNEL_FLAGS = --no-metadata --globals '*' --require-as-include --compile
-FENNEL_FLAGS +=\
+FENNEL_FLAGS =\
 	$(foreach path,$(FENNEL_PATHS),\
 		--add-fennel-path $(path)/?.fnl\
 		--add-fennel-path $(path)/?/init.fnl)
@@ -12,11 +11,12 @@ FENNEL_FLAGS +=\
 	$(foreach path,$(FENNEL_MACRO_PATHS),\
 		--add-macro-path $(path)/?.fnl\
 		--add-macro-path $(path)/?/init-macros.fnl)
+FENNEL_BUILD_FLAGS = --no-metadata --globals '*' --require-as-include --compile
 
 SRCS = $(wildcard src/*.fnl)
 MAIN_SRC := src/fenneldoc.fnl
 EXECUTABLE := fenneldoc
-VERSION ?= $(shell git describe --abbrev=0 || "unknown")
+VERSION ?= $(shell $(FENNEL) $(FENNEL_FLAGS) -e '(. (require :fenneldoc) :version)')
 
 DESTDIR ?=
 PREFIX ?= /usr/local
@@ -28,8 +28,8 @@ build: $(EXECUTABLE)
 
 $(EXECUTABLE): $(SRCS)
 	echo '#!/usr/bin/env $(LUA)' > $@
-	echo 'FENNELDOC_VERSION = [[$(VERSION)]]' >> $@
-	$(FENNEL) $(FENNEL_FLAGS) $(MAIN_SRC) >> $@
+	echo 'FNLDOC_EXECUTABLE = true' >> $@
+	$(FENNEL) $(FENNEL_FLAGS) $(FENNEL_BUILD_FLAGS) $(MAIN_SRC) >> $@
 	chmod 755 $@
 	$(LUA) $@ --config --project-version $(VERSION)
 

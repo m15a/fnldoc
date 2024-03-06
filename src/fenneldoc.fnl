@@ -18,8 +18,13 @@ extension, creating it if not exists."
                  (write-docs markdown file module config))))
     _ (io.stderr:write "skipping " file "\n")))
 
-(let [(files config) (-> FENNELDOC_VERSION
-                         process-config
-                         process-args)]
-  (each [_ file (ipairs files)]
-    (process-file file config)))
+(local version :1.0.2-dev)
+
+(when _G.FNLDOC_EXECUTABLE
+  (let [(files config) (-> version
+                           process-config
+                           process-args)]
+    (each [_ file (ipairs files)]
+      (process-file file config))))
+
+{: version}

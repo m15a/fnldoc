@@ -1,5 +1,6 @@
 ## Fenneldoc 1.0.2 (???)
 
+- Version is now explicitly declared in the source code.
 - Remove dependency to cljlib
 - Fix unknown identifier error in sandbox environment depending on Lua version.
 - Fix a bug in ToC generation.
