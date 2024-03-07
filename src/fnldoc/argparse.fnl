@@ -53,7 +53,7 @@
        {:--function-signatures [true
                                 "(Don't) generate function signatures in documentation."]
         :--final-comment [true
-                          "(Don't) insert final comment with fenneldoc version."]
+                          "(Don't) insert final comment with Fnldoc version."]
         :--copyright [true "(Don't) insert copyright information."]
         :--license [true "(Don't) insert license information from the module."]
         :--toc [true "(Don't) generate table of contents."]
@@ -88,7 +88,7 @@
     (table.concat lines "\n")))
 
 (fn help []
-  (print (.. "Usage: fenneldoc [flags] [files]
+  (print (.. "Usage: fnldoc [flags] [files]
 
 Create documentation for your Fennel project.
 
@@ -141,7 +141,7 @@ passing `--no-toc' will disable generation of contents table, and
               (validate-fn val))
             (tset config flag val))
       nil (do
-            (io.stderr:write "fenneldoc: expected value for " flag "\n")
+            (io.stderr:write "fnldoc: expected value for " flag "\n")
             (os.exit -1)))))
 
 (fn handle-key-flag [i flag config]
@@ -151,14 +151,14 @@ passing `--no-toc' will disable generation of contents table, and
     (match (. arg i)
       val (tset config.keys flag val)
       nil (do
-            (io.stderr:write "fenneldoc: expected value for " flag "\n")
+            (io.stderr:write "fnldoc: expected value for " flag "\n")
             (os.exit -1)))))
 
 (fn handle-file [file files ?no-check]
   (case ?no-check
     no-check (do
                (when (and (not no-check) (= (string.sub file 1 2) "--"))
-                 (io.stderr:write "fenneldoc: unknown flag " file "\n")
+                 (io.stderr:write "fnldoc: unknown flag " file "\n")
                  (os.exit -1))
                (table.insert files file))
     _ (handle-file file files false)))
@@ -167,21 +167,21 @@ passing `--no-toc' will disable generation of contents table, and
   (match (. arg (+ 1 i))
     val (set fennel.path (.. val ";" fennel.path))
     nil (do
-          (io.stderr:write "fenneldoc: expected value for --add-fennel-path\n")
+          (io.stderr:write "fnldoc: expected value for --add-fennel-path\n")
           (os.exit -1))))
 
 (fn write-config [config]
   (match (io.open :.fenneldoc :w)
     f (with-open [file f]
-        (let [version config.fenneldoc-version]
-          (set config.fenneldoc-version nil)
+        (let [version config.fnldoc-version]
+          (set config.fnldoc-version nil)
           (file:write ";; -*- mode: fennel; -*- vi:ft=fennel\n"
-                      ";; Configuration file for Fenneldoc " version "\n" ";; https://gitlab.com/andreyorst/fenneldoc
+                      ";; Configuration file for Fnldoc " version "\n" ";; https://sr.ht/~m15a/fnldoc/
 
 "
                       (pick-values 1 (: (fennel.view config) :gsub "\\\n" "\n"))
                       "\n")
-          (set config.fenneldoc-version version)))
+          (set config.fnldoc-version version)))
     (nil msg code) (do
                      (io.stderr:write "Error opening file '.fenneldoc': " msg
                                       " (" code ")\n")
@@ -213,7 +213,7 @@ passing `--no-toc' will disable generation of contents table, and
         :--skip-check (handle-bool-flag :--skip-check config)
         :--help (help)
         (flag ? (flag:find "^%-%-")) (do
-                                       (io.stderr:write "fenneldoc: unknown flag '"
+                                       (io.stderr:write "fnldoc: unknown flag '"
                                                         flag "'\n")
                                        (os.exit 1))
         file (handle-file file files))

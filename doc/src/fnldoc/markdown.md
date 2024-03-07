@@ -1,4 +1,4 @@
-# Markdown.fnl (v1.0.0)
+# Markdown.fnl (1.0.2-dev)
 
 **Table of contents**
 
@@ -10,7 +10,7 @@
 Function signature:
 
 ```
-(gen-function-signature [function arglist config])
+(gen-function-signature function arglist config)
 ```
 
 Generate function signature for `function` from `arglist` accordingly to `config`.
@@ -19,7 +19,7 @@ Generate function signature for `function` from `arglist` accordingly to `config
 Function signature:
 
 ```
-(gen-item-documentation [docstring mode])
+(gen-item-documentation docstring mode)
 ```
 
 Generate documentation from `docstring`, and handle inline references
@@ -29,7 +29,7 @@ based on `mode`.
 Function signature:
 
 ```
-(gen-markdown [module-info config])
+(gen-markdown module-info config)
 ```
 
 Generate markdown feom `module-info` accordingly to `config`.
@@ -37,10 +37,10 @@ Generate markdown feom `module-info` accordingly to `config`.
 
 ---
 
-Copyright (C) 2020-2022 Andrey Listopadov
+Copyright (C) 2020-2022 Andrey Listopadov, 2024 NACAMURA Mitsuhiro
 
-License: [MIT](https://gitlab.com/andreyorst/fenneldoc/-/raw/master/LICENSE)
+License: [MIT](https://git.sr.ht/~m15a/fnldoc/tree/main/item/LICENSE)
 
 
-<!-- Generated with Fenneldoc v1.0.0
-     https://gitlab.com/andreyorst/fenneldoc -->
+<!-- Generated with Fnldoc 1.0.2-dev
+     https://sr.ht/~m15a/fnldoc/ -->

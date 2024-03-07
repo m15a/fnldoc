@@ -1,4 +1,4 @@
-# Writer.fnl (v1.0.0)
+# Writer.fnl (1.0.2-dev)
 
 **Table of contents**
 
@@ -8,7 +8,7 @@
 Function signature:
 
 ```
-(write-docs [docs file module-info config])
+(write-docs docs file module-info config)
 ```
 
 Accepts `docs` as a vector of lines, and a path to a `file`.
@@ -19,10 +19,10 @@ Concatenates lines in `docs` with newline, and writes result to
 
 ---
 
-Copyright (C) 2020-2022 Andrey Listopadov
+Copyright (C) 2020-2022 Andrey Listopadov, 2024 NACAMURA Mitsuhiro
 
-License: [MIT](https://gitlab.com/andreyorst/fenneldoc/-/raw/master/LICENSE)
+License: [MIT](https://git.sr.ht/~m15a/fnldoc/tree/main/item/LICENSE)
 
 
-<!-- Generated with Fenneldoc v1.0.0
-     https://gitlab.com/andreyorst/fenneldoc -->
+<!-- Generated with Fnldoc 1.0.2-dev
+     https://sr.ht/~m15a/fnldoc/ -->

@@ -1,41 +1,57 @@
-# Config.fnl (v1.0.0)
+(local fennel (require :fennel))
+(local {: view : dofile} fennel)
 
-**Table of contents**
+(local deprecated-keys
+       {:project-doc-order "'project-doc-order' was deprecated and no longer supported - use the 'doc-order' key in the 'modules-info' table."
+        :keys "'keys' was deprecated and no longer supported - use the 'modules-info' table to provide module information instead."})
 
-- [`process-config`](#process-config)
+(local config {:fennel-path []
+               :function-signatures true
+               :ignored-args-patterns ["%.%.%." "%_" "%_[^%s]+"]
+               :inline-references :link
+               :insert-comment true
+               :insert-copyright true
+               :insert-license true
+               :insert-version true
+               :modules-info {}
+               :project-copyright nil
+               :project-version nil
+               :project-license nil
+               :mode :checkdoc
+               :order :alphabetic
+               :out-dir :./doc
+               :sandbox true
+               :test-requirements {}
+               :toc true})
 
-## `process-config`
-Function signature:
+(local warned {})
 
-```
-(process-config [version])
-```
+(fn process-config [version]
+  (match (pcall dofile :.fenneldoc)
+    (true rc) (each [k v (pairs rc)]
+                (match (. deprecated-keys k)
+                  msg (when (not (. warned k))
+                        (io.stderr:write "WARNING: '.fenneldoc': " msg "\n")
+                        (tset warned k true)))
+                (tset config k v))
+    (false msg) (when (not (msg:match ".fenneldoc: No such file or directory"))
+                  (io.stderr:write msg "\n")))
+  (each [_ path (pairs config.fennel-path)]
+    (set fennel.path (.. path ";" fennel.path)))
+  (set config.fnldoc-version version)
+  config)
 
-Process configuration file and merge it with default configuration.
+(fennel.metadata:set process-config :fnl/docstring (.. "Process configuration file and merge it with default configuration.
 Configuration is stored in `.fenneldoc` which is looked up in the
 working directory.  Injects private `version` field in config.
 
 Default configuration:
 
 ``` fennel
-{:fennel-path {}
- :function-signatures true
- :ignored-args-patterns ["%.%.%." "%_" "%_[^%s]+"]
- :inline-references "link"
- :insert-comment true
- :insert-copyright true
- :insert-license true
- :insert-version true
- :mode "checkdoc"
- :modules-info {}
- :order "alphabetic"
- :out-dir "./doc"
- :sandbox true
- :test-requirements {}
- :toc true}
+" (view config) "
 ```
 
-### Key descriptions
+# Key descriptions
 
 - `mode` - mode to operate in:
   - `checkdoc` - run checks and generate documentation files if no
@@ -47,7 +63,7 @@ Default configuration:
 
 - `inline-references` - how to handle inline references.  Inline
   references are denoted with opening backtick and closed with single
-  quote.  Fenneldoc supports several modes to operate on inline
+  quote.  Fnldoc supports several modes to operate on inline
   references:
   - `:link` - convert inline references into links to headings found
     in current file.
@@ -57,13 +73,13 @@ Default configuration:
 - `test-requirements` - code, that will be injected into each test in
   respecting module.
   For example, when testing macro module `{:macro-module.fnl
-  "(import-macros {: some-macro} :macro-module)"}` will inject the
+  \"(import-macros {: some-macro} :macro-module)\"}` will inject the
   following code into beginning of each test, hence requiring needed
   macros.  This should be not needed for ordinary modules, as those
   are compiled before analyzing, which means macros and dependencies
   should be already resolved.
 - `function-signatures` - whether to generate function signatures in documentation.
-- `final-comment` - whether to insert final comment with fenneldoc version.
+- `final-comment` - whether to insert final comment with Fnldoc version.
 - `copyright` - whether to insert copyright information.
 - `license` - whether to insert license information from the module.
 - `toc` - whether to generate table of contents.
@@ -73,11 +89,11 @@ Supported algorithms: alphabetic, reverse-alphabetic.
 You also can specify a custom sorting function for this key.
 - `sandbox` - whether to sandbox loading code and running documentation tests.
 
-#### Project information
+## Project information
 
 You can store project information either in project files directly, as
 described in the section above, or you can specify most (but not all)
-of this information in `.fenneldoc` configuration file. Fenneldoc
+of this information in `.fenneldoc` configuration file. Fnldoc
 provides the following set of keys for that:
 
 - `project-license` - string that contains project license name or
@@ -92,19 +108,10 @@ provides the following set of keys for that:
   `:version`.  For example:
 
   ```fennel
-  {:modules-info {:some-module.fnl {:description "some module description"
-                                    :license "GNU GPL"
-                                    :name "Some Module"
-                                    :doc-order ["some-fn1" "some-fn2" "etc"]}}}
-  ```
+  {:modules-info {:some-module.fnl {:description \"some module description\"
+                                    :license \"GNU GPL\"
+                                    :name \"Some Module\"
+                                    :doc-order [\"some-fn1\" \"some-fn2\" \"etc\"]}}}
+  ```"))
 
-
----
-
-Copyright (C) 2020-2022 Andrey Listopadov
-
-License: [MIT](https://gitlab.com/andreyorst/fenneldoc/-/raw/master/LICENSE)
-
-
-<!-- Generated with Fenneldoc v1.0.0
-     https://gitlab.com/andreyorst/fenneldoc -->
+{: process-config}

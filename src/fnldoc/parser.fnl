@@ -3,7 +3,7 @@
 
 (local {: dofile : metadata : macro-loaded} (require :fennel))
 (local compiler (require :fennel.compiler))
-(local {: gen-function-signature : gen-item-documentation} (require :markdown))
+(local {: gen-function-signature : gen-item-documentation} (require :fnldoc.markdown))
 
 (fn sandbox-module [module file]
   (setmetatable {} {:__index (fn []

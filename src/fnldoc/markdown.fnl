@@ -4,9 +4,9 @@
   (if config.insert-comment
       (doto lines
         (table.insert "")
-        (table.insert (.. "<!-- Generated with Fenneldoc "
-                          config.fenneldoc-version))
-        (table.insert "     https://gitlab.com/andreyorst/fenneldoc -->")
+        (table.insert (.. "<!-- Generated with Fnldoc "
+                          config.fnldoc-version))
+        (table.insert "     https://sr.ht/~m15a/fnldoc/ -->")
         (table.insert ""))
       lines))
 

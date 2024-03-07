@@ -1,9 +1,9 @@
-(local {: process-config} (require :config))
-(local {: process-args} (require :argparse))
-(local {: test} (require :doctest))
-(local {: module-info} (require :parser))
-(local {: gen-markdown} (require :markdown))
-(local {: write-docs} (require :writer))
+(local {: process-config} (require :fnldoc.config))
+(local {: process-args} (require :fnldoc.argparse))
+(local {: test} (require :fnldoc.doctest))
+(local {: module-info} (require :fnldoc.parser))
+(local {: gen-markdown} (require :fnldoc.markdown))
+(local {: write-docs} (require :fnldoc.writer))
 
 (fn process-file [file config]
   "Accepts `file` as path to some Fennel module, and `config` table.

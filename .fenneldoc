@@ -1,6 +1,6 @@
 ;; -*- mode: fennel; -*- vi:ft=fennel
-;; Configuration file for Fenneldoc 1.0.2-dev
-;; https://gitlab.com/andreyorst/fenneldoc
+;; Configuration file for Fnldoc 1.0.2-dev
+;; https://sr.ht/~m15a/fnldoc/
 
 {:fennel-path {}
  :function-signatures true
@@ -11,23 +11,23 @@
  :insert-license true
  :insert-version true
  :mode "checkdoc"
- :modules-info {:src/fenneldoc.fnl {:description "Fenneldoc - generate documentation for Fennel projects.
+ :modules-info {:src/fnldoc.fnl {:description "Fnldoc - generate documentation for Fennel projects.
 
 Generates documentation for Fennel libraries by analyzing project
 metadata at runtime.
 
 **Documentation for other modules**
 
-- [config.fnl](./config.md) - processes configuration file.
-- [parser.fnl](./parser.md) - loads the file and analyzes its metadata providing `module-info`.
-- [markdown.fnl](./markdown.md) - generates Markdown from `module-info`.
-- [args.fnl](./args.md) - functions for processing command line arguments.
-- [doctest.fnl](./doctest.md) - documentation testing.
-- [writer.fnl](./writer.md) - writing markdown into files."}}
+- [fnldoc/config.fnl](./fnldoc/config.md) - Processes configuration file.
+- [fnldoc/parser.fnl](./fnldoc/parser.md) - Loads the file and analyzes its metadata providing `module-info`.
+- [fnldoc/markdown.fnl](./fnldoc/markdown.md) - Generates Markdown from `module-info`.
+- [fnldoc/argparse.fnl](./fnldoc/argparse.md) - Functions for processing command line arguments.
+- [fnldoc/doctest.fnl](./fnldoc/doctest.md) - Documentation testing.
+- [fnldoc/writer.fnl](./fnldoc/writer.md) - Writing markdown into files."}}
  :order "alphabetic"
  :out-dir "./doc"
- :project-copyright "Copyright (C) 2020-2022 Andrey Listopadov"
- :project-license "[MIT](https://gitlab.com/andreyorst/fenneldoc/-/raw/master/LICENSE)"
+ :project-copyright "Copyright (C) 2020-2022 Andrey Listopadov, 2024 NACAMURA Mitsuhiro"
+ :project-license "[MIT](https://git.sr.ht/~m15a/fnldoc/tree/main/item/LICENSE)"
  :project-version "1.0.2-dev"
  :sandbox true
  :test-requirements {}

@@ -1,6 +1,7 @@
 *.lua
 luacov.*
-fenneldoc
+fnldoc
+!fnldoc/
 .direnv/
 .envrc
 result

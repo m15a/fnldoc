@@ -1,23 +1,24 @@
-# Fenneldoc
+# Fnldoc
 
 Tool for automatic documentation generation and validation for the [Fennel](https://fennel-lang.org/) language.
 
+This is a fork of the great original [Fenneldoc](https://gitlab.com/andreyorst/fenneldoc/).
 
 ## Usage
 
-Fenneldoc looks for `.fenneldoc` configuration file in current directory, and accepts files for which documentation will be generated.
+Fnldoc looks for `.fenneldoc` configuration file in current directory, and accepts files for which documentation will be generated.
 
-    fenneldoc [flags] [files]
+    fnldoc [flags] [files]
 
 
 ## Design
 
-Fenneldoc loads files at runtime, and goes through exported definitions looking for specific Fennel metadata.
+Fnldoc loads files at runtime, and goes through exported definitions looking for specific Fennel metadata.
 It then forms a `doc` directory, in which documentation files are placed following hierarchy of the project.
 If module specifies `version` or `_VERSION` keyword, documentation is placed under the directory which corresponds to the version.
 
 **Note!**
-Fenneldoc doesn't parse files, instead it **runs your code** by using `fennel.dofile`, and collects runtime information, such as metadata and exported functions.
+Fnldoc doesn't parse files, instead it **runs your code** by using `fennel.dofile`, and collects runtime information, such as metadata and exported functions.
 It does so in a restricted environment, so if your program has any side effects reachable during file loading, you will get an error.
 Use `--no-sandbox` or `:sandbox` option in config to override this behavior.
 
@@ -64,7 +65,7 @@ Additionally, you can add a description for the entire module, as well as the au
    :license "[license](Link to your license)"}}}
 ```
 
-Running `fenneldoc my-module.fnl` with this config will procure `doc/my-module.md` with the following contents:
+Running `fnldoc my-module.fnl` with this config will procure `doc/my-module.md` with the following contents:
 
 `````` markdown
 # My-module.fnl (0.1.0)
@@ -101,8 +102,8 @@ Copyright info that appears at the end of the document
 License: [license](Link to your license)
 
 
-<!-- Generated with Fenneldoc fenneldoc-version
-     https://gitlab.com/andreyorst/fenneldoc -->
+<!-- Generated with Fnldoc fnldoc-version
+     https://sr.ht/~m15a/fnldoc/ -->
 ``````
 
 Note that `bar`'s documentation features a link to `foo`'s documentation.
@@ -114,7 +115,7 @@ You will also see warnings in the log, indicating that both `foo` and `bar` have
 ### Specifying order of documentation items
 
 Since items in Lua tables have arbitrary order, it is impossible to reason about documentation order by inspecting tables returned from modules at runtime.
-As an escape hatch, Fenneldoc supports specifying order of items in a sequential table in special key `:_DOC_ORDER` stored in the module table.
+As an escape hatch, Fnldoc supports specifying order of items in a sequential table in special key `:_DOC_ORDER` stored in the module table.
 For example we have a module with two functions:
 
 ``` clojure
@@ -130,7 +131,7 @@ For example we have a module with two functions:
  :another-function another-function}
 ```
 
-Because order of the items in the exported table is arbitrary, Fenneldoc sorts the table alphabetically by default to achieve reproducible results.
+Because order of the items in the exported table is arbitrary, Fnldoc sorts the table alphabetically by default to achieve reproducible results.
 Thus the order of the documentation will be `another-function` followed by `first-function`.
 You can override this behavior by specifying the `:doc-order` key into the respecting file entry under the `:modules-info` key in the configuration file:
 
@@ -147,7 +148,7 @@ Note, that you can't pass sorting function via command-line argument.
 ### Documentation validation
 
 Documentation is tested by default.
-When `fenneldoc` sees three backticks, followed by `fennel`, it treats everything as test code until it sees three backticks again.
+When `fnldoc` sees three backticks, followed by `fennel`, it treats everything as test code until it sees three backticks again.
 For example, suppose we made a change in function but forgot to update the docstring:
 
 ``` clojure
@@ -164,9 +165,9 @@ For example, suppose we made a change in function but forgot to update the docst
 
 This function claims that it sums three arguments, however the actual body only sums two.
 
-If we run `fenneldoc --mode check sum.fnl`, we'll get the following:
+If we run `fnldoc --mode check sum.fnl`, we'll get the following:
 
-    $ fenneldoc --mode check sum.fnl
+    $ fnldoc --mode check sum.fnl
     In file: sum.fnl
     Error in docstring for: sum
     In test:
@@ -180,7 +181,7 @@ If we run `fenneldoc --mode check sum.fnl`, we'll get the following:
 
 This prevents confusion when updated function behavior doesn't match documentation.
 
-In most cases `fenneldoc` is smart enough, and can require your module's exported functions without namespace prefix.
+In most cases `fnldoc` is smart enough, and can require your module's exported functions without namespace prefix.
 Therefore you can use functions literally in documentation, e.g. if you return a table, no need to destructure it manually, or store it in some `local` within the docstring.
 
 However, if this doesn't work you can specify how dependencies should be required in `.fenneldoc` config.
@@ -216,17 +217,17 @@ This test will not be evaluated.
 
 ## Inline references
 
-Fenneldoc supports automatic resolution of inline references in documentation strings.
+Fnldoc supports automatic resolution of inline references in documentation strings.
 For example, when docstring contains the following string ``Calls `foo' on its arguments.`` here ```foo'`` is an inline reference.
 Inline references start with backtick (backquote) and end with single quote.
-Fenneldoc looks up matching heading in currently processed file and replaces inline reference to link, if such heading exists.
+Fnldoc looks up matching heading in currently processed file and replaces inline reference to link, if such heading exists.
 If heading wasn't found such reference will be replaced to inline code, unless `inline-references` is set to `:keep`.
 
 
 ## Configuration
 
-Fenneldoc can be configured by placing `.fenneldoc` file at the root of your project, where `fenneldoc` will be called.
-Another way is to pass command lines to `fenneldoc` directly. Full set of command line arguments can be found by calling `fenneldoc --help`.
+Fnldoc can be configured by placing `.fenneldoc` file at the root of your project, where `fnldoc` will be called.
+Another way is to pass command lines to `fnldoc` directly. Full set of command line arguments can be found by calling `fnldoc --help`.
 
 Configuration file is simply a fennel file without extension, which exports a table with keys.
 Example of configuration file:
@@ -236,25 +237,25 @@ Example of configuration file:
  :out-dir "./documentation"}
 ```
 
-Here, we configure Fenneldoc to omit table of contents, by specifying `:toc false`, and change output directory to `./documentation`.
+Here, we configure Fnldoc to omit table of contents, by specifying `:toc false`, and change output directory to `./documentation`.
 
 There are other options that can be set up on per project basis, see [config.md](./doc/src/config.md) file for more info.
-Full set of available options can also be seen by calling `fenneldoc --help`.
+Full set of available options can also be seen by calling `fnldoc --help`.
 
 
 ### Config generation
 
-Fenneldoc can generate configuration file for you with all default options, or update existing config by passing flags to `fenneldoc`.
-If you want to generate fresh config, remove your old `.fenneldoc` file, and run `fenneldoc --config`.
+Fnldoc can generate configuration file for you with all default options, or update existing config by passing flags to `fnldoc`.
+If you want to generate fresh config, remove your old `.fenneldoc` file, and run `fnldoc --config`.
 This will create default `.fenneldoc` configuration file.
-If you want to alter this file contents, you can pass flags to `fenneldoc` like this:
+If you want to alter this file contents, you can pass flags to `fnldoc` like this:
 
-    fenneldoc --no-toc --no-function-signatures --config --mode doc
+    fnldoc --no-toc --no-function-signatures --config --mode doc
 
 This will permanently disable table of contents, function signatures and documentation validation for current project.
 
 ## Contributing
 
 Please do.
-You can report issues or feature request at [project's Gitlab repository](https://gitlab.com/andreyorst/fenneldoc).
-Consider reading [contribution guidelines](https://gitlab.com/andreyorst/fenneldoc/-/blob/master/CONTRIBUTING.md) beforehand.
+You can report issues or feature request at the [project's issue tracker](https://todo.sr.ht/~m15a/fnldoc/).
+Consider reading [contribution guidelines](https://git.sr.ht/~m15a/fnldoc/tree/main/item/CONTRIBUTING.md) beforehand.

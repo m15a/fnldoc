@@ -1,4 +1,4 @@
-# Parser.fnl (v1.0.0)
+# Parser.fnl (1.0.2-dev)
 
 **Table of contents**
 
@@ -9,7 +9,7 @@
 Function signature:
 
 ```
-(create-sandbox ([file]) ([file overrides]))
+(create-sandbox file overrides)
 ```
 
 Create sandboxed environment to run `file` containing documentation,
@@ -31,7 +31,7 @@ functions to only throw warning, and not error.
 Function signature:
 
 ```
-(module-info [file config])
+(module-info file config)
 ```
 
 Returns table containing all relevant information accordingly to
@@ -41,10 +41,10 @@ generated.
 
 ---
 
-Copyright (C) 2020-2022 Andrey Listopadov
+Copyright (C) 2020-2022 Andrey Listopadov, 2024 NACAMURA Mitsuhiro
 
-License: [MIT](https://gitlab.com/andreyorst/fenneldoc/-/raw/master/LICENSE)
+License: [MIT](https://git.sr.ht/~m15a/fnldoc/tree/main/item/LICENSE)
 
 
-<!-- Generated with Fenneldoc v1.0.0
-     https://gitlab.com/andreyorst/fenneldoc -->
+<!-- Generated with Fnldoc 1.0.2-dev
+     https://sr.ht/~m15a/fnldoc/ -->

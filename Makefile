@@ -13,10 +13,10 @@ FENNEL_FLAGS +=\
 		--add-macro-path $(path)/?/init-macros.fnl)
 FENNEL_BUILD_FLAGS = --no-metadata --globals '*' --require-as-include --compile
 
-SRCS = $(wildcard src/*.fnl)
-MAIN_SRC := src/fenneldoc.fnl
-EXECUTABLE := fenneldoc
-VERSION ?= $(shell $(FENNEL) $(FENNEL_FLAGS) -e '(. (require :fenneldoc) :version)')
+SRCS = $(wildcard src/*.fnl src/*/*.fnl)
+MAIN_SRC := src/fnldoc.fnl
+EXECUTABLE := fnldoc
+VERSION ?= $(shell $(FENNEL) $(FENNEL_FLAGS) -e '(. (require :fnldoc) :version)')
 
 DESTDIR ?=
 PREFIX ?= /usr/local
@@ -64,7 +64,7 @@ help:
 	@echo >&2 "make build        -- Build Lua executable."
 	@echo >&2 "make install      -- Install executable to \$$DESTDIR\$$PREFIX/bin"
 	@echo >&2 "make clean        -- Clean up built files."
-	@echo >&2 "make doc          -- Generate documentation for fenneldoc."
+	@echo >&2 "make doc          -- Generate documentation for fnldoc."
 	@echo >&2 "make format       -- Format source files."
 	@echo >&2 "make check-format -- Check if source files are formatted."
 	@echo >&2 "make lint         -- Lint source files using fennel-ls."

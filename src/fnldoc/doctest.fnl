@@ -1,6 +1,6 @@
 ;;;; Documentation testing facilities.
 
-(local {: create-sandbox} (require :parser))
+(local {: create-sandbox} (require :fnldoc.parser))
 (local fennel (require :fennel))
 
 (fn extract-tests [name fn-doc]

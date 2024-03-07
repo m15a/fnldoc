@@ -10,6 +10,10 @@ and this project adheres to [Semantic Versioning][2].
 
 ## Unreleased
 
+### Changed
+
+- Executable name is changed to `fnldoc`.
+
 ### Fixed
 
 - Unknown identifier error in sandbox environment depending on Lua version.
@@ -18,6 +22,7 @@ and this project adheres to [Semantic Versioning][2].
 
 ### Internal changes
 
+- Modules are re-organized according to the above executable name change.
 - Version is now explicitly declared in the source code.
 - Removed dependency to cljlib.
 
