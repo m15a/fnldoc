@@ -13,7 +13,7 @@ FENNEL_FLAGS +=\
 		--add-macro-path $(path)/?/init-macros.fnl)
 FENNEL_BUILD_FLAGS = --no-metadata --globals '*' --require-as-include --compile
 
-SRCS = $(wildcard src/*.fnl src/*/*.fnl)
+SRCS = $(wildcard src/*.fnl src/**/*.fnl)
 MAIN_SRC := src/fnldoc.fnl
 EXECUTABLE := fnldoc
 VERSION ?= $(shell $(FENNEL) $(FENNEL_FLAGS) -e '(. (require :fnldoc) :version)')
