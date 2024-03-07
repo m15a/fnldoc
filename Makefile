@@ -35,12 +35,12 @@ $(EXECUTABLE): $(SRCS)
 	echo '#!/usr/bin/env $(LUA)' > $@
 	echo 'FNLDOC_EXECUTABLE = true' >> $@
 	$(FENNEL) $(FENNEL_FLAGS) $(FENNEL_BUILD_FLAGS) $(MAIN_SRC) >> $@
-	chmod 755 $@
+	chmod +x $@
 	$(LUA) $@ --config --project-version $(VERSION)
 
 .PHONY: install
 install: $(EXECUTABLE)
-	install -D -t $(DESTDIR)$(BINDIR) $<
+	install -pm755 -Dt $(DESTDIR)$(BINDIR) $<
 
 .PHONY: clean
 clean:
