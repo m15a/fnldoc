@@ -259,3 +259,15 @@ This will permanently disable table of contents, function signatures and documen
 Please do.
 You can report issues or feature request at the [project's issue tracker](https://todo.sr.ht/~m15a/fnldoc/).
 Consider reading [contribution guidelines](https://git.sr.ht/~m15a/fnldoc/tree/main/item/CONTRIBUTING.md) beforehand.
+
+## Licenses
+
+Copyright (c) 2020 Andrey Orst, 2024 NACAMURA Mitsuhiro.
+Unless otherwise stated, this software is distributed under the [MIT license](./LICENSE).
+
+### External libraries
+
+- [`test/faith.fnl`](./test/faith.fnl):
+  Copyright (c) 2009-2024 Scott Vokes, Phil Hagelberg, and contributors.
+  Distributed under the MIT license. See the license paragraphs at the beginning
+  of the file.

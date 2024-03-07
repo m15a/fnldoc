@@ -41,6 +41,10 @@ install: $(EXECUTABLE)
 clean:
 	rm -f $(EXECUTABLE)
 
+.PHONY: test
+test:
+	@$(FENNEL) $(FENNEL_FLAGS) test/init.fnl
+
 .PHONY: doc
 doc: $(EXECUTABLE)
 	rm -rf $(DOCDIR)
@@ -64,6 +68,7 @@ help:
 	@echo >&2 "make build        -- Build Lua executable."
 	@echo >&2 "make install      -- Install executable to \$$DESTDIR\$$PREFIX/bin"
 	@echo >&2 "make clean        -- Clean up built files."
+	@echo >&2 "make test         -- Run tests."
 	@echo >&2 "make doc          -- Generate documentation for fnldoc."
 	@echo >&2 "make format       -- Format source files."
 	@echo >&2 "make check-format -- Check if source files are formatted."
