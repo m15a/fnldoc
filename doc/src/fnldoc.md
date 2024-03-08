@@ -6,6 +6,7 @@ metadata at runtime.
 
 **Documentation for other modules**
 
+- [fnldoc/console.fnl](./fnldoc/console.md) - Utilities to print messages to console.
 - [fnldoc/config.fnl](./fnldoc/config.md) - Processes configuration file.
 - [fnldoc/parser.fnl](./fnldoc/parser.md) - Loads the file and analyzes its metadata providing `module-info`.
 - [fnldoc/markdown.fnl](./fnldoc/markdown.md) - Generates Markdown from `module-info`.
