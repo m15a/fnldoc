@@ -29,7 +29,7 @@
     (set fennel.path backup)))
 
 (fn test-config-write! []
-  (let [config-file :test/workspace/test-config-file
+  (let [config-file :test/playground/test-config-file
         c (config.new)]
     (each [k _ (pairs c)] (tset c k nil))
     (tset c :fnldoc-version :test)
