@@ -170,23 +170,6 @@ passing `--no-toc' will disable generation of contents table, and
           (io.stderr:write "fnldoc: expected value for --add-fennel-path\n")
           (os.exit -1))))
 
-(fn write-config [config]
-  (match (io.open :.fenneldoc :w)
-    f (with-open [file f]
-        (let [version config.fnldoc-version]
-          (set config.fnldoc-version nil)
-          (file:write ";; -*- mode: fennel; -*- vi:ft=fennel\n"
-                      ";; Configuration file for Fnldoc " version "\n" ";; https://sr.ht/~m15a/fnldoc/
-
-"
-                      (pick-values 1 (: (fennel.view config) :gsub "\\\n" "\n"))
-                      "\n")
-          (set config.fnldoc-version version)))
-    (nil msg code) (do
-                     (io.stderr:write "Error opening file '.fenneldoc': " msg
-                                      " (" code ")\n")
-                     (os.exit code))))
-
 (fn process-args [config]
   "Process command line arguments based on `config`. "
   (let [files []
@@ -219,7 +202,7 @@ passing `--no-toc' will disable generation of contents table, and
         file (handle-file file files))
       (set i (+ 1 i)))
     (when write-config?
-      (write-config config))
+      (config:write!))
     ;; in case `--` was passed we need to add remaining keys as files
     (while (<= i arglen)
       (handle-file (. arg i) files true)

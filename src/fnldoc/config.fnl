@@ -52,7 +52,28 @@
   (each [_ path (ipairs self.fennel-path)]
     (set fennel.path (.. path ";" fennel.path))))
 
-(local mt {: merge! : set-fennel-path!})
+(fn write! [self config-file]
+  "Write contents of `self` to the `config-file` (default: `.fenneldoc`)."
+  (let [config-file (or config-file :.fenneldoc)]
+    (match (io.open config-file :w)
+      f (with-open [file f]
+          (let [version self.fnldoc-version]
+            (set self.fnldoc-version nil)
+            (file:write ";; -*- mode: fennel; -*- vi:ft=fennel\n"
+                        ";; Configuration file for Fnldoc " version "\n"
+                        ";; https://sr.ht/~m15a/fnldoc/\n"
+                        (pick-values 1
+                                     (-> (view self)
+                                         (string.gsub "\\\n" "\n")))
+                        "\n")
+            (set self.fnldoc-version version)))
+      (nil msg code) (do
+                       (console.error "failed to open file"
+                                      (.. "'" config-file "':") msg
+                                      (.. "(" code ")"))
+                       (os.exit code)))))
+
+(local mt {: merge! : set-fennel-path! : write!})
 
 (fn new []
   "Create a new config object."
@@ -210,4 +231,4 @@ modules, contained in those. Supported keys: `:name`, `:description`,
    :doc-order [\"some-fn1\" \"some-fn2\" \"etc\"]}}}
 ```"))
 
-{: new : merge! : set-fennel-path! : init!}
+{: new : merge! : set-fennel-path! : write! : init!}

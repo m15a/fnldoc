@@ -6,6 +6,7 @@
 - [`merge!`](#merge)
 - [`new`](#new)
 - [`set-fennel-path!`](#set-fennel-path)
+- [`write!`](#write)
 
 ## `init!`
 Function signature:
@@ -189,6 +190,15 @@ Function signature:
 ```
 
 Append `self`'s `fennel-path` to `fennel.path`.
+
+## `write!`
+Function signature:
+
+```
+(write! self config-file)
+```
+
+Write contents of `self` to the `config-file` (default: `.fenneldoc`).
 
 
 ---

@@ -28,6 +28,18 @@
     (t.match "^b/%?/init.fnl;a/%?.fnl;" (. (require :fennel) :path))
     (set fennel.path backup)))
 
+(fn test-config-write! []
+  (let [config-file :test/workspace/test-config-file
+        c (config.new)]
+    (each [k _ (pairs c)] (tset c k nil))
+    (tset c :fnldoc-version :test)
+    (tset c :a :a)
+    (c:write! config-file)
+    (with-open [in (io.open config-file)]
+      (let [out (fennel.dofile config-file)]
+        (t.= {:a :a} out)))
+    (os.remove config-file)))
+
 (fn test-config-init! []
   (let [c (config.init! {:config-file "test/fixture/.fenneldoc" :version :test})]
     (t.= :test c.fnldoc-version)
@@ -39,4 +51,5 @@
 {: test-config-change-does-not-mutate-default
  : test-config-merge!
  : test-config-set-fennel-path!
+ : test-config-write!
  : test-config-init!}
