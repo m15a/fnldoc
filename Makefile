@@ -41,6 +41,7 @@ $(EXECUTABLE): $(SRCS)
 .PHONY: install
 install: $(EXECUTABLE)
 	install -pm755 -Dt $(DESTDIR)$(BINDIR) $<
+	ln -s $< $(DESTDIR)$(BINDIR)/fenneldoc
 
 .PHONY: clean
 clean:
