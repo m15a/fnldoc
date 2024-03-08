@@ -5,6 +5,7 @@
 - [`error`](#error)
 - [`info`](#info)
 - [`log`](#log)
+- [`log*`](#log-1)
 - [`warn`](#warn)
 
 ## `error`
@@ -16,7 +17,7 @@ Function signature:
 
 Print error `messages` to STDERR.
 
-Short hand for `(log (table.concat messages " ") :error)`.
+Short hand for `(log* (table.concat messages " ") :error)`.
 
 ## `info`
 Function signature:
@@ -27,13 +28,24 @@ Function signature:
 
 Print info `messages` to STDERR.
 
-Short hand for `(log (table.concat messages " ") :info)`.
+Short hand for `(log* (table.concat messages " ") :info)`.
 
 ## `log`
 Function signature:
 
 ```
-(log message ?level ?out)
+(log & messages)
+```
+
+Print `messages`, without level specified, to STDERR.
+
+Short hand for `(log* (table.concat messages " "))`.
+
+## `log*`
+Function signature:
+
+```
+(log* message ?level ?out)
 ```
 
 Print `message` to STDERR (default) in specified `?level`.
@@ -48,7 +60,7 @@ If file handle `?out` is specified, print it to the `?out` instead.
 ```fennel
 (let [log* (fn [msg lvl]
              (with-open [out (io.tmpfile)]
-               (log msg lvl out)
+               (log* msg lvl out)
                (out:seek :set)
                (out:read :*a)))] 
   (assert (= "fnldoc: no level
@@ -80,7 +92,7 @@ Function signature:
 
 Print warning `messages` to STDERR.
 
-Short hand for `(log (table.concat messages " ") :warning)`.
+Short hand for `(log* (table.concat messages " ") :warning)`.
 
 
 ---

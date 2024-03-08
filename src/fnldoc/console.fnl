@@ -7,7 +7,7 @@
       (.. "fnldoc [" level "]: " message)
       (.. "fnldoc: " message)))
 
-(lambda log [message ?level ?out]
+(lambda log* [message ?level ?out]
   "Print `message` to STDERR (default) in specified `?level`.
 
 `?level` can be one of `:info`, `:warning` (or `:warn`), and `:error`;
@@ -20,7 +20,7 @@ If file handle `?out` is specified, print it to the `?out` instead.
 ```fennel
 (let [log* (fn [msg lvl]
              (with-open [out (io.tmpfile)]
-               (log msg lvl out)
+               (log* msg lvl out)
                (out:seek :set)
                (out:read :*a)))] 
   (assert (= \"fnldoc: no level
@@ -45,22 +45,29 @@ If file handle `?out` is specified, print it to the `?out` instead.
   (let [out (or ?out io.stderr)]
     (out:write (wrap message (. levels ?level)) "\n")))
 
+(fn log [& messages]
+  "Print `messages`, without level specified, to STDERR.
+
+Short hand for `(log* (table.concat messages \" \"))`."
+  (log* (table.concat messages " ")))
+
+
 (fn info [& messages]
   "Print info `messages` to STDERR.
 
-Short hand for `(log (table.concat messages \" \") :info)`."
-  (log (table.concat messages " ") :info))
+Short hand for `(log* (table.concat messages \" \") :info)`."
+  (log* (table.concat messages " ") :info))
 
 (fn warn [& messages]
   "Print warning `messages` to STDERR.
 
-Short hand for `(log (table.concat messages \" \") :warning)`."
-  (log (table.concat messages " ") :warning))
+Short hand for `(log* (table.concat messages \" \") :warning)`."
+  (log* (table.concat messages " ") :warning))
 
 (fn error* [& messages]
   "Print error `messages` to STDERR.
 
-Short hand for `(log (table.concat messages \" \") :error)`."
-  (log (table.concat messages " ") :error))
+Short hand for `(log* (table.concat messages \" \") :error)`."
+  (log* (table.concat messages " ") :error))
 
-{: log : info : warn :error error*}
+{: log* : log : info : warn :error error*}
