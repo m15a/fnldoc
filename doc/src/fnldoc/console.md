@@ -11,23 +11,23 @@
 Function signature:
 
 ```
-(error message)
+(error & messages)
 ```
 
-Print error `message` to STDERR.
+Print error `messages` to STDERR.
 
-Short hand for `(log message :error)`.
+Short hand for `(log (table.concat messages " ") :error)`.
 
 ## `info`
 Function signature:
 
 ```
-(info message)
+(info & messages)
 ```
 
-Print info `message` to STDERR.
+Print info `messages` to STDERR.
 
-Short hand for `(log message :info)`.
+Short hand for `(log (table.concat messages " ") :info)`.
 
 ## `log`
 Function signature:
@@ -75,12 +75,12 @@ If file handle `?out` is specified, print it to the `?out` instead.
 Function signature:
 
 ```
-(warn message)
+(warn & messages)
 ```
 
-Print warning `message` to STDERR.
+Print warning `messages` to STDERR.
 
-Short hand for `(log message :warning)`.
+Short hand for `(log (table.concat messages " ") :warning)`.
 
 
 ---

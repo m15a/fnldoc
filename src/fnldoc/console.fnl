@@ -45,22 +45,22 @@ If file handle `?out` is specified, print it to the `?out` instead.
   (let [out (or ?out io.stderr)]
     (out:write (wrap message (. levels ?level)) "\n")))
 
-(lambda info [message]
-  "Print info `message` to STDERR.
+(fn info [& messages]
+  "Print info `messages` to STDERR.
 
-Short hand for `(log message :info)`."
-  (log message :info))
+Short hand for `(log (table.concat messages \" \") :info)`."
+  (log (table.concat messages " ") :info))
 
-(lambda warn [message]
-  "Print warning `message` to STDERR.
+(fn warn [& messages]
+  "Print warning `messages` to STDERR.
 
-Short hand for `(log message :warning)`."
-  (log message :warning))
+Short hand for `(log (table.concat messages \" \") :warning)`."
+  (log (table.concat messages " ") :warning))
 
-(lambda error* [message]
-  "Print error `message` to STDERR.
+(fn error* [& messages]
+  "Print error `messages` to STDERR.
 
-Short hand for `(log message :error)`."
-  (log message :error))
+Short hand for `(log (table.concat messages \" \") :error)`."
+  (log (table.concat messages " ") :error))
 
 {: log : info : warn :error error*}
