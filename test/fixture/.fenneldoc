@@ -1,0 +1,3 @@
+{:sandbox? false
+ :out-dir :nowhere
+ :modules-info {:a/b.fnl {:description "a/b"}}}

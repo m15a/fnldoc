@@ -13,6 +13,14 @@ and this project adheres to [Semantic Versioning][2].
 ### Changed
 
 - Executable name is changed to `fnldoc`.
+- In `.fenneldoc`, boolean keys have been renamed as follows:
+  - `sandbox` -> `sandbox?`
+  - `toc` -> `toc?`
+  - `function-signatures` -> `function-signatures?`
+  - `insert-copyright` -> `copyright?`
+  - `insert-license` -> `license?`
+  - `insert-version` -> `version?`
+  - `insert-comment` -> `final-comment?`
 
 ### Fixed
 

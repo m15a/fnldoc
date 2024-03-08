@@ -1,4 +1,4 @@
-(local {: process-config} (require :fnldoc.config))
+(local config (require :fnldoc.config))
 (local {: process-args} (require :fnldoc.argparse))
 (local {: test} (require :fnldoc.doctest))
 (local {: module-info} (require :fnldoc.parser))
@@ -21,9 +21,8 @@ extension, creating it if not exists."
 (local version :1.0.2-dev)
 
 (when _G.FNLDOC_EXECUTABLE
-  (let [(files config) (-> version
-                           process-config
-                           process-args)]
+  (let [config (config.init! {: version})
+        (files config) (process-args config)]
     (each [_ file (ipairs files)]
       (process-file file config))))
 
