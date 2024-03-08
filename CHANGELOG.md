@@ -10,10 +10,11 @@ and this project adheres to [Semantic Versioning][2].
 
 ## Unreleased
 
-### Changed
+### Deprecated
 
-- Executable name is changed to `fnldoc`.
-- In `.fenneldoc`, boolean keys have been renamed as follows:
+- Executable name has been changed to `fnldoc`. Although, symbolic link
+  `fenneldoc` that references `fnldoc` is provided.
+- In `.fenneldoc`, boolean keys have been renamed, and the old keys are deprecated:
   - `sandbox` -> `sandbox?`
   - `toc` -> `toc?`
   - `function-signatures` -> `function-signatures?`
