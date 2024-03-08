@@ -51,7 +51,6 @@ If file handle `?out` is specified, print it to the `?out` instead.
 Short hand for `(log* (table.concat messages \" \"))`."
   (log* (table.concat messages " ")))
 
-
 (fn info [& messages]
   "Print info `messages` to STDERR.
 
