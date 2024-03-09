@@ -2,6 +2,8 @@
 (local {: view : dofile : metadata} fennel)
 (local console (require :fnldoc.console))
 
+(local default (require :fnldoc.config.default))
+
 (fn deprecated-key-and-message [old new]
   (values old (string.format (.. "the '%s' key was deprecated and no longer supported"
                                  " - use %s instead.")
@@ -19,22 +21,6 @@
 
 (local deprecated (collect [k v (pairs deprecated*)]
                     (deprecated-key-and-message k v)))
-
-(local default {:fennel-path []
-                :out-dir :./doc
-                :mode :checkdoc
-                :test-requirements {}
-                :sandbox? true
-                :inline-references :link
-                :toc? true
-                :function-signatures? true
-                :order :alphabetic
-                :ignored-args-patterns ["%.%.%." "%_" "%_[^%s]+"]
-                :copyright? true
-                :license? true
-                :version? true
-                :final-comment? true
-                :modules-info {}})
 
 (fn merge! [self from]
   "Merge key-value pairs of the `from` table into `self` config object.
@@ -234,4 +220,4 @@ modules, contained in those. Supported keys: `:name`, `:description`,
    :doc-order [\"some-fn1\" \"some-fn2\" \"etc\"]}}}
 ```"))
 
-{: new : merge! : set-fennel-path! : write! : init!}
+{: default : new : merge! : set-fennel-path! : write! : init!}
