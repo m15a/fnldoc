@@ -11,6 +11,7 @@ metadata at runtime.
 - [fnldoc/parser.fnl](./fnldoc/parser.md) - Loads the file and analyzes its metadata providing `module-info`.
 - [fnldoc/markdown.fnl](./fnldoc/markdown.md) - Generates Markdown from `module-info`.
 - [fnldoc/argparse.fnl](./fnldoc/argparse.md) - Functions for processing command line arguments.
+- [fnldoc/argparse/cooker.fnl](./fnldoc/argparse/cooker.md) - Macros that help command line argument processing.
 - [fnldoc/doctest.fnl](./fnldoc/doctest.md) - Documentation testing.
 - [fnldoc/writer.fnl](./fnldoc/writer.md) - Writing markdown into files.
 
