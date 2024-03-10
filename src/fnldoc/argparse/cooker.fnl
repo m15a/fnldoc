@@ -2,6 +2,7 @@
 
 (local {: view} (require :fennel))
 (local default-config (require :fnldoc.config.default))
+(local {: assert-type} (require :fnldoc.utils))
 
 (fn start-cooking []
   "Start declaration of command line argument flags.
@@ -10,10 +11,6 @@ It implicitly declares global table `_G.FNLDOC_FLAG_RECIPES`. Flag recipes
 declared by `(recipe ...)` macro will be gathered into this global, and
 later collected by calling `(collect-recipes)`."
   `(tset _G :FNLDOC_FLAG_RECIPES {}))
-
-(fn assert-string [x]
-  (assert (= :string (type x))
-          (string.format "string expected, got %s" (view x))))
 
 (fn assert-short [x]
   (assert (= 1 (length x)) (string.format "1-length string expected, got %s"
@@ -25,13 +22,13 @@ later collected by calling `(collect-recipes)`."
 
 (fn boolean-recipe [name short-name/description ?description]
   "Define a boolean flag and corresponding negative (`--no-*`) counterpart."
-  (assert-string name)
-  (assert-string short-name/description)
+  (assert-type :string name)
+  (assert-type :string short-name/description)
   (if ?description
       (let [short-name short-name/description
             description ?description]
         (assert-short short-name)
-        (assert-string description)
+        (assert-type :string description)
         (let [description (string.format "--[no-]%s, -%s\t%s" name short-name
                                          description)
               positive-spec {:key (.. name "?") : description :value true}
@@ -52,17 +49,17 @@ later collected by calling `(collect-recipes)`."
 
 (fn category-recipe [name short-name/domain domain/description ?description]
   "Define a categorical flag such like apple, orange, or banana."
-  (assert-string name)
+  (assert-type :string name)
   (let [default (. default-config name)]
     (if ?description
         (let [short-name short-name/domain
               domain domain/description
               description ?description]
-          (assert-string short-name)
+          (assert-type :string short-name)
           (assert-short short-name)
           (assert-sequence domain)
-          (each [_ k (ipairs domain)] (assert-string k))
-          (assert-string description)
+          (each [_ k (ipairs domain)] (assert-type :string k))
+          (assert-type :string description)
           (let [description (let [domain (table.concat domain "|")]
                               (string.format "--%s, -%s\t%s (one of [%s], default: %s)"
                                              name short-name description domain
@@ -79,8 +76,8 @@ later collected by calling `(collect-recipes)`."
         (let [domain short-name/domain
               description domain/description]
           (assert-sequence domain)
-          (each [_ k (ipairs domain)] (assert-string k))
-          (assert-string description)
+          (each [_ k (ipairs domain)] (assert-type :string k))
+          (assert-type :string description)
           (let [description (let [domain (table.concat domain "|")]
                               (string.format "--%s\t%s (one of [%s], default: %s)"
                                              name description domain default))
@@ -93,13 +90,13 @@ later collected by calling `(collect-recipes)`."
 (fn string-recipe [name short-name/description ?description]
   "Define a simple string flag."
   {:fnl/arglist (or [name description] [name short-name description])}
-  (assert-string name)
-  (assert-string short-name/description)
+  (assert-type :string name)
+  (assert-type :string short-name/description)
   (let [default (. default-config name)]
     (if ?description
         (let [short-name short-name/description
               description ?description]
-          (assert-string description)
+          (assert-type :string description)
           (let [description (string.format "--%s, -%s\t%s (default: %s)" name
                                            short-name description default)
                 spec {:key name : description :consume-next? true}
@@ -117,13 +114,13 @@ later collected by calling `(collect-recipes)`."
 (fn number-recipe [name short-name/description ?description]
   "Define a number flag."
   {:fnl/arglist (or [name description] [name short-name description])}
-  (assert-string name)
-  (assert-string short-name/description)
+  (assert-type :string name)
+  (assert-type :string short-name/description)
   (let [default (. default-config name)]
     (if ?description
         (let [short-name short-name/description
               description ?description]
-          (assert-string description)
+          (assert-type :string description)
           (let [description (string.format "--%s, -%s\t%s (default: %s)" name
                                            short-name description default)
                 spec {:key name
@@ -198,8 +195,7 @@ In command line argument parsing, this flag will consumes the next
 argument, validate if it can be converted to number, and set the `config`
 object's corresponding attribute to the converted number."
   {:fnl/arglist [recipe-type & recipe-spec]}
-  (assert-string recipe-type)
-  (case recipe-type
+  (case (assert-type :string recipe-type)
     :boolean (boolean-recipe ...)
     :bool (boolean-recipe ...)
     :category (category-recipe ...)

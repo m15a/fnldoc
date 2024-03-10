@@ -14,6 +14,7 @@ metadata at runtime.
 - [fnldoc/argparse/cooker.fnl](./fnldoc/argparse/cooker.md) - Macros that help command line argument processing.
 - [fnldoc/doctest.fnl](./fnldoc/doctest.md) - Documentation testing.
 - [fnldoc/writer.fnl](./fnldoc/writer.md) - Writing markdown into files.
+- [fnldoc/utils.fnl](./fnldoc/utils.md) - Miscellaneous utilities.
 
 
 ---

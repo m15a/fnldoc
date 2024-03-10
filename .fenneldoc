@@ -27,7 +27,8 @@ metadata at runtime.
 - [fnldoc/argparse.fnl](./fnldoc/argparse.md) - Functions for processing command line arguments.
 - [fnldoc/argparse/cooker.fnl](./fnldoc/argparse/cooker.md) - Macros that help command line argument processing.
 - [fnldoc/doctest.fnl](./fnldoc/doctest.md) - Documentation testing.
-- [fnldoc/writer.fnl](./fnldoc/writer.md) - Writing markdown into files."}
+- [fnldoc/writer.fnl](./fnldoc/writer.md) - Writing markdown into files.
+- [fnldoc/utils.fnl](./fnldoc/utils.md) - Miscellaneous utilities."}
   :src/fnldoc/argparse/cooker.fnl
   {:description "Generate command line argument flag recipes.
 
