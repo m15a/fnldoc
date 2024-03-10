@@ -18,8 +18,9 @@ FENNEL_FLAGS +=\
 endif
 FENNEL_BUILD_FLAGS = --no-metadata --globals '*' --require-as-include --compile
 
-SRCS = $(wildcard src/*.fnl src/**/*.fnl)
+SRCS = $(shell find src -name '*.fnl')
 MAIN_SRC := src/fnldoc.fnl
+TESTS = $(shell find test -name '*.fnl' ! -name 'faith.fnl')
 EXECUTABLE := fnldoc
 VERSION ?= $(shell $(FENNEL) $(FENNEL_FLAGS) -e '(. (require :fnldoc) :version)')
 
@@ -58,15 +59,15 @@ doc: $(EXECUTABLE)
 
 .PHONY: format
 format:
-	fnlfmt --fix $(SRCS)
+	fnlfmt --fix $(SRCS) $(TESTS)
 
 .PHONY: check-format
 check-format:
-	fnlfmt --check $(SRCS)
+	fnlfmt --check $(SRCS) $(TESTS)
 
 .PHONY: lint
 lint:
-	fennel-ls --check $(SRCS)
+	fennel-ls --check $(SRCS) $(TESTS)
 
 .PHONY: help
 help:
