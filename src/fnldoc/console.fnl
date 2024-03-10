@@ -45,28 +45,28 @@ If file handle `?out` is specified, print it to the `?out` instead.
   (let [out (or ?out io.stderr)]
     (out:write (wrap message (. levels ?level)) "\n")))
 
-(fn log [& messages]
-  "Print `messages`, without level specified, to STDERR.
+(fn log [...]
+  "Print message, without level specified, to STDERR.
 
-Short hand for `(log* (table.concat messages \" \"))`."
-  (log* (table.concat messages " ")))
+Short hand for `(log* (table.concat [...] \" \"))`."
+  (log* (table.concat [...] " ")))
 
-(fn info [& messages]
-  "Print info `messages` to STDERR.
+(fn info [...]
+  "Print info message to STDERR.
 
-Short hand for `(log* (table.concat messages \" \") :info)`."
-  (log* (table.concat messages " ") :info))
+Short hand for `(log* (table.concat [...] \" \") :info)`."
+  (log* (table.concat [...] " ") :info))
 
-(fn warn [& messages]
-  "Print warning `messages` to STDERR.
+(fn warn [...]
+  "Print warning message to STDERR.
 
-Short hand for `(log* (table.concat messages \" \") :warning)`."
-  (log* (table.concat messages " ") :warning))
+Short hand for `(log* (table.concat [...] \" \") :warning)`."
+  (log* (table.concat [...] " ") :warning))
 
-(fn error* [& messages]
-  "Print error `messages` to STDERR.
+(fn error* [...]
+  "Print error message to STDERR.
 
-Short hand for `(log* (table.concat messages \" \") :error)`."
-  (log* (table.concat messages " ") :error))
+Short hand for `(log* (table.concat [...] \" \") :error)`."
+  (log* (table.concat [...] " ") :error))
 
 {: log* : log : info : warn :error error*}
