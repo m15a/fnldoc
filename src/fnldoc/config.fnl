@@ -1,6 +1,7 @@
 (local fennel (require :fennel))
 (local {: view : dofile : metadata} fennel)
 (local console (require :fnldoc.console))
+(local {: clone/deeply} (require :fnldoc.utils.table))
 
 (local default (require :fnldoc.config.default))
 
@@ -66,13 +67,8 @@
 
 (fn new []
   "Create a new config object."
-  (let [clone (collect [k v (pairs default)] k v)]
-    ;; TODO: deep copy the default.
-    (set clone.fennel-path [])
-    (set clone.test-requirements {})
-    (set clone.ignored-args-patterns ["%.%.%." "%_" "%_[^%s]+"])
-    (set clone.modules-info {})
-    (setmetatable clone {:__index mt})))
+  (let [self (clone/deeply default)]
+    (setmetatable self {:__index mt})))
 
 (fn init! [{: config-file : version}]
   (let [config-file (or config-file :.fenneldoc)

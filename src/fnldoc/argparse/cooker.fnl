@@ -3,6 +3,7 @@
 (local {: view} (require :fennel))
 (local default-config (require :fnldoc.config.default))
 (local {: assert-type} (require :fnldoc.utils))
+(local {: clone} (require :fnldoc.utils.table))
 
 (fn start-cooking []
   "Start declaration of command line argument flags.
@@ -33,7 +34,7 @@ later collected by calling `(collect-recipes)`."
                                          description)
               positive-spec {:key (.. name "?") : description :value true}
               negative-spec {:key (.. name "?") :value false}
-              short-spec (doto (collect [k v (pairs positive-spec)] k v)
+              short-spec (doto (clone positive-spec)
                            (tset :description nil))]
           `(do
              (tset _G :FNLDOC_FLAG_RECIPES ,(.. "--" name) ,positive-spec)
@@ -68,7 +69,7 @@ later collected by calling `(collect-recipes)`."
                            `(fn [x#]
                               (or (. ,domain x#) false)))
                 spec {:key name : description : validate :consume-next? true}
-                short-spec (doto (collect [k v (pairs spec)] k v)
+                short-spec (doto (clone spec)
                              (tset :description nil))]
             `(do
                (tset _G :FNLDOC_FLAG_RECIPES ,(.. "--" name) ,spec)
@@ -100,7 +101,7 @@ later collected by calling `(collect-recipes)`."
           (let [description (string.format "--%s, -%s\t%s (default: %s)" name
                                            short-name description default)
                 spec {:key name : description :consume-next? true}
-                short-spec (doto (collect [k v (pairs spec)] k v)
+                short-spec (doto (clone spec)
                              (tset :description nil))]
             `(do
                (tset _G :FNLDOC_FLAG_RECIPES ,(.. "--" name) ,spec)
@@ -128,7 +129,7 @@ later collected by calling `(collect-recipes)`."
                       :preprocess `tonumber
                       :validate `(fn [x#] (= :number (type x#)))
                       :consume-next? true}
-                short-spec (doto (collect [k v (pairs spec)] k v)
+                short-spec (doto (clone spec)
                              (tset :description nil))]
             `(do
                (tset _G :FNLDOC_FLAG_RECIPES ,(.. "--" name) ,spec)
