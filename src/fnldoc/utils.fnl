@@ -27,8 +27,7 @@ Return evaluated `x` if passed the check; otherwise raise an error.
             :thread true
             :table true)
           (.. "expected type invalid: " (view expected)))
-  (assert (= expected (type x))
-          (.. expected " expected, got " (view x)))
+  (assert (= expected (type x)) (.. expected " expected, got " (view x)))
   x)
 
 {: assert-type}

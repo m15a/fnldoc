@@ -11,9 +11,10 @@
   "Return a deep copy of the `table`, assuming that keys are string or number."
   {:fnl/arglist [table]}
   (collect [k v (pairs tbl)]
-    k (case (type v)
-        :table (clone/deeply v)
-        _ v)))
+    k
+    (case (type v)
+      :table (clone/deeply v)
+      _ v)))
 
 (fn merge! [tbl ...]
   "Merge all the non-sequential `tables` into the first `table`.

@@ -208,6 +208,7 @@ object's corresponding attribute to the converted number."
 (fn cooking [& recipes]
   "A helper macro to collect recipes into one table."
   `(let [merge!# (. (require :fnldoc.utils.table) :merge!)]
-     (doto {} (merge!# ,(unpack recipes)))))
+     (doto {}
+       (merge!# ,(unpack recipes)))))
 
 {: cooking : recipe}
