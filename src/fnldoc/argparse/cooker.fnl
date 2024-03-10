@@ -6,141 +6,211 @@
 (local {: assert-type} (require :fnldoc.utils))
 (local {: clone} (require :fnldoc.utils.table))
 
-(fn assert-short [x]
-  (assert (= 1 (length x)) (string.format "1-length string expected, got %s"
-                                          (view x))))
+(fn assert-char [x]
+  (assert (and (= :string (type x)) (= 1 (length x)))
+          (string.format "1-length string expected, got %s" (view x))))
 
 (fn assert-sequence [x]
   (assert (sequence? x) (string.format "sequential table expected, got %s"
                                        (view x))))
 
-(fn boolean-recipe [name short-name/description ?description]
+(fn boolean-description [name description ?short-name]
+  (if ?short-name
+      (string.format "--[no-]%s, -%s\t%s"
+                     name
+                     ?short-name
+                     description)
+      (string.format "--[no-]%s\t%s"
+                     name
+                     description)))
+
+(fn boolean-recipe [name ...]
   "Make a boolean flag and corresponding negative (`--no-*`) counterpart."
   (assert-type :string name)
-  (assert-type :string short-name/description)
-  (if ?description
-      (let [short-name short-name/description
-            description ?description]
-        (assert-short short-name)
-        (assert-type :string description)
-        (let [description (string.format "--[no-]%s, -%s\t%s" name short-name
-                                         description)
-              positive-spec {:key (.. name "?") : description :value true}
-              negative-spec {:key (.. name "?") :value false}
-              short-spec (doto (clone positive-spec)
-                           (tset :description nil))]
-          `(let [flags# {}]
-             (tset flags# ,(.. "--" name) ,positive-spec)
-             (tset flags# ,(.. :--no- name) ,negative-spec)
-             (tset flags# ,(.. "-" short-name) ,short-spec)
-             flags#)))
-      (let [description short-name/description]
-        (let [description (string.format "--[no-]%s\t%s" name description)
-              positive-spec {:key (.. name "?") : description :value true}
-              negative-spec {:key (.. name "?") :value false}]
-          `(let [flags# {}]
-             (tset flags# ,(.. "--" name) ,positive-spec)
-             (tset flags# ,(.. :--no- name) ,negative-spec)
-             flags#)))))
+  (case ...
+    (short-name description)
+    (do
+      (assert-char short-name)
+      (assert-type :string description)
+      (let [description (boolean-description name description short-name)
+            positive-spec {:key (.. name "?")
+                           : description
+                           :value true}
+            negative-spec {:key (.. name "?")
+                           :value false}
+            short-spec (doto (clone positive-spec)
+                         (tset :description nil))]
+        `(let [flags# {}]
+           (tset flags# ,(.. "--" name) ,positive-spec)
+           (tset flags# ,(.. :--no- name) ,negative-spec)
+           (tset flags# ,(.. "-" short-name) ,short-spec)
+           flags#)))
+    (description)
+    (do
+      (assert-type :string description)
+      (let [description (boolean-description name description)
+            positive-spec {:key (.. name "?")
+                           : description
+                           :value true}
+            negative-spec {:key (.. name "?")
+                           :value false}]
+        `(let [flags# {}]
+           (tset flags# ,(.. "--" name) ,positive-spec)
+           (tset flags# ,(.. :--no- name) ,negative-spec)
+           flags#)))
+    nil (error "argument missing: (short-name and) description")))
 
-(fn category-recipe [name short-name/domain domain/description ?description]
+(fn category-description [name description domain default ?short-name]
+  (let [domain (table.concat domain "|")]
+    (if ?short-name
+        (string.format "--%s, -%s\t%s (one of [%s], default: %s)"
+                       name
+                       ?short-name
+                       description
+                       domain
+                       default)
+        (string.format "--%s\t%s (one of [%s], default: %s)"
+                       name
+                       description
+                       domain
+                       default))))
+
+(fn category-validate [domain]
+  (let [domain (collect [_ k (ipairs domain)] k true)]
+    `(fn [x#] (or (. ,domain x#) false))))
+
+(fn category-recipe [name ...]
   "Make a categorical flag such like apple, orange, or banana."
   (assert-type :string name)
   (let [default (. default-config name)]
-    (if ?description
-        (let [short-name short-name/domain
-              domain domain/description
-              description ?description]
-          (assert-type :string short-name)
-          (assert-short short-name)
-          (assert-sequence domain)
-          (each [_ k (ipairs domain)] (assert-type :string k))
-          (assert-type :string description)
-          (let [description (let [domain (table.concat domain "|")]
-                              (string.format "--%s, -%s\t%s (one of [%s], default: %s)"
-                                             name short-name description domain
-                                             default))
-                validate (let [domain (collect [_ k (ipairs domain)] k true)]
-                           `(fn [x#]
-                              (or (. ,domain x#) false)))
-                spec {:key name : description : validate :consume-next? true}
-                short-spec (doto (clone spec)
-                             (tset :description nil))]
-            `(let [flags# {}]
-               (tset flags# ,(.. "--" name) ,spec)
-               (tset flags# ,(.. "-" short-name) ,short-spec)
-               flags#)))
-        (let [domain short-name/domain
-              description domain/description]
-          (assert-sequence domain)
-          (each [_ k (ipairs domain)] (assert-type :string k))
-          (assert-type :string description)
-          (let [description (let [domain (table.concat domain "|")]
-                              (string.format "--%s\t%s (one of [%s], default: %s)"
-                                             name description domain default))
-                validate (let [domain (collect [_ k (ipairs domain)] k true)]
-                           `(fn [x#]
-                              (or (. ,domain x#) false)))
-                spec {:key name : description : validate :consume-next? true}]
-            `{,(.. "--" name) ,spec})))))
+    (case ...
+      (short-name domain description)
+      (do
+        (assert-char short-name)
+        (assert-sequence domain)
+        (each [_ k (ipairs domain)]
+          (assert-type :string k))
+        (assert-type :string description)
+        (let [description (category-description name description domain default
+                                                short-name)
+              validate (category-validate domain)
+              spec {:key name
+                    : description
+                    : validate
+                    :consume-next? true}
+              short-spec (doto (clone spec)
+                           (tset :description nil))]
+          `(let [flags# {}]
+             (tset flags# ,(.. "--" name) ,spec)
+             (tset flags# ,(.. "-" short-name) ,short-spec)
+             flags#)))
+      (domain description)
+      (do
+        (assert-sequence domain)
+        (each [_ k (ipairs domain)]
+          (assert-type :string k))
+        (assert-type :string description)
+        (let [description (category-description name description domain default)
+              validate (category-validate domain)
+              spec {:key name
+                    : description
+                    : validate
+                    :consume-next? true}]
+          `{,(.. "--" name) ,spec}))
+      nil (error "argument missing: (short-name,) domain, and description"))))
 
-(fn string-recipe [name short-name/description ?description]
+(fn string-description [name description default ?short-name]
+  (if ?short-name
+      (string.format "--%s, -%s\t%s (default: %s)"
+                     name
+                     ?short-name
+                     description
+                     default)
+      (string.format "--%s\t%s (default: %s)"
+                     name
+                     description
+                     default)))
+
+(fn string-recipe [name ...]
   "Make a simple string flag."
-  {:fnl/arglist (or [name description] [name short-name description])}
   (assert-type :string name)
-  (assert-type :string short-name/description)
   (let [default (. default-config name)]
-    (if ?description
-        (let [short-name short-name/description
-              description ?description]
-          (assert-type :string description)
-          (let [description (string.format "--%s, -%s\t%s (default: %s)" name
-                                           short-name description default)
-                spec {:key name : description :consume-next? true}
-                short-spec (doto (clone spec)
-                             (tset :description nil))]
-            `(let [flags# {}]
-               (tset flags# ,(.. "--" name) ,spec)
-               (tset flags# ,(.. "-" short-name) ,short-spec)
-               flags#)))
-        (let [description short-name/description]
-          (let [description (string.format "--%s\t%s (default: %s)" name
-                                           description default)
-                spec {:key name : description :consume-next? true}]
-            `{,(.. "--" name) ,spec})))))
+    (case ...
+      (short-name description)
+      (do
+        (assert-char short-name)
+        (assert-type :string description)
+        (let [description (string-description name description default short-name)
+              spec {:key name
+                    : description
+                    :consume-next? true}
+              short-spec (doto (clone spec)
+                           (tset :description nil))]
+          `(let [flags# {}]
+             (tset flags# ,(.. "--" name) ,spec)
+             (tset flags# ,(.. "-" short-name) ,short-spec)
+             flags#)))
+      (description)
+      (do
+        (assert-type :string description)
+        (let [description (string-description name description default)
+              spec {:key name
+                    : description
+                    :consume-next? true}]
+          `{,(.. "--" name) ,spec}))
+      nil (error "argument missing: (short-name and) description"))))
 
-(fn number-recipe [name short-name/description ?description]
+(fn number-description [name description default ?short-name]
+  (if ?short-name
+      (string.format "--%s, -%s\t%s (default: %s)"
+                     name
+                     ?short-name
+                     description
+                     default)
+      (string.format "--%s\t%s (default: %s)"
+                     name
+                     description
+                     default)))
+
+(fn number-preprocess []
+  `tonumber)
+
+(fn number-validate []
+  `(fn [x#] (= :number (type x#))))
+
+(fn number-recipe [name ...]
   "Make a number flag."
-  {:fnl/arglist (or [name description] [name short-name description])}
   (assert-type :string name)
-  (assert-type :string short-name/description)
   (let [default (. default-config name)]
-    (if ?description
-        (let [short-name short-name/description
-              description ?description]
-          (assert-type :string description)
-          (let [description (string.format "--%s, -%s\t%s (default: %s)" name
-                                           short-name description default)
-                spec {:key name
-                      : description
-                      :preprocess `tonumber
-                      :validate `(fn [x#] (= :number (type x#)))
-                      :consume-next? true}
-                short-spec (doto (clone spec)
-                             (tset :description nil))]
-            `(let [flags# {}]
-               (tset flags# ,(.. "--" name) ,spec)
-               (tset flags# ,(.. "-" short-name) ,short-spec)
-               flags#)))
-        (let [description short-name/description]
-          (let [description (string.format "--%s\t%s (default: %s)" name
-                                           description default)
-                spec {:key name
-                      : description
-                      :preprocess `tonumber
-                      :validate `(fn [x#] (= :number (type x#)))
-                      :consume-next? true}]
-            `{,(.. "--" name) ,spec})))))
+    (case ...
+      (short-name description)
+      (do
+        (assert-char short-name)
+        (assert-type :string description)
+        (let [description (number-description name description default short-name)
+              spec {:key name
+                    : description
+                    :preprocess (number-preprocess)
+                    :validate (number-validate)
+                    :consume-next? true}
+              short-spec (doto (clone spec)
+                           (tset :description nil))]
+          `(let [flags# {}]
+             (tset flags# ,(.. "--" name) ,spec)
+             (tset flags# ,(.. "-" short-name)
+                   ,short-spec)
+             flags#)))
+      (description)
+      (do
+        (assert-type :string description)
+        (let [description (number-description name description default)
+              spec {:key name
+                    : description
+                    :preprocess (number-preprocess)
+                    :validate (number-validate)
+                    :consume-next? true}]
+          `{,(.. "--" name) ,spec}))
+      nil (error "argument missing: (short-name and) description"))))
 
 (fn recipe [recipe-type ...]
   "Make a flag recipe of given `recipe-type`.
