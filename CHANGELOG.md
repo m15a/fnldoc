@@ -31,6 +31,7 @@ and this project adheres to [Semantic Versioning][2].
 
 ### Internal changes
 
+- Add `fnldoc.utils{,.*}` modules for various utilities.
 - Add `fnldoc.console` module for logging.
 - Modules are re-organized according to the above executable name change.
 - Version is now explicitly declared in the source code.
