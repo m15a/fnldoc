@@ -4,29 +4,16 @@ Generate command line argument flag recipes.
 Macros defined here generate a table that maps command line argument flag
 to its *recipe*, which will be used later in command line argument parsing.
 
-You can start to define flags by
+You can generate flag recipes by
 
 ```fennel
-(start-cooking)
-```
-
-Then, define a couple of flags such like
-
-```fennel
-(recipe :boolean :ramen
-  "Whether you like to have ramen noodles")
-
-(recipe :category :taste :t [:shoyu :miso :tonkotsu]
-  "Which type of ramen you like to have")
-
-(recipe :number :bowls :n
-  "How many ramen bowls you like to have")
-```
-
-Finally, you can collect defined flag recipes by
-
-```fennel
-(collect-recipes)
+(cooking
+  (recipe :boolean :ramen
+    "Whether you like to have ramen noodles")
+  (recipe :category :taste :t [:shoyu :miso :tonkotsu]
+    "Which type of ramen you like to have")
+  (recipe :number :bowls :n
+    "How many ramen bowls you like to have"))
 ```
 
 which yields
@@ -71,20 +58,17 @@ A recipe is a table that possibly contains the following entries depending on th
 
 **Table of contents**
 
-- [`collect-recipes`](#collect-recipes)
+- [`cooking`](#cooking)
 - [`recipe`](#recipe)
-- [`start-cooking`](#start-cooking)
 
-## `collect-recipes`
+## `cooking`
 Function signature:
 
 ```
-(collect-recipes)
+(cooking & recipes)
 ```
 
-Return all defined flag recipes as a table.
-
-The implicit global `_G.FNLDOC_FLAG_RECIPES` will be cleared as well.
+A helper macro to collect recipes into one table.
 
 ## `recipe`
 Function signature:
@@ -143,19 +127,6 @@ value.
 In command line argument parsing, this flag will consumes the next
 argument, validate if it can be converted to number, and set the `config`
 object's corresponding attribute to the converted number.
-
-## `start-cooking`
-Function signature:
-
-```
-(start-cooking)
-```
-
-Start declaration of command line argument flags.
-
-It implicitly declares global table `_G.FNLDOC_FLAG_RECIPES`. Flag recipes
-declared by `(recipe ...)` macro will be gathered into this global, and
-later collected by calling `(collect-recipes)`.
 
 
 ---

@@ -1,18 +1,9 @@
 (local t (require :test.faith))
-(import-macros {: start-cooking : recipe : collect-recipes}
-               :fnldoc.argparse.cooker)
-
-(fn test-global-gets-empty-after-collecting-recipes []
-  (start-cooking)
-  (recipe :bool :a :a)
-  (collect-recipes)
-  (t.= nil _G.FNLDOC_FLAG_RECIPES))
+(import-macros {: cooking : recipe} :fnldoc.argparse.cooker)
 
 (fn test-boolean-flag []
-  (start-cooking)
-  (recipe :boolean :yes :YES!)
-  (recipe :bool :no :n :NO!)
-  (let [recipes (collect-recipes)]
+  (let [recipes (cooking (recipe :boolean :yes :YES!)
+                         (recipe :bool :no :n :NO!))]
     (t.= {:--yes {:description "--[no-]yes\tYES!" :key :yes? :value true}
           :--no-yes {:key :yes? :value false}
           :--no {:description "--[no-]no, -n\tNO!" :key :no? :value true}
@@ -20,10 +11,8 @@
           :-n {:key :no? :value true}} recipes)))
 
 (fn test-category-flag []
-  (start-cooking)
-  (recipe :category :fruit :f [:apple :banana] :Fruit!)
-  (recipe :cat :drink [:beer :another-beer] :Beer!)
-  (let [recipes (collect-recipes)
+  (let [recipes (cooking (recipe :category :fruit :f [:apple :banana] :Fruit!)
+                         (recipe :cat :drink [:beer :another-beer] :Beer!))
         validate-fruit (let [fruit (. recipes :--fruit)
                              v fruit.validate]
                          (set fruit.validate nil)
@@ -57,10 +46,8 @@
     (t.= false (validate-drink :cocktail))))
 
 (fn test-string-flag []
-  (start-cooking)
-  (recipe :string :text :text)
-  (recipe :str :output :o :output)
-  (let [recipes (collect-recipes)]
+  (let [recipes (cooking (recipe :string :text :text)
+                         (recipe :str :output :o :output))]
     (t.= {:--text {:description "--text\ttext (default: nil)"
                    :key :text
                    :consume-next? true}
@@ -70,10 +57,8 @@
           :-o {:key :output :consume-next? true}} recipes)))
 
 (fn test-number-flag []
-  (start-cooking)
-  (recipe :number :float :float)
-  (recipe :num :int :i :integer)
-  (let [recipes (collect-recipes)
+  (let [recipes (cooking (recipe :number :float :float)
+                         (recipe :num :int :i :integer))
         preprocess-float (let [float (. recipes :--float)
                                v float.preprocess]
                            (set float.preprocess nil)
@@ -121,8 +106,7 @@
     (t.= 100 (preprocess-int :100))
     (t.= 100 (preprocess-i :100))))
 
-{: test-global-gets-empty-after-collecting-recipes
- : test-boolean-flag
+{: test-boolean-flag
  : test-category-flag
  : test-string-flag
  : test-number-flag}

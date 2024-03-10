@@ -1,17 +1,10 @@
 ;; fennel-ls: macro-file
 
+(local unpack (or table.unpack _G.unpack))
 (local {: view} (require :fennel))
 (local default-config (require :fnldoc.config.default))
 (local {: assert-type} (require :fnldoc.utils))
 (local {: clone} (require :fnldoc.utils.table))
-
-(fn start-cooking []
-  "Start declaration of command line argument flags.
-
-It implicitly declares global table `_G.FNLDOC_FLAG_RECIPES`. Flag recipes
-declared by `(recipe ...)` macro will be gathered into this global, and
-later collected by calling `(collect-recipes)`."
-  `(tset _G :FNLDOC_FLAG_RECIPES {}))
 
 (fn assert-short [x]
   (assert (= 1 (length x)) (string.format "1-length string expected, got %s"
@@ -22,7 +15,7 @@ later collected by calling `(collect-recipes)`."
                                        (view x))))
 
 (fn boolean-recipe [name short-name/description ?description]
-  "Define a boolean flag and corresponding negative (`--no-*`) counterpart."
+  "Make a boolean flag and corresponding negative (`--no-*`) counterpart."
   (assert-type :string name)
   (assert-type :string short-name/description)
   (if ?description
@@ -36,20 +29,22 @@ later collected by calling `(collect-recipes)`."
               negative-spec {:key (.. name "?") :value false}
               short-spec (doto (clone positive-spec)
                            (tset :description nil))]
-          `(do
-             (tset _G :FNLDOC_FLAG_RECIPES ,(.. "--" name) ,positive-spec)
-             (tset _G :FNLDOC_FLAG_RECIPES ,(.. :--no- name) ,negative-spec)
-             (tset _G :FNLDOC_FLAG_RECIPES ,(.. "-" short-name) ,short-spec))))
+          `(let [flags# {}]
+             (tset flags# ,(.. "--" name) ,positive-spec)
+             (tset flags# ,(.. :--no- name) ,negative-spec)
+             (tset flags# ,(.. "-" short-name) ,short-spec)
+             flags#)))
       (let [description short-name/description]
         (let [description (string.format "--[no-]%s\t%s" name description)
               positive-spec {:key (.. name "?") : description :value true}
               negative-spec {:key (.. name "?") :value false}]
-          `(do
-             (tset _G :FNLDOC_FLAG_RECIPES ,(.. "--" name) ,positive-spec)
-             (tset _G :FNLDOC_FLAG_RECIPES ,(.. :--no- name) ,negative-spec))))))
+          `(let [flags# {}]
+             (tset flags# ,(.. "--" name) ,positive-spec)
+             (tset flags# ,(.. :--no- name) ,negative-spec)
+             flags#)))))
 
 (fn category-recipe [name short-name/domain domain/description ?description]
-  "Define a categorical flag such like apple, orange, or banana."
+  "Make a categorical flag such like apple, orange, or banana."
   (assert-type :string name)
   (let [default (. default-config name)]
     (if ?description
@@ -71,9 +66,10 @@ later collected by calling `(collect-recipes)`."
                 spec {:key name : description : validate :consume-next? true}
                 short-spec (doto (clone spec)
                              (tset :description nil))]
-            `(do
-               (tset _G :FNLDOC_FLAG_RECIPES ,(.. "--" name) ,spec)
-               (tset _G :FNLDOC_FLAG_RECIPES ,(.. "-" short-name) ,short-spec))))
+            `(let [flags# {}]
+               (tset flags# ,(.. "--" name) ,spec)
+               (tset flags# ,(.. "-" short-name) ,short-spec)
+               flags#)))
         (let [domain short-name/domain
               description domain/description]
           (assert-sequence domain)
@@ -86,10 +82,10 @@ later collected by calling `(collect-recipes)`."
                            `(fn [x#]
                               (or (. ,domain x#) false)))
                 spec {:key name : description : validate :consume-next? true}]
-            `(tset _G :FNLDOC_FLAG_RECIPES ,(.. "--" name) ,spec))))))
+            `{,(.. "--" name) ,spec})))))
 
 (fn string-recipe [name short-name/description ?description]
-  "Define a simple string flag."
+  "Make a simple string flag."
   {:fnl/arglist (or [name description] [name short-name description])}
   (assert-type :string name)
   (assert-type :string short-name/description)
@@ -103,17 +99,18 @@ later collected by calling `(collect-recipes)`."
                 spec {:key name : description :consume-next? true}
                 short-spec (doto (clone spec)
                              (tset :description nil))]
-            `(do
-               (tset _G :FNLDOC_FLAG_RECIPES ,(.. "--" name) ,spec)
-               (tset _G :FNLDOC_FLAG_RECIPES ,(.. "-" short-name) ,short-spec))))
+            `(let [flags# {}]
+               (tset flags# ,(.. "--" name) ,spec)
+               (tset flags# ,(.. "-" short-name) ,short-spec)
+               flags#)))
         (let [description short-name/description]
           (let [description (string.format "--%s\t%s (default: %s)" name
                                            description default)
                 spec {:key name : description :consume-next? true}]
-            `(tset _G :FNLDOC_FLAG_RECIPES ,(.. "--" name) ,spec))))))
+            `{,(.. "--" name) ,spec})))))
 
 (fn number-recipe [name short-name/description ?description]
-  "Define a number flag."
+  "Make a number flag."
   {:fnl/arglist (or [name description] [name short-name description])}
   (assert-type :string name)
   (assert-type :string short-name/description)
@@ -131,9 +128,10 @@ later collected by calling `(collect-recipes)`."
                       :consume-next? true}
                 short-spec (doto (clone spec)
                              (tset :description nil))]
-            `(do
-               (tset _G :FNLDOC_FLAG_RECIPES ,(.. "--" name) ,spec)
-               (tset _G :FNLDOC_FLAG_RECIPES ,(.. "-" short-name) ,short-spec))))
+            `(let [flags# {}]
+               (tset flags# ,(.. "--" name) ,spec)
+               (tset flags# ,(.. "-" short-name) ,short-spec)
+               flags#)))
         (let [description short-name/description]
           (let [description (string.format "--%s\t%s (default: %s)" name
                                            description default)
@@ -142,7 +140,7 @@ later collected by calling `(collect-recipes)`."
                       :preprocess `tonumber
                       :validate `(fn [x#] (= :number (type x#)))
                       :consume-next? true}]
-            `(tset _G :FNLDOC_FLAG_RECIPES ,(.. "--" name) ,spec))))))
+            `{,(.. "--" name) ,spec})))))
 
 (fn recipe [recipe-type ...]
   "Make a flag recipe of given `recipe-type`.
@@ -207,14 +205,9 @@ object's corresponding attribute to the converted number."
     :num (number-recipe ...)
     _ (error "unknown recipe type!")))
 
-(fn collect-recipes []
-  "Return all defined flag recipes as a table.
+(fn cooking [& recipes]
+  "A helper macro to collect recipes into one table."
+  `(let [merge!# (. (require :fnldoc.utils.table) :merge!)]
+     (doto {} (merge!# ,(unpack recipes)))))
 
-The implicit global `_G.FNLDOC_FLAG_RECIPES` will be cleared as well."
-  `(let [flags# (collect [k# v# (pairs (. _G :FNLDOC_FLAG_RECIPES))]
-                  k#
-                  v#)]
-     (tset _G :FNLDOC_FLAG_RECIPES nil)
-     flags#))
-
-{: start-cooking : recipe : collect-recipes}
+{: cooking : recipe}

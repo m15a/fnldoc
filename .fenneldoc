@@ -35,29 +35,16 @@ metadata at runtime.
 Macros defined here generate a table that maps command line argument flag
 to its *recipe*, which will be used later in command line argument parsing.
 
-You can start to define flags by
+You can generate flag recipes by
 
 ```fennel
-(start-cooking)
-```
-
-Then, define a couple of flags such like
-
-```fennel
-(recipe :boolean :ramen
-  \"Whether you like to have ramen noodles\")
-
-(recipe :category :taste :t [:shoyu :miso :tonkotsu]
-  \"Which type of ramen you like to have\")
-
-(recipe :number :bowls :n
-  \"How many ramen bowls you like to have\")
-```
-
-Finally, you can collect defined flag recipes by
-
-```fennel
-(collect-recipes)
+(cooking
+  (recipe :boolean :ramen
+    \"Whether you like to have ramen noodles\")
+  (recipe :category :taste :t [:shoyu :miso :tonkotsu]
+    \"Which type of ramen you like to have\")
+  (recipe :number :bowls :n
+    \"How many ramen bowls you like to have\"))
 ```
 
 which yields
