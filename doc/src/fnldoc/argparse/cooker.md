@@ -12,7 +12,7 @@ You can generate flag recipes by
     "Whether you like to have ramen noodles")
   (recipe :category :taste :t [:shoyu :miso :tonkotsu]
     "Which type of ramen you like to have")
-  (recipe :number :bowls :n
+  (recipe :number :bowls :n :NUM
     "How many ramen bowls you like to have"))
 ```
 
@@ -24,14 +24,14 @@ which yields
            :value true}
  :--no-ramen {:key "ramen?"
               :value false}
- :--taste {:description "--taste, -t\tWhich type of ramen you like to have (one of [shoyu|miso|tonkotsu], default: nil)"
+ :--taste {:description "--taste|-t [shoyu|miso|tonkotsu]\tWhich type of ramen you like to have (default: nil)"
            :key "taste"
            :validate #<function: 0x7ffa16ead208>
            :consume-next? true}
  :-t {:key "taste"
       :validate #<function: 0x7ffa16e31310>
       :consume-next? true}
- :--bowls {:description "--bowls, -n\tHow many ramen bowls you like to have (default: nil)"
+ :--bowls {:description "--bowls|-n NUM\tHow many ramen bowls you like to have (default: nil)"
            :key "bowls"
            :preprocess #<function: builtin#17>
            :validate #<function: 0x7ffa16f984e8>
@@ -112,9 +112,10 @@ argument, validate if the argument is one of `domain`'s items, and set the
 
 ### String flag recipe
 
-`recipe-spec` should be `[name description]` or `[name short-name description]`.
-The `name` will be expanded to flag `--name`. If it has `short-name`, a short
-name flag will also be created.
+`recipe-spec` should be `[name VARNAME description]` or `[name short-name VARNAME
+description]`. The `name` will be expanded to flag `--name`. If it has `short-name`,
+a short name flag will also be created. `VARNAME` will be used to indicate the next
+command line argument that will be consumed by this flag parsing.
 
 In command line argument parsing, this flag will consumes the next
 argument and set the `config` object's corresponding attribute to the argument

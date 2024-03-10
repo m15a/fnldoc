@@ -14,65 +14,73 @@
   (assert (sequence? x) (string.format "sequential table expected, got %s"
                                        (view x))))
 
-(fn boolean-description [name description ?short-name]
-  (if ?short-name
-      (string.format "--[no-]%s, -%s\t%s"
+(fn boolean-description [{: name : short-name : default : description}]
+  (if short-name
+      (string.format "--[no-]%s|-%s\t%s (default: %s)"
                      name
-                     ?short-name
-                     description)
-      (string.format "--[no-]%s\t%s"
+                     short-name
+                     description
+                     default)
+      (string.format "--[no-]%s\t%s (default: %s)"
                      name
-                     description)))
+                     description
+                     default)))
 
 (fn boolean-recipe [name ...]
   "Make a boolean flag and corresponding negative (`--no-*`) counterpart."
   (assert-type :string name)
-  (case ...
-    (short-name description)
-    (do
-      (assert-char short-name)
-      (assert-type :string description)
-      (let [description (boolean-description name description short-name)
-            positive-spec {:key (.. name "?")
-                           : description
-                           :value true}
-            negative-spec {:key (.. name "?")
-                           :value false}
-            short-spec (doto (clone positive-spec)
-                         (tset :description nil))]
-        `(let [flags# {}]
-           (tset flags# ,(.. "--" name) ,positive-spec)
-           (tset flags# ,(.. :--no- name) ,negative-spec)
-           (tset flags# ,(.. "-" short-name) ,short-spec)
-           flags#)))
-    (description)
-    (do
-      (assert-type :string description)
-      (let [description (boolean-description name description)
-            positive-spec {:key (.. name "?")
-                           : description
-                           :value true}
-            negative-spec {:key (.. name "?")
-                           :value false}]
-        `(let [flags# {}]
-           (tset flags# ,(.. "--" name) ,positive-spec)
-           (tset flags# ,(.. :--no- name) ,negative-spec)
-           flags#)))
-    nil (error "argument missing: (short-name and) description")))
+  (let [default (. default-config (.. name :?))]
+    (case ...
+      (short-name description)
+      (do
+        (assert-char short-name)
+        (assert-type :string description)
+        (let [description (boolean-description {: name
+                                                : short-name
+                                                : default
+                                                : description})
+              positive-spec {:key (.. name "?")
+                             : description
+                             :value true}
+              negative-spec {:key (.. name "?")
+                             :value false}
+              short-spec (doto (clone positive-spec)
+                           (tset :description nil))]
+          `(let [flags# {}]
+             (tset flags# ,(.. "--" name) ,positive-spec)
+             (tset flags# ,(.. :--no- name) ,negative-spec)
+             (tset flags# ,(.. "-" short-name) ,short-spec)
+             flags#)))
+      (description)
+      (do
+        (assert-type :string description)
+        (let [description (boolean-description {: name
+                                                : default
+                                                : description})
+              positive-spec {:key (.. name "?")
+                             : description
+                             :value true}
+              negative-spec {:key (.. name "?")
+                             :value false}]
+          `(let [flags# {}]
+             (tset flags# ,(.. "--" name) ,positive-spec)
+             (tset flags# ,(.. :--no- name) ,negative-spec)
+             flags#)))
+      nil (error "argument missing: description"))))
 
-(fn category-description [name description domain default ?short-name]
+(fn category-description [{: name : short-name : domain : default : description}]
   (let [domain (table.concat domain "|")]
-    (if ?short-name
-        (string.format "--%s, -%s\t%s (one of [%s], default: %s)"
+    (if short-name
+        (string.format "--%s|-%s [%s]\t%s (default: %s)"
                        name
-                       ?short-name
-                       description
+                       short-name
                        domain
+                       description
                        default)
-        (string.format "--%s\t%s (one of [%s], default: %s)"
+        (string.format "--%s [%s]\t%s (default: %s)"
                        name
-                       description
                        domain
+                       description
                        default))))
 
 (fn category-validate [domain]
@@ -91,8 +99,11 @@
         (each [_ k (ipairs domain)]
           (assert-type :string k))
         (assert-type :string description)
-        (let [description (category-description name description domain default
-                                                short-name)
+        (let [description (category-description {: name
+                                                 : short-name
+                                                 : domain
+                                                 : default
+                                                 : description})
               validate (category-validate domain)
               spec {:key name
                     : description
@@ -110,24 +121,29 @@
         (each [_ k (ipairs domain)]
           (assert-type :string k))
         (assert-type :string description)
-        (let [description (category-description name description domain default)
+        (let [description (category-description {: name
+                                                 : domain
+                                                 : default
+                                                 : description})
               validate (category-validate domain)
               spec {:key name
                     : description
                     : validate
                     :consume-next? true}]
           `{,(.. "--" name) ,spec}))
-      nil (error "argument missing: (short-name,) domain, and description"))))
+      nil (error "argument missing: domain and description"))))
 
-(fn string-description [name description default ?short-name]
-  (if ?short-name
-      (string.format "--%s, -%s\t%s (default: %s)"
+(fn string-description [{: name : short-name : var-name : default : description}]
+  (if short-name
+      (string.format "--%s|-%s %s\t%s (default: %s)"
                      name
-                     ?short-name
+                     short-name
+                     (or var-name :TEXT)
                      description
                      default)
-      (string.format "--%s\t%s (default: %s)"
+      (string.format "--%s %s\t%s (default: %s)"
                      name
+                     (or var-name :TEXT)
                      description
                      default)))
 
@@ -136,11 +152,15 @@
   (assert-type :string name)
   (let [default (. default-config name)]
     (case ...
-      (short-name description)
+      (short-name var-name description)
       (do
         (assert-char short-name)
         (assert-type :string description)
-        (let [description (string-description name description default short-name)
+        (let [description (string-description {: name
+                                               : short-name
+                                               : var-name
+                                               : default
+                                               : description})
               spec {:key name
                     : description
                     :consume-next? true}
@@ -150,25 +170,30 @@
              (tset flags# ,(.. "--" name) ,spec)
              (tset flags# ,(.. "-" short-name) ,short-spec)
              flags#)))
-      (description)
+      (var-name description)
       (do
         (assert-type :string description)
-        (let [description (string-description name description default)
+        (let [description (string-description {: name
+                                               : var-name
+                                               : default
+                                               : description})
               spec {:key name
                     : description
                     :consume-next? true}]
           `{,(.. "--" name) ,spec}))
-      nil (error "argument missing: (short-name and) description"))))
+      nil (error "argument missing: VARNAME and description"))))
 
-(fn number-description [name description default ?short-name]
-  (if ?short-name
-      (string.format "--%s, -%s\t%s (default: %s)"
+(fn number-description [{: name : short-name : var-name : default : description}]
+  (if short-name
+      (string.format "--%s|-%s %s\t%s (default: %s)"
                      name
-                     ?short-name
+                     short-name
+                     (or var-name :NUM)
                      description
                      default)
-      (string.format "--%s\t%s (default: %s)"
+      (string.format "--%s %s\t%s (default: %s)"
                      name
+                     (or var-name :NUM)
                      description
                      default)))
 
@@ -183,11 +208,15 @@
   (assert-type :string name)
   (let [default (. default-config name)]
     (case ...
-      (short-name description)
+      (short-name var-name description)
       (do
         (assert-char short-name)
         (assert-type :string description)
-        (let [description (number-description name description default short-name)
+        (let [description (number-description {: name
+                                               : short-name
+                                               : var-name
+                                               : default
+                                               : description})
               spec {:key name
                     : description
                     :preprocess (number-preprocess)
@@ -200,17 +229,20 @@
              (tset flags# ,(.. "-" short-name)
                    ,short-spec)
              flags#)))
-      (description)
+      (var-name description)
       (do
         (assert-type :string description)
-        (let [description (number-description name description default)
+        (let [description (number-description {: name
+                                               : var-name
+                                               : default
+                                               : description})
               spec {:key name
                     : description
                     :preprocess (number-preprocess)
                     :validate (number-validate)
                     :consume-next? true}]
           `{,(.. "--" name) ,spec}))
-      nil (error "argument missing: (short-name and) description"))))
+      nil (error "argument missing: VARNAME and description"))))
 
 (fn recipe [recipe-type ...]
   "Make a flag recipe of given `recipe-type`.
@@ -248,9 +280,10 @@ argument, validate if the argument is one of `domain`'s items, and set the
 
 # String flag recipe
 
-`recipe-spec` should be `[name description]` or `[name short-name description]`.
-The `name` will be expanded to flag `--name`. If it has `short-name`, a short
-name flag will also be created.
+`recipe-spec` should be `[name VARNAME description]` or `[name short-name VARNAME
+description]`. The `name` will be expanded to flag `--name`. If it has `short-name`,
+a short name flag will also be created. `VARNAME` will be used to indicate the next
+command line argument that will be consumed by this flag parsing.
 
 In command line argument parsing, this flag will consumes the next
 argument and set the `config` object's corresponding attribute to the argument

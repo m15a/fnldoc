@@ -4,9 +4,9 @@
 (fn test-boolean-flag []
   (let [recipes (cooking (recipe :boolean :yes :YES!)
                          (recipe :bool :no :n :NO!))]
-    (t.= {:--yes {:description "--[no-]yes\tYES!" :key :yes? :value true}
+    (t.= {:--yes {:description "--[no-]yes\tYES! (default: nil)" :key :yes? :value true}
           :--no-yes {:key :yes? :value false}
-          :--no {:description "--[no-]no, -n\tNO!" :key :no? :value true}
+          :--no {:description "--[no-]no|-n\tNO! (default: nil)" :key :no? :value true}
           :--no-no {:key :no? :value false}
           :-n {:key :no? :value true}} recipes)))
 
@@ -25,11 +25,11 @@
                              v drink.validate]
                          (set drink.validate nil)
                          v)]
-    (t.= {:--fruit {:description "--fruit, -f\tFruit! (one of [apple|banana], default: nil)"
+    (t.= {:--fruit {:description "--fruit|-f [apple|banana]\tFruit! (default: nil)"
                     :key :fruit
                     :consume-next? true}
           :-f {:key :fruit :consume-next? true}
-          :--drink {:description "--drink\tBeer! (one of [beer|another-beer], default: nil)"
+          :--drink {:description "--drink [beer|another-beer]\tBeer! (default: nil)"
                     :key :drink
                     :consume-next? true}} recipes)
     (t.= :function (type validate-fruit))
@@ -46,19 +46,19 @@
     (t.= false (validate-drink :cocktail))))
 
 (fn test-string-flag []
-  (let [recipes (cooking (recipe :string :text :text)
-                         (recipe :str :output :o :output))]
-    (t.= {:--text {:description "--text\ttext (default: nil)"
+  (let [recipes (cooking (recipe :string :text :TEXT :text)
+                         (recipe :str :output :o :OUT :output))]
+    (t.= {:--text {:description "--text TEXT\ttext (default: nil)"
                    :key :text
                    :consume-next? true}
-          :--output {:description "--output, -o\toutput (default: nil)"
+          :--output {:description "--output|-o OUT\toutput (default: nil)"
                      :key :output
                      :consume-next? true}
           :-o {:key :output :consume-next? true}} recipes)))
 
 (fn test-number-flag []
-  (let [recipes (cooking (recipe :number :float :float)
-                         (recipe :num :int :i :integer))
+  (let [recipes (cooking (recipe :number :float :FLOAT :float)
+                         (recipe :num :int :i :INT :integer))
         preprocess-float (let [float (. recipes :--float)
                                v float.preprocess]
                            (set float.preprocess nil)
@@ -83,10 +83,10 @@
                          v i.validate]
                      (set i.validate nil)
                      v)]
-    (t.= {:--float {:description "--float\tfloat (default: nil)"
+    (t.= {:--float {:description "--float FLOAT\tfloat (default: nil)"
                     :key :float
                     :consume-next? true}
-          :--int {:description "--int, -i\tinteger (default: nil)"
+          :--int {:description "--int|-i INT\tinteger (default: nil)"
                   :key :int
                   :consume-next? true}
           :-i {:key :int :consume-next? true}} recipes)
