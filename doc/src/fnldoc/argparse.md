@@ -15,10 +15,10 @@ Parse command line `args` and return the result.
 
 The result contains attributes:
 
-- `write-config?: Whether to write the final config, after merged with that comming
+- `write-config?`: Whether to write the final config, after merged with that comming
   from `.fenneldoc`, to `.fenneldoc`.
-- `show-help?: Whether to show Fnldoc help and exit.
-- `show-version?: Whether to show Fnldoc version and exit.
+- `show-help?`: Whether to show Fnldoc help and exit.
+- `show-version?`: Whether to show Fnldoc version and exit.
 - `config`: Parsed config that will be merged into that comming from `.fenneldoc`.
 - `files`: Target Fennel file names to be proccessed.
 
