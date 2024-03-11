@@ -83,7 +83,7 @@
                        description
                        default))))
 
-(fn category-validate [domain]
+(fn category-validator [domain]
   (let [domain (collect [_ k (ipairs domain)] k true)]
     `(fn [x#] (or (. ,domain x#) false))))
 
@@ -104,10 +104,9 @@
                                                  : domain
                                                  : default
                                                  : description})
-              validate (category-validate domain)
               spec {:key name
                     : description
-                    : validate}
+                    :validator (category-validator domain)}
               short-spec (doto (clone spec)
                            (tset :description nil))]
           `(let [options# {}]
@@ -124,10 +123,9 @@
                                                  : domain
                                                  : default
                                                  : description})
-              validate (category-validate domain)
               spec {:key name
                     : description
-                    : validate}]
+                    :validator (category-validator domain)}]
           `{,(.. "--" name) ,spec}))
       nil (error "argument missing: domain and description"))))
 
@@ -193,10 +191,10 @@
                      description
                      default)))
 
-(fn number-preprocess []
+(fn number-preprocessor []
   `tonumber)
 
-(fn number-validate []
+(fn number-validator []
   `(fn [x#] (= :number (type x#))))
 
 (fn number-recipe [name ...]
@@ -215,8 +213,8 @@
                                                : description})
               spec {:key name
                     : description
-                    :preprocess (number-preprocess)
-                    :validate (number-validate)}
+                    :preprocessor (number-preprocessor)
+                    :validator (number-validator)}
               short-spec (doto (clone spec)
                            (tset :description nil))]
           `(let [options# {}]
@@ -233,8 +231,8 @@
                                                : description})
               spec {:key name
                     : description
-                    :preprocess (number-preprocess)
-                    :validate (number-validate)}]
+                    :preprocessor (number-preprocessor)
+                    :validator (number-validator)}]
           `{,(.. "--" name) ,spec}))
       nil (error "argument missing: VARNAME and description"))))
 

@@ -52,19 +52,19 @@ which yields
               :value false}
  :--taste {:description \"-t, --taste [shoyu|miso|tonkotsu]\\tWhich type of ramen you like to have (default: nil)\"
            :key \"taste\"
-           :validate #<function: 0x7ffa16ead208>
+           :validator #<function: 0x7ffa16ead208>
            :consume-next? true}
  :-t {:key \"taste\"
-      :validate #<function: 0x7ffa16e31310>
+      :validator #<function: 0x7ffa16e31310>
       :consume-next? true}
  :--bowls {:description \"-n, --bowls NUM\\tHow many ramen bowls you like to have (default: nil)\"
            :key \"bowls\"
-           :preprocess #<function: builtin#17>
-           :validate #<function: 0x7ffa16f984e8>
+           :preprocessor #<function: builtin#17>
+           :validator #<function: 0x7ffa16f984e8>
            :consume-next? true}
  :-n {:key \"bowls\"
-      :preprocess #<function: builtin#17>
-      :validate #<function: 0x7ffa16de4a98>
+      :preprocessor #<function: builtin#17>
+      :validator #<function: 0x7ffa16de4a98>
       :consume-next? true}}
 ```
 
@@ -75,12 +75,12 @@ A recipe is a table that possibly contains the following entries depending on th
 - `:key`: The corresponding key in the `config` object, i.e., `.fenneldoc`.
 - `:description`: a line that explain the flag, which will be shown in help.
 - `:value`: If the flag is not nil, this value will be set; otherwise, the next command
-  line argument will be set to the `:value`, possibly after doing `:preprocess` and
-  `:validate`.
-- `:preprocess`: A function that converts the next command line argument string to
+  line argument will be set to the `:value`, possibly after calling `:preprocessor`
+  and `:validator`.
+- `:preprocessor`: A function that converts the next command line argument string to
   the `:value`. Only used for number flags.
-- `:validate`: A function that checks if the `:value` is valid. This will be called
-  after `:preprocess` is done. Only used for category and number flags."}}
+- `:validator`: A function that checks if the `:value` is valid. This will be called
+  after `:preprocessor` is called. Only used for category and number flags."}}
  :order "alphabetic"
  :out-dir "./doc"
  :project-copyright "Copyright (C) 2020-2022 Andrey Listopadov, 2024 NACAMURA Mitsuhiro"
