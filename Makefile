@@ -34,8 +34,8 @@ build: $(EXECUTABLE)
 
 $(EXECUTABLE): $(SRCS)
 	echo '#!/usr/bin/env $(LUA)' > $@
-	echo 'FNLDOC_EXECUTABLE = true' >> $@
 	$(FENNEL) $(FENNEL_FLAGS) $(FENNEL_BUILD_FLAGS) $(MAIN_SRC) >> $@
+	sed -i $@ -Ee 's#^return \{version = version, main = main}$$#main()#'
 	chmod +x $@
 	$(LUA) $@ --config --project-version $(VERSION)
 

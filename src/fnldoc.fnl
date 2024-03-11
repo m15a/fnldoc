@@ -1,3 +1,4 @@
+(local version (. (require :fnldoc.version) :version))
 (local config (require :fnldoc.config))
 (local {: process-args} (require :fnldoc.argparse))
 (local {: test} (require :fnldoc.doctest))
@@ -18,12 +19,10 @@ extension, creating it if not exists."
                  (write-docs markdown file module config))))
     _ (io.stderr:write "skipping " file "\n")))
 
-(local version :1.0.2-dev)
-
-(when _G.FNLDOC_EXECUTABLE
+(fn main []
   (let [config (config.init! {: version})
         (files config) (process-args config)]
     (each [_ file (ipairs files)]
       (process-file file config))))
 
-{: version}
+{: version : main}
