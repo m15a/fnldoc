@@ -26,19 +26,19 @@ which yields
               :value false}
  :--taste {:description "-t, --taste [shoyu|miso|tonkotsu]\tWhich type of ramen you like to have (default: nil)"
            :key "taste"
-           :validate #<function: 0x7ffa16ead208>
+           :validator #<function: 0x7ffa16ead208>
            :consume-next? true}
  :-t {:key "taste"
-      :validate #<function: 0x7ffa16e31310>
+      :validator #<function: 0x7ffa16e31310>
       :consume-next? true}
  :--bowls {:description "-n, --bowls NUM\tHow many ramen bowls you like to have (default: nil)"
            :key "bowls"
-           :preprocess #<function: builtin#17>
-           :validate #<function: 0x7ffa16f984e8>
+           :preprocessor #<function: builtin#17>
+           :validator #<function: 0x7ffa16f984e8>
            :consume-next? true}
  :-n {:key "bowls"
-      :preprocess #<function: builtin#17>
-      :validate #<function: 0x7ffa16de4a98>
+      :preprocessor #<function: builtin#17>
+      :validator #<function: 0x7ffa16de4a98>
       :consume-next? true}}
 ```
 
@@ -48,13 +48,13 @@ A recipe is a table that possibly contains the following entries depending on th
 
 - `:key`: The corresponding key in the `config` object, i.e., `.fenneldoc`.
 - `:description`: a line that explain the flag, which will be shown in help.
-- `:value`: If the flag is on, this value will be set.
-- `:consume-next?`: If this is truthy, the next command line argument will be set to
-  the `:value`, possibly after doing `:preprocess` and `:validate`.
-- `:preprocess`: A function that converts the next command line argument string to
+- `:value`: If the flag is not nil, this value will be set; otherwise, the next command
+  line argument will be set to the `:value`, possibly after calling `:preprocessor`
+  and `:validator`.
+- `:preprocessor`: A function that converts the next command line argument string to
   the `:value`. Only used for number flags.
-- `:validate`: A function that checks if the `:value` is valid. This will be called
-  after `:preprocess` is done. Only used for category and number flags.
+- `:validator`: A function that checks if the `:value` is valid. This will be called
+  after `:preprocessor` is called. Only used for category and number flags.
 
 **Table of contents**
 
@@ -68,7 +68,7 @@ Function signature:
 (cooking & recipes)
 ```
 
-A helper macro to collect recipes into one table.
+A helper macro to collect option `recipes` into one table.
 
 ## `recipe`
 Function signature:
@@ -77,7 +77,7 @@ Function signature:
 (recipe recipe-type & recipe-spec)
 ```
 
-Make a flag recipe of given `recipe-type`.
+Make an option recipe of given `recipe-type`.
 
 The recipe type can be one of
 
@@ -86,7 +86,7 @@ The recipe type can be one of
 * `string` (or `str`), or
 * `number` (or `num`).
 
-### Boolean flag recipe
+### Boolean option recipe
 
 `recipe-spec` should be `[name description]` or `[name short-name description]`.
 The `name` will be expanded to positive flag `--name` and negative flag
@@ -98,7 +98,7 @@ set the `config` object's attribute corresponding to the `name` (e.g., if the
 `name` is `apple`, the attribute is `apple?`) to `true`, and the negative flag
 set it to `false`.
 
-### Category flag recipe
+### Category option recipe
 
 `recipe-spec` should be `[name domain description]` or `[name short-name domain
 description]`. The `name` will be expanded to flag `--name`. If it has
@@ -106,26 +106,26 @@ description]`. The `name` will be expanded to flag `--name`. If it has
 The `domain` should be a sequential table of strings (e.g., `[:apple :banana
 :orange]`).
 
-In command line argument parsing, this flag will consumes the next
+In command line argument parsing, this option will consumes the next
 argument, validate if the argument is one of `domain`'s items, and set the
 `config` object's corresponding attribute to the argument value.
 
-### String flag recipe
+### String option recipe
 
 `recipe-spec` should be `[name VARNAME description]` or `[name short-name VARNAME
 description]`. The `name` will be expanded to flag `--name`. If it has `short-name`,
 a short name flag will also be created. `VARNAME` will be used to indicate the next
-command line argument that will be consumed by this flag parsing.
+command line argument that will be consumed by this option parsing.
 
-In command line argument parsing, this flag will consumes the next
+In command line argument parsing, this option will consumes the next
 argument and set the `config` object's corresponding attribute to the argument
 value.
 
-### Number flag recipe
+### Number option recipe
 
-`recipe-spec` should be the same as the string flag recipe.
+`recipe-spec` should be the same as the string option recipe.
 
-In command line argument parsing, this flag will consumes the next
+In command line argument parsing, this option will consumes the next
 argument, validate if it can be converted to number, and set the `config`
 object's corresponding attribute to the converted number.
 
