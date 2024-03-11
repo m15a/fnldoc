@@ -6,7 +6,7 @@
                          (recipe :bool :no :n :NO!))]
     (t.= {:--yes {:description "--[no-]yes\tYES! (default: nil)" :key :yes? :value true}
           :--no-yes {:key :yes? :value false}
-          :--no {:description "--[no-]no|-n\tNO! (default: nil)" :key :no? :value true}
+          :--no {:description "-n, --[no-]no\tNO! (default: nil)" :key :no? :value true}
           :--no-no {:key :no? :value false}
           :-n {:key :no? :value true}} recipes)))
 
@@ -25,7 +25,7 @@
                              v drink.validate]
                          (set drink.validate nil)
                          v)]
-    (t.= {:--fruit {:description "--fruit|-f [apple|banana]\tFruit! (default: nil)"
+    (t.= {:--fruit {:description "-f, --fruit [apple|banana]\tFruit! (default: nil)"
                     :key :fruit
                     :consume-next? true}
           :-f {:key :fruit :consume-next? true}
@@ -51,7 +51,7 @@
     (t.= {:--text {:description "--text TEXT\ttext (default: nil)"
                    :key :text
                    :consume-next? true}
-          :--output {:description "--output|-o OUT\toutput (default: nil)"
+          :--output {:description "-o, --output OUT\toutput (default: nil)"
                      :key :output
                      :consume-next? true}
           :-o {:key :output :consume-next? true}} recipes)))
@@ -86,7 +86,7 @@
     (t.= {:--float {:description "--float FLOAT\tfloat (default: nil)"
                     :key :float
                     :consume-next? true}
-          :--int {:description "--int|-i INT\tinteger (default: nil)"
+          :--int {:description "-i, --int INT\tinteger (default: nil)"
                   :key :int
                   :consume-next? true}
           :-i {:key :int :consume-next? true}} recipes)

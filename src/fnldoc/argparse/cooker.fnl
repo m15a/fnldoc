@@ -16,9 +16,9 @@
 
 (fn boolean-description [{: name : short-name : default : description}]
   (if short-name
-      (string.format "--[no-]%s|-%s\t%s (default: %s)"
-                     name
+      (string.format "-%s, --[no-]%s\t%s (default: %s)"
                      short-name
+                     name
                      description
                      default)
       (string.format "--[no-]%s\t%s (default: %s)"
@@ -71,9 +71,9 @@
 (fn category-description [{: name : short-name : domain : default : description}]
   (let [domain (table.concat domain "|")]
     (if short-name
-        (string.format "--%s|-%s [%s]\t%s (default: %s)"
-                       name
+        (string.format "-%s, --%s [%s]\t%s (default: %s)"
                        short-name
+                       name
                        domain
                        description
                        default)
@@ -135,9 +135,9 @@
 
 (fn string-description [{: name : short-name : var-name : default : description}]
   (if short-name
-      (string.format "--%s|-%s %s\t%s (default: %s)"
-                     name
+      (string.format "-%s, --%s %s\t%s (default: %s)"
                      short-name
+                     name
                      (or var-name :TEXT)
                      description
                      default)
@@ -185,9 +185,9 @@
 
 (fn number-description [{: name : short-name : var-name : default : description}]
   (if short-name
-      (string.format "--%s|-%s %s\t%s (default: %s)"
-                     name
+      (string.format "-%s, --%s %s\t%s (default: %s)"
                      short-name
+                     name
                      (or var-name :NUM)
                      description
                      default)

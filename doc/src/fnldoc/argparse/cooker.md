@@ -24,14 +24,14 @@ which yields
            :value true}
  :--no-ramen {:key "ramen?"
               :value false}
- :--taste {:description "--taste|-t [shoyu|miso|tonkotsu]\tWhich type of ramen you like to have (default: nil)"
+ :--taste {:description "-t, --taste [shoyu|miso|tonkotsu]\tWhich type of ramen you like to have (default: nil)"
            :key "taste"
            :validate #<function: 0x7ffa16ead208>
            :consume-next? true}
  :-t {:key "taste"
       :validate #<function: 0x7ffa16e31310>
       :consume-next? true}
- :--bowls {:description "--bowls|-n NUM\tHow many ramen bowls you like to have (default: nil)"
+ :--bowls {:description "-n, --bowls NUM\tHow many ramen bowls you like to have (default: nil)"
            :key "bowls"
            :preprocess #<function: builtin#17>
            :validate #<function: 0x7ffa16f984e8>
