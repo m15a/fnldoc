@@ -107,8 +107,7 @@
               validate (category-validate domain)
               spec {:key name
                     : description
-                    : validate
-                    :consume-next? true}
+                    : validate}
               short-spec (doto (clone spec)
                            (tset :description nil))]
           `(let [flags# {}]
@@ -128,8 +127,7 @@
               validate (category-validate domain)
               spec {:key name
                     : description
-                    : validate
-                    :consume-next? true}]
+                    : validate}]
           `{,(.. "--" name) ,spec}))
       nil (error "argument missing: domain and description"))))
 
@@ -162,8 +160,7 @@
                                                : default
                                                : description})
               spec {:key name
-                    : description
-                    :consume-next? true}
+                    : description}
               short-spec (doto (clone spec)
                            (tset :description nil))]
           `(let [flags# {}]
@@ -178,8 +175,7 @@
                                                : default
                                                : description})
               spec {:key name
-                    : description
-                    :consume-next? true}]
+                    : description}]
           `{,(.. "--" name) ,spec}))
       nil (error "argument missing: VARNAME and description"))))
 
@@ -220,8 +216,7 @@
               spec {:key name
                     : description
                     :preprocess (number-preprocess)
-                    :validate (number-validate)
-                    :consume-next? true}
+                    :validate (number-validate)}
               short-spec (doto (clone spec)
                            (tset :description nil))]
           `(let [flags# {}]
@@ -239,8 +234,7 @@
               spec {:key name
                     : description
                     :preprocess (number-preprocess)
-                    :validate (number-validate)
-                    :consume-next? true}]
+                    :validate (number-validate)}]
           `{,(.. "--" name) ,spec}))
       nil (error "argument missing: VARNAME and description"))))
 

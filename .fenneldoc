@@ -79,9 +79,9 @@ A recipe is a table that possibly contains the following entries depending on th
 
 - `:key`: The corresponding key in the `config` object, i.e., `.fenneldoc`.
 - `:description`: a line that explain the flag, which will be shown in help.
-- `:value`: If the flag is on, this value will be set.
-- `:consume-next?`: If this is truthy, the next command line argument will be set to
-  the `:value`, possibly after doing `:preprocess` and `:validate`.
+- `:value`: If the flag is not nil, this value will be set; otherwise, the next command
+  line argument will be set to the `:value`, possibly after doing `:preprocess` and
+  `:validate`.
 - `:preprocess`: A function that converts the next command line argument string to
   the `:value`. Only used for number flags.
 - `:validate`: A function that checks if the `:value` is valid. This will be called
