@@ -6,53 +6,60 @@
 (local option-recipes
        (cooking
          (recipe :category :mode [:checkdoc :check :doc]
-                 "Mode to operate in.
+           "Mode to operate in.
 Supported modes:
     checkdoc - check documentation and generate markdown;
     check    - only check documentation; and
     doc      - only generate markdown.")
          (recipe :string :out-dir :DIR
-                 "Output directory for generated documentation.")
+           "Output directory for generated documentation.")
          (recipe :category :order [:alphabetic :reverse-alphabetic]
-                 "Sorting of items that were not given particular order.
+           "Sorting of items that were not given particular order.
 Supported algorithms:
     alphabetic         - alphabetic order; and
     reverse-alphabetic - reverse alphabetic order.
 You also can specify a custom sorting function in `.fenneldoc' file.")
          (recipe :category :inline-references [:link :code :keep]
-                 "How to handle inline references.
+           "How to handle inline references.
 Supported modes:
     link - convert inline references to markdown links;
     code - convert inline references to inline code; and
     keep - keep inline references as is.")
          (recipe :string :project-version :VERSION
-                 "Project version to include in the documentation files.")
+           "Project version to include in the documentation files.")
          (recipe :string :project-license :LICENSE
-                 "Project license to include in the documentation files. Markdown style links are supported.")
+           "Project license to include in the documentation files. Markdown style links are supported.")
          (recipe :string :project-copyright :COPYRIGHT
-                 "Project copyright to include in the documentation files.")
-         (recipe :bool :toc "Whether to generate table of contents.")
+           "Project copyright to include in the documentation files.")
+         (recipe :bool :toc
+           "Whether to generate table of contents.")
          (recipe :bool :function-signatures
-                 "Whether to generate function signatures in documentation.")
+           "Whether to generate function signatures in documentation.")
          (recipe :bool :copyright
-                 "Whether to insert copyright information.")
-         (recipe :bool :license "Whether to insert license information.")
-         (recipe :bool :version "Whether to insert version information.")
+           "Whether to insert copyright information.")
+         (recipe :bool :license
+           "Whether to insert license information.")
+         (recipe :bool :version
+           "Whether to insert version information.")
          (recipe :bool :final-comment
-                 "Whether to insert final comment with Fnldoc version.")
+           "Whether to insert final comment with Fnldoc version.")
          (recipe :bool :sandbox
-                 "Whether to sandbox loaded code and documentation tests.")))
+           "Whether to sandbox loaded code and documentation tests.")))
 
 ;; TODO: Enable `recipe` to handle these options.
 (local meta-option-recipes
        {:--
-        {:description "    --\tTreat remaining arguments as FILEs."}
+        {:description
+         "    --\tTreat remaining arguments as FILEs."}
         :--fnldoc-version
-        {:description "    --fnldoc-version\tPrint Fnldoc version and exit."}
+        {:description
+         "    --fnldoc-version\tPrint Fnldoc version and exit."}
         :--help
-        {:description "    --help\tPrint this message and exit."}
+        {:description
+         "    --help\tPrint this message and exit."}
         :--config
-        {:description "    --config\tParse all regular options and update `.fenneldoc' at the current directory."}})
+        {:description
+         "    --config\tParse all regular options and update `.fenneldoc' at the current directory."}})
 
 (local help
        (-> ["Usage: fnldoc [OPTIONS] [FILE]..."
@@ -63,36 +70,37 @@ Supported modes:
             (indent 2 "[FILE]...  File(s to generate documentation.")
             ""
             "Options:"
-            (indent 2 (option-descriptions/order [:--out-dir
-                                                  :--mode
-                                                  :--toc
-                                                  :--function-signatures
-                                                  :--order
-                                                  :--inline-references
-                                                  :--copyright
-                                                  :--license
-                                                  :--version
-                                                  :--final-comment
-                                                  :--project-copyright
-                                                  :--project-license
-                                                  :--project-version
-                                                  :--sandbox]
-                                                 option-recipes))
+            (indent 2 (option-descriptions/order
+                        [:--out-dir
+                         :--mode
+                         :--toc
+                         :--function-signatures
+                         :--order
+                         :--inline-references
+                         :--copyright
+                         :--license
+                         :--version
+                         :--final-comment
+                         :--project-copyright
+                         :--project-license
+                         :--project-version
+                         :--sandbox]
+                        option-recipes))
             "Other options:"
-            (indent 2 (option-descriptions/order ["--"
-                                                  :--config
-                                                  :--fnldoc-version
-                                                  :--help]
-                                                 meta-option-recipes))
+            (indent 2 (option-descriptions/order
+                        [:--
+                         :--config
+                         :--fnldoc-version
+                         :--help]
+                        meta-option-recipes))
             (wrap 80 (.. "All options have corresponding entry in `.fenneldoc' "
-                         "configuration file, and arguments passed via command line have "
-                         "higher precedence, therefore will override following values in "
-                         "`.fenneldoc'."))
+                         "configuration file, and arguments passed via command line "
+                         "have higher precedence, therefore will override following "
+                         "values in `.fenneldoc'."))
             ""
-            (wrap 80
-                  (.. "Each boolean option has two variants with and without `no'. "
-                      "For example, passing `--no-toc' will disable generation of "
-                      "contents table, and `--toc` will enable it."))]
+            (wrap 80 (.. "Each boolean option has two variants with and without `no'. "
+                         "For example, passing `--no-toc' will disable generation of "
+                         "contents table, and `--toc` will enable it."))]
            (table.concat "\n")))
 
 (fn parse [args]
