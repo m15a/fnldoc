@@ -129,7 +129,8 @@
       (do
         (check-function-arglist func arglist docstring module-info {}
                                 config.ignored-args-patterns)
-        (run-tests-for-fn func docstring module-info config.sandbox))))
+        (run-tests-for-fn func docstring module-info
+                          (or config.sandbox? config.sandbox)))))
 
 (fn test [module-info config]
   "Run tests contained in documentations.

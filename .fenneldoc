@@ -1,19 +1,15 @@
 ;; -*- mode: fennel; -*- vi:ft=fennel
 ;; Configuration file for Fnldoc 1.0.2-dev
 ;; https://sr.ht/~m15a/fnldoc/
-
-{:fennel-path {}
- :function-signatures true
+{:copyright? true
+ :fennel-path {}
+ :final-comment? true
+ :function-signatures? true
  :ignored-args-patterns ["%.%.%." "%_" "%_[^%s]+"]
  :inline-references "link"
- :insert-comment true
- :insert-copyright true
- :insert-license true
- :insert-version true
+ :license? true
  :mode "checkdoc"
- :modules-info
- {:src/fnldoc.fnl
-  {:description "Fnldoc - generate documentation for Fennel projects.
+ :modules-info {:src/fnldoc.fnl {:description "Fnldoc - generate documentation for Fennel projects.
 
 Generates documentation for Fennel libraries by analyzing project
 metadata at runtime.
@@ -29,8 +25,7 @@ metadata at runtime.
 - [fnldoc/doctest.fnl](./fnldoc/doctest.md) - Documentation testing.
 - [fnldoc/writer.fnl](./fnldoc/writer.md) - Writing markdown into files.
 - [fnldoc/utils.fnl](./fnldoc/utils.md) - Miscellaneous utilities."}
-  :src/fnldoc/argparse/cooker.fnl
-  {:description "Generate command line argument flag recipes.
+                :src/fnldoc/argparse/cooker.fnl {:description "Generate command line argument flag recipes.
 
 Macros defined here generate a table that maps command line argument flag
 to its *recipe*, which will be used later in command line argument parsing.
@@ -91,6 +86,7 @@ A recipe is a table that possibly contains the following entries depending on th
  :project-copyright "Copyright (C) 2020-2022 Andrey Listopadov, 2024 NACAMURA Mitsuhiro"
  :project-license "[MIT](https://git.sr.ht/~m15a/fnldoc/tree/main/item/LICENSE)"
  :project-version "1.0.2-dev"
- :sandbox true
+ :sandbox? true
  :test-requirements {}
- :toc true}
+ :toc? true
+ :version? true}
