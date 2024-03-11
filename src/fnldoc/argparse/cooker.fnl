@@ -27,7 +27,7 @@
                      default)))
 
 (fn boolean-recipe [name ...]
-  "Make a boolean flag and corresponding negative (`--no-*`) counterpart."
+  "Make a boolean option and corresponding negative (`--no-*`) counterpart."
   (assert-type :string name)
   (let [default (. default-config (.. name :?))]
     (case ...
@@ -46,11 +46,11 @@
                              :value false}
               short-spec (doto (clone positive-spec)
                            (tset :description nil))]
-          `(let [flags# {}]
-             (tset flags# ,(.. "--" name) ,positive-spec)
-             (tset flags# ,(.. :--no- name) ,negative-spec)
-             (tset flags# ,(.. "-" short-name) ,short-spec)
-             flags#)))
+          `(let [options# {}]
+             (tset options# ,(.. "--" name) ,positive-spec)
+             (tset options# ,(.. :--no- name) ,negative-spec)
+             (tset options# ,(.. "-" short-name) ,short-spec)
+             options#)))
       (description)
       (do
         (assert-type :string description)
@@ -62,10 +62,10 @@
                              :value true}
               negative-spec {:key (.. name "?")
                              :value false}]
-          `(let [flags# {}]
-             (tset flags# ,(.. "--" name) ,positive-spec)
-             (tset flags# ,(.. :--no- name) ,negative-spec)
-             flags#)))
+          `(let [options# {}]
+             (tset options# ,(.. "--" name) ,positive-spec)
+             (tset options# ,(.. :--no- name) ,negative-spec)
+             options#)))
       nil (error "argument missing: description"))))
 
 (fn category-description [{: name : short-name : domain : default : description}]
@@ -88,7 +88,7 @@
     `(fn [x#] (or (. ,domain x#) false))))
 
 (fn category-recipe [name ...]
-  "Make a categorical flag such like apple, orange, or banana."
+  "Make a categorical option such like apple, orange, or banana."
   (assert-type :string name)
   (let [default (. default-config name)]
     (case ...
@@ -110,10 +110,10 @@
                     : validate}
               short-spec (doto (clone spec)
                            (tset :description nil))]
-          `(let [flags# {}]
-             (tset flags# ,(.. "--" name) ,spec)
-             (tset flags# ,(.. "-" short-name) ,short-spec)
-             flags#)))
+          `(let [options# {}]
+             (tset options# ,(.. "--" name) ,spec)
+             (tset options# ,(.. "-" short-name) ,short-spec)
+             options#)))
       (domain description)
       (do
         (assert-sequence domain)
@@ -146,7 +146,7 @@
                      default)))
 
 (fn string-recipe [name ...]
-  "Make a simple string flag."
+  "Make a simple string option."
   (assert-type :string name)
   (let [default (. default-config name)]
     (case ...
@@ -163,10 +163,10 @@
                     : description}
               short-spec (doto (clone spec)
                            (tset :description nil))]
-          `(let [flags# {}]
-             (tset flags# ,(.. "--" name) ,spec)
-             (tset flags# ,(.. "-" short-name) ,short-spec)
-             flags#)))
+          `(let [options# {}]
+             (tset options# ,(.. "--" name) ,spec)
+             (tset options# ,(.. "-" short-name) ,short-spec)
+             options#)))
       (var-name description)
       (do
         (assert-type :string description)
@@ -200,7 +200,7 @@
   `(fn [x#] (= :number (type x#))))
 
 (fn number-recipe [name ...]
-  "Make a number flag."
+  "Make a number option."
   (assert-type :string name)
   (let [default (. default-config name)]
     (case ...
@@ -219,11 +219,11 @@
                     :validate (number-validate)}
               short-spec (doto (clone spec)
                            (tset :description nil))]
-          `(let [flags# {}]
-             (tset flags# ,(.. "--" name) ,spec)
-             (tset flags# ,(.. "-" short-name)
+          `(let [options# {}]
+             (tset options# ,(.. "--" name) ,spec)
+             (tset options# ,(.. "-" short-name)
                    ,short-spec)
-             flags#)))
+             options#)))
       (var-name description)
       (do
         (assert-type :string description)
@@ -239,7 +239,7 @@
       nil (error "argument missing: VARNAME and description"))))
 
 (fn recipe [recipe-type ...]
-  "Make a flag recipe of given `recipe-type`.
+  "Make an option recipe of given `recipe-type`.
 
 The recipe type can be one of
 
@@ -248,7 +248,7 @@ The recipe type can be one of
 * `string` (or `str`), or
 * `number` (or `num`).
 
-# Boolean flag recipe
+# Boolean option recipe
 
 `recipe-spec` should be `[name description]` or `[name short-name description]`.
 The `name` will be expanded to positive flag `--name` and negative flag
@@ -260,7 +260,7 @@ set the `config` object's attribute corresponding to the `name` (e.g., if the
 `name` is `apple`, the attribute is `apple?`) to `true`, and the negative flag
 set it to `false`.
 
-# Category flag recipe
+# Category option recipe
 
 `recipe-spec` should be `[name domain description]` or `[name short-name domain
 description]`. The `name` will be expanded to flag `--name`. If it has
@@ -268,26 +268,26 @@ description]`. The `name` will be expanded to flag `--name`. If it has
 The `domain` should be a sequential table of strings (e.g., `[:apple :banana
 :orange]`).
 
-In command line argument parsing, this flag will consumes the next
+In command line argument parsing, this option will consumes the next
 argument, validate if the argument is one of `domain`'s items, and set the
 `config` object's corresponding attribute to the argument value.
 
-# String flag recipe
+# String option recipe
 
 `recipe-spec` should be `[name VARNAME description]` or `[name short-name VARNAME
 description]`. The `name` will be expanded to flag `--name`. If it has `short-name`,
 a short name flag will also be created. `VARNAME` will be used to indicate the next
-command line argument that will be consumed by this flag parsing.
+command line argument that will be consumed by this option parsing.
 
-In command line argument parsing, this flag will consumes the next
+In command line argument parsing, this option will consumes the next
 argument and set the `config` object's corresponding attribute to the argument
 value.
 
-# Number flag recipe
+# Number option recipe
 
-`recipe-spec` should be the same as the string flag recipe.
+`recipe-spec` should be the same as the string option recipe.
 
-In command line argument parsing, this flag will consumes the next
+In command line argument parsing, this option will consumes the next
 argument, validate if it can be converted to number, and set the `config`
 object's corresponding attribute to the converted number."
   {:fnl/arglist [recipe-type & recipe-spec]}
@@ -303,7 +303,7 @@ object's corresponding attribute to the converted number."
     _ (error "unknown recipe type!")))
 
 (fn cooking [& recipes]
-  "A helper macro to collect recipes into one table."
+  "A helper macro to collect option `recipes` into one table."
   `(let [merge!# (. (require :fnldoc.utils.table) :merge!)]
      (doto {}
        (merge!# ,(unpack recipes)))))
