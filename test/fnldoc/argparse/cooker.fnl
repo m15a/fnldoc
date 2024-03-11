@@ -4,11 +4,18 @@
 (fn test-boolean-flag []
   (let [recipes (cooking (recipe :boolean :yes :YES!)
                          (recipe :bool :no :n :NO!))]
-    (t.= {:--yes {:description "--[no-]yes\tYES! (default: nil)" :key :yes? :value true}
-          :--no-yes {:key :yes? :value false}
-          :--no {:description "-n, --[no-]no\tNO! (default: nil)" :key :no? :value true}
-          :--no-no {:key :no? :value false}
-          :-n {:key :no? :value true}} recipes)))
+    (t.= {:--yes {:description "    --[no-]yes\tYES! (default: nil)"
+                  :key :yes?
+                  :value true}
+          :--no-yes {:key :yes?
+                     :value false}
+          :--no {:description "-n, --[no-]no\tNO! (default: nil)"
+                 :key :no?
+                 :value true}
+          :--no-no {:key :no?
+                    :value false}
+          :-n {:key :no?
+               :value true}} recipes)))
 
 (fn test-category-flag []
   (let [recipes (cooking (recipe :category :fruit :f [:apple :banana] :Fruit!)
@@ -26,12 +33,11 @@
                          (set drink.validate nil)
                          v)]
     (t.= {:--fruit {:description "-f, --fruit [apple|banana]\tFruit! (default: nil)"
-                    :key :fruit
-                    :consume-next? true}
-          :-f {:key :fruit :consume-next? true}
-          :--drink {:description "--drink [beer|another-beer]\tBeer! (default: nil)"
-                    :key :drink
-                    :consume-next? true}} recipes)
+                    :key :fruit}
+          :-f {:key :fruit}
+          :--drink {:description "    --drink [beer|another-beer]\tBeer! (default: nil)"
+                    :key :drink}}
+         recipes)
     (t.= :function (type validate-fruit))
     (t.= :function (type validate-f))
     (t.= true (validate-fruit :apple))
@@ -48,13 +54,12 @@
 (fn test-string-flag []
   (let [recipes (cooking (recipe :string :text :TEXT :text)
                          (recipe :str :output :o :OUT :output))]
-    (t.= {:--text {:description "--text TEXT\ttext (default: nil)"
-                   :key :text
-                   :consume-next? true}
+    (t.= {:--text {:description "    --text TEXT\ttext (default: nil)"
+                   :key :text}
           :--output {:description "-o, --output OUT\toutput (default: nil)"
-                     :key :output
-                     :consume-next? true}
-          :-o {:key :output :consume-next? true}} recipes)))
+                     :key :output}
+          :-o {:key :output}}
+         recipes)))
 
 (fn test-number-flag []
   (let [recipes (cooking (recipe :number :float :FLOAT :float)
@@ -83,13 +88,12 @@
                          v i.validate]
                      (set i.validate nil)
                      v)]
-    (t.= {:--float {:description "--float FLOAT\tfloat (default: nil)"
-                    :key :float
-                    :consume-next? true}
+    (t.= {:--float {:description "    --float FLOAT\tfloat (default: nil)"
+                    :key :float}
           :--int {:description "-i, --int INT\tinteger (default: nil)"
-                  :key :int
-                  :consume-next? true}
-          :-i {:key :int :consume-next? true}} recipes)
+                  :key :int}
+          :-i {:key :int}}
+         recipes)
     (t.= :function (type validate-float))
     (t.= :function (type validate-int))
     (t.= :function (type validate-i))

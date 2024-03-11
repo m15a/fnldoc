@@ -21,7 +21,7 @@
                      name
                      description
                      default)
-      (string.format "--[no-]%s\t%s (default: %s)"
+      (string.format "    --[no-]%s\t%s (default: %s)"
                      name
                      description
                      default)))
@@ -77,7 +77,7 @@
                        domain
                        description
                        default)
-        (string.format "--%s [%s]\t%s (default: %s)"
+        (string.format "    --%s [%s]\t%s (default: %s)"
                        name
                        domain
                        description
@@ -139,7 +139,7 @@
                      (or var-name :TEXT)
                      description
                      default)
-      (string.format "--%s %s\t%s (default: %s)"
+      (string.format "    --%s %s\t%s (default: %s)"
                      name
                      (or var-name :TEXT)
                      description
@@ -187,7 +187,7 @@
                      (or var-name :NUM)
                      description
                      default)
-      (string.format "--%s %s\t%s (default: %s)"
+      (string.format "    --%s %s\t%s (default: %s)"
                      name
                      (or var-name :NUM)
                      description
