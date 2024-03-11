@@ -16,6 +16,19 @@ metadata at runtime.
 - [fnldoc/writer.fnl](./fnldoc/writer.md) - Writing markdown into files.
 - [fnldoc/utils.fnl](./fnldoc/utils.md) - Miscellaneous utilities.
 
+**Table of contents**
+
+- [`main`](#main)
+
+## `main`
+Function signature:
+
+```
+(main)
+```
+
+Run Fnldoc application.
+
 
 ---
 
