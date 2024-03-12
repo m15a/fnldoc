@@ -69,12 +69,12 @@
         (console.error msg)
         (os.exit code)))))
 
-(local mt {: merge! : set-fennel-path! : write!})
+(local mt {:__index {: merge! : set-fennel-path! : write!}})
 
 (fn new []
   "Create a new config object."
   (let [self (clone/deeply default)]
-    (setmetatable self {:__index mt})))
+    (setmetatable self mt)))
 
 (fn init! [{: config-file : version}]
   (let [config-file (or config-file :.fenneldoc)
