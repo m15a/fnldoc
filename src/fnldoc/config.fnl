@@ -5,17 +5,9 @@
 
 (local default (require :fnldoc.config.default))
 
-(fn deprecated-key-info [old-key {: snippet : new-key}]
-  (values old-key
-          {: new-key
-           :msg (string.format (.. "the '%s' key was deprecated and no longer supported"
-                                   " - use %s instead.")
-                               old-key
-                               (or snippet (string.format "the '%s' key" new-key)))}))
-
-(local deprecated*
-       {:project-doc-order {:snippet "the 'doc-order' key in the 'modules-info' table"}
-        :keys {:snippet "the 'modules-info' table to provide module information"}
+(local deprecated
+       {:project-doc-order {:use "the 'doc-order' key in the 'modules-info' table"}
+        :keys {:use "the 'modules-info' table to provide module information"}
         :sandbox {:new-key :sandbox?}
         :toc {:new-key :toc?}
         :function-signatures {:new-key :function-signatures?}
@@ -23,8 +15,11 @@
         :insert-version {:new-key :version?}
         :insert-comment {:new-key :final-comment?}})
 
-(local deprecated (collect [k v (pairs deprecated*)]
-                    (deprecated-key-info k v)))
+(fn warn/deprecated [old-key {: new-key : use}]
+  (let [use (or use (string.format "the '%s' key" new-key))
+        msg (-> "the '%s' key was deprecated and no longer supported - use %s instead."
+                (string.format old-key use))]
+    (console.warn msg)))
 
 (fn merge! [self from]
   "Merge key-value pairs of the `from` table into `self` config object.
@@ -34,7 +29,7 @@
       (case (. deprecated key)
         info (do
                (when (not (. warned key))
-                 (console.warn info.msg)
+                 (warn/deprecated key info)
                  (tset warned key true))
                (when info.new-key
                  (tset self info.new-key value)))
