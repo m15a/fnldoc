@@ -122,7 +122,7 @@ functions to only throw warning, and not error."
 (fn require-module [file config]
   "Require file as module in protected call.  Returns multiple values
 with first value corresponding to pcall result."
-  (let [env (when (or config.sandbox? config.sandbox)
+  (let [env (when config.sandbox?
               (create-sandbox file))
         module-name (module-from-file file)]
     (match (pcall dofile file {:useMetadata true : env :allowedGlobals false}

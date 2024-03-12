@@ -5,23 +5,26 @@
 
 (local default (require :fnldoc.config.default))
 
-(fn deprecated-key-and-message [old new]
-  (values old (string.format (.. "the '%s' key was deprecated and no longer supported"
-                                 " - use %s instead.")
-                             old new)))
+(fn deprecated-key-info [old-key {: snippet : new-key}]
+  (values old-key
+          {: new-key
+           :msg (string.format (.. "the '%s' key was deprecated and no longer supported"
+                                   " - use %s instead.")
+                               old-key
+                               (or snippet (string.format "the '%s' key" new-key)))}))
 
 (local deprecated*
-       {:project-doc-order "the 'doc-order' key in the 'modules-info' table"
-        :keys "the 'modules-info' table to provide module information"
-        :sandbox "the 'sandbox?' key"
-        :toc "the 'toc?' key"
-        :function-signatures "the 'function-signatures?' key"
-        :insert-license "the 'license?' key"
-        :insert-version "the 'version?' key"
-        :insert-comment "the 'final-comment?' key"})
+       {:project-doc-order {:snippet "the 'doc-order' key in the 'modules-info' table"}
+        :keys {:snippet "the 'modules-info' table to provide module information"}
+        :sandbox {:new-key :sandbox?}
+        :toc {:new-key :toc?}
+        :function-signatures {:new-key :function-signatures?}
+        :insert-license {:new-key :license?}
+        :insert-version {:new-key :version?}
+        :insert-comment {:new-key :final-comment?}})
 
 (local deprecated (collect [k v (pairs deprecated*)]
-                    (deprecated-key-and-message k v)))
+                    (deprecated-key-info k v)))
 
 (fn merge! [self from]
   "Merge key-value pairs of the `from` table into `self` config object.
@@ -29,10 +32,13 @@
   (let [warned {}]
     (each [key value (pairs from)]
       (case (. deprecated key)
-        msg (when (not (. warned key))
-              (console.warn msg)
-              (tset warned key true)))
-      (tset self key value))))
+        info (do
+               (when (not (. warned key))
+                 (console.warn info.msg)
+                 (tset warned key true))
+               (when info.new-key
+                 (tset self info.new-key value)))
+        _ (tset self key value)))))
 
 (fn set-fennel-path! [self]
   "Append `self`'s `fennel-path` to `fennel.path`."

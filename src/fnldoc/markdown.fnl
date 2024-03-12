@@ -1,7 +1,7 @@
 ;;;; Functions for generating Markdown.
 
 (fn gen-info-comment [lines config]
-  (if (or config.final-comment? config.insert-comment)
+  (if config.final-comment?
       (doto lines
         (table.insert "")
         (table.insert (.. "<!-- Generated with Fnldoc " config.fnldoc-version))
@@ -11,7 +11,7 @@
 
 (fn gen-function-signature* [lines item arglist config]
   "Generate function signature for `function` from `arglist` accordingly to `config`."
-  (case (and (or config.function-signatures? config.function-signatures)
+  (case (and config.function-signatures?
              arglist (table.concat arglist " "))
     arglist (doto lines
               (table.insert "Function signature:")
@@ -23,14 +23,14 @@
     _ lines))
 
 (fn gen-license-info [lines license config]
-  (if (and (or config.license? config.insert-license) license)
+  (if (and config.license? license)
       (doto lines
         (table.insert (.. "License: " license))
         (table.insert ""))
       lines))
 
 (fn gen-copyright-info [lines copyright config]
-  (if (and (or config.copyright? config.insert-copyright) copyright)
+  (if (and config.copyright? copyright)
       (doto lines
         (table.insert copyright)
         (table.insert ""))
@@ -143,13 +143,13 @@ Supported algorithms: alphabetic, reverse-alphabetic, or function.
     toc))
 
 (fn gen-toc [lines toc ordered-items config]
-  (if (and (or config.toc? config.toc) toc (next toc))
-      (let [lines (if (and (or config.toc? config.toc) toc (next toc))
+  (if (and config.toc? toc (next toc))
+      (let [lines (if (and config.toc? toc (next toc))
                       (doto lines
                         (table.insert "**Table of contents**")
                         (table.insert ""))
                       lines)
-            lines (if (and (or config.toc? config.toc) toc (next toc))
+            lines (if (and config.toc? toc (next toc))
                       (accumulate [lines lines _ item (ipairs ordered-items)]
                         (match (. toc item)
                           link (doto lines
@@ -198,8 +198,7 @@ Supported algorithms: alphabetic, reverse-alphabetic, or function.
                   (gen-toc toc-table ordered-items config)
                   (gen-items-doc ordered-items toc-table module-info config))
         lines (if (and (or module-info.copyright module-info.license)
-                       (or config.copyright? config.license?
-                           config.insert-copyright config.insert-license))
+                       (or config.copyright? config.license?))
                   (-> (doto lines
                         (table.insert "")
                         (table.insert "---")
