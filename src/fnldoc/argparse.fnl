@@ -115,7 +115,8 @@ The result contains attributes:
 - `config`: Parsed config that will be merged into that comming from `.fenneldoc`.
 - `files`: Target Fennel file names to be proccessed.
 
-For testing purpose, if `?debug` is truthy and failing, raises error instead to exit."
+For testing purpose, if `?debug` is truthy and failing, it raises an error
+instead to exit."
   (let [args (clone args)
         state {:config {} :files []}]
     (while (and (not state.show-version?)

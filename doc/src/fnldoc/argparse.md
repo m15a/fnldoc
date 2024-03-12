@@ -8,7 +8,7 @@
 Function signature:
 
 ```
-(parse args)
+(parse args ?debug)
 ```
 
 Parse command line `args` and return the result.
@@ -21,6 +21,9 @@ The result contains attributes:
 - `show-version?`: Whether to show Fnldoc version and exit.
 - `config`: Parsed config that will be merged into that comming from `.fenneldoc`.
 - `files`: Target Fennel file names to be proccessed.
+
+For testing purpose, if `?debug` is truthy and failing, it raises an error
+instead to exit.
 
 
 ---

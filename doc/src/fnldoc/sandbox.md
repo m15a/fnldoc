@@ -21,7 +21,8 @@ and accessing such modules as `os`, `debug`, `package`, and `io`.
 This means that your files must not use these modules on the top
 level, or run any code when file is loaded that uses those modules.
 
-For testing purpose, if `?debug` is truthy, it raises error instead to exit.
+For testing purpose, if `?debug` is truthy and failing, it raises an error
+instead to exit.
 
 ## `sandbox/overrides`
 Function signature:
@@ -37,7 +38,8 @@ a key, and function as a value. This function will be used instead of
 specified function name in the sandbox. For example, you can wrap IO
 functions to only throw warning, and not error.
 
-For testing purpose, if `?debug` is truthy, it raises error instead to exit.
+For testing purpose, if `?debug` is truthy and failing, it raises an error
+instead to exit.
 
 
 ---
