@@ -3,84 +3,9 @@
 
 (local {: dofile : metadata : macro-loaded} (require :fennel))
 (local compiler (require :fennel.compiler))
+(local {: sandbox} (require :fnldoc.sandbox))
 (local {: gen-function-signature : gen-item-documentation}
        (require :fnldoc.markdown))
-
-(fn sandbox-module [module file]
-  (setmetatable {} {:__index (fn []
-                               (io.stderr:write (.. "ERROR: access to '" module
-                                                    "' module detected in file: "
-                                                    file " while loading\n"))
-                               (os.exit 1))}))
-
-(fn create-sandbox [file overrides]
-  "Create sandboxed environment to run `file` containing documentation,
-and tests from that documentation.
-
-Does not allow any IO, loading files or Lua code via `load`,
-`loadfile`, and `loadstring`, using `rawset`, `rawset`, and `module`,
-and accessing such modules as `os`, `debug`, `package`, `io`.
-
-This means that your files must not use these modules on the top
-level, or run any code when file is loaded that uses those modules.
-
-You can provide an `overrides` table, which contains function name as
-a key, and function as a value.  This function will be used instead of
-specified function name in the sandbox.  For example, you can wrap IO
-functions to only throw warning, and not error."
-  (case overrides
-    overrides (let [env {: assert
-                         ; allowed modules
-                         :bit32 _G.bit32
-                         ; Lua 5.2 only
-                         : collectgarbage
-                         : coroutine
-                         : dofile
-                         : error
-                         : getmetatable
-                         : ipairs
-                         : math
-                         : next
-                         : pairs
-                         : pcall
-                         : rawequal
-                         :rawlen _G.rawlen
-                         ; Lua >=5.2
-                         : require
-                         : select
-                         : setmetatable
-                         : string
-                         : table
-                         : tonumber
-                         : tostring
-                         : type
-                         :unpack _G.unpack
-                         ; Lua 5.1 only
-                         :utf8 _G.utf8
-                         ; Lua >= 5.3
-                         : xpcall
-                         :load nil
-                         ; disallowed modules
-                         :loadfile nil
-                         :loadstring nil
-                         :rawget nil
-                         :rawset nil
-                         :module nil
-                         :arg []
-                         ; sandboxed modules
-                         :print (fn []
-                                  (io.stderr:write "ERROR: IO detected in file: "
-                                                   file " while loading\n")
-                                  (os.exit 1))
-                         :os (sandbox-module :os file)
-                         :debug (sandbox-module :debug file)
-                         :package (sandbox-module :package file)
-                         :io (sandbox-module :io file)}]
-                (set env._G env)
-                (each [k v (pairs overrides)]
-                  (tset env k v))
-                env)
-    _ (create-sandbox file {})))
 
 (fn function-name-from-file [file]
   (let [sep (package.config:sub 1 1)]
@@ -123,7 +48,7 @@ functions to only throw warning, and not error."
   "Require file as module in protected call.  Returns multiple values
 with first value corresponding to pcall result."
   (let [env (when config.sandbox?
-              (create-sandbox file))
+              (sandbox file))
         module-name (module-from-file file)]
     (match (pcall dofile file {:useMetadata true : env :allowedGlobals false}
                   module-name)
@@ -140,8 +65,6 @@ with first value corresponding to pcall result."
                     module-name)
         (true module) (values (type module) module :macros)
         (false msg) (values false msg)))))
-
-(local warned {})
 
 (fn module-info [file config]
   "Returns table containing all relevant information accordingly to
@@ -196,4 +119,4 @@ generated."
                        (tostring _))
       nil)))
 
-{: create-sandbox : module-info}
+{: module-info}

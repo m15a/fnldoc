@@ -1,7 +1,7 @@
 ;;;; Documentation testing facilities.
 
-(local {: create-sandbox} (require :fnldoc.parser))
 (local fennel (require :fennel))
+(local {: sandbox/overrides} (require :fnldoc.sandbox))
 
 (fn extract-tests [name fn-doc]
   (icollect [test (fn-doc:gmatch "\n?```%s*fennel.-\n```")]
@@ -22,26 +22,26 @@
 
 (fn run-test [test requirements module-info sandbox?]
   (let [env (if sandbox?
-                (create-sandbox module-info.file {:print (fn [...]
-                                                           (io.stderr:write "WARNING: IO detected in the '"
-                                                                            (or module-info.file
-                                                                                :unknown)
-                                                                            "' file in the following test:
+                (sandbox/overrides module-info.file {:print (fn [...]
+                                                              (io.stderr:write "WARNING: IO detected in the '"
+                                                                               (or module-info.file
+                                                                                   :unknown)
+                                                                               "' file in the following test:
 ``` fennel
 "
-                                                                            test
-                                                                            "
+                                                                               test
+                                                                               "
 ```
 "))
-                                                  :io (setmetatable {} {:__index (fn []
-                                                                                   (io.stderr:write "WARNING: 'io' module access detected in the '"
-                                                                                                    (or module-info.file
-                                                                                                        :unknown)
-                                                                                                    "' file in the following test:
+                                                     :io (setmetatable {} {:__index (fn []
+                                                                                      (io.stderr:write "WARNING: 'io' module access detected in the '"
+                                                                                                       (or module-info.file
+                                                                                                           :unknown)
+                                                                                                       "' file in the following test:
 ``` fennel
 "
-                                                                                                    test
-                                                                                                    "
+                                                                                                       test
+                                                                                                       "
 ```
 "))})})
                 (copy-table _G))
