@@ -11,11 +11,10 @@
 If an option recipe `self` has `preprocessor`, call it against the `next-arg`;
 otherwise pass through it.
 In addition, remember the `next-arg` in the `processed-arg` attribute."
+  (set self.processed-arg next-arg)
   (if (not self.preprocessor)
       next-arg
-      (do
-        (set self.processed-arg next-arg)
-        (self.preprocessor next-arg))))
+      (self.preprocessor next-arg)))
 
 (fn validate [self value]
   "Validate the `value` and return it if successes.
