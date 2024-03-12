@@ -31,6 +31,9 @@ and this project adheres to [Semantic Versioning][2].
 
 ### Internal changes
 
+- Move sandboxing functionalities into `fnldoc.sandbox` module.
+- Add `fnldoc.argparse.{cooker,eater}` modules: `cooker` specifies how to parse
+  command line arguments, which will be parsed by `eater`.
 - Add `fnldoc.utils{,.*}` modules for various utilities.
 - Add `fnldoc.console` module for logging.
 - Modules are re-organized according to the above executable name change.
