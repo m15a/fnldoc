@@ -1,4 +1,3 @@
-(local version (. (require :fnldoc.version) :version))
 (local unpack (or table.unpack _G.unpack))
 (local console (require :fnldoc.console))
 (local config (require :fnldoc.config))
@@ -8,6 +7,8 @@
 (local {: module-info} (require :fnldoc.parser))
 (local {: gen-markdown} (require :fnldoc.markdown))
 (local {: write-docs} (require :fnldoc.writer))
+
+(local version :1.0.2-dev)
 
 (fn show-version []
   (io.stderr:write version "\n")
