@@ -103,7 +103,7 @@ Supported modes:
                          "contents table, and `--toc` will enable it."))]
            (table.concat "\n")))
 
-(fn parse [args]
+(fn parse [args ?debug]
   "Parse command line `args` and return the result.
 
 The result contains attributes:
@@ -113,7 +113,9 @@ The result contains attributes:
 - `show-help?`: Whether to show Fnldoc help and exit.
 - `show-version?`: Whether to show Fnldoc version and exit.
 - `config`: Parsed config that will be merged into that comming from `.fenneldoc`.
-- `files`: Target Fennel file names to be proccessed."
+- `files`: Target Fennel file names to be proccessed.
+
+For testing purpose, if `?debug` is truthy and failing, raises error instead to exit."
   (let [args (clone args)
         state {:config {} :files []}]
     (while (and (not state.show-version?)
@@ -131,6 +133,8 @@ The result contains attributes:
                   (if (not option-recipe)
                       (table.insert state.files flag|file)
                       (let [eater (bless option-recipe {:flag flag|file})]
+                        (when ?debug
+                          (set eater.__fnldoc_debug? true))
                         (eater:parse! state.config args))))))))
     (doto state
       (tset :ignore-options? nil))))
