@@ -26,47 +26,39 @@
                      description
                      default)))
 
+(fn boolean-recipe* [{: name : short-name : description}]
+  (assert-type :string name)
+  (when short-name
+    (assert-char short-name))
+  (assert-type :string description)
+  (let [key (.. name :?)
+        default (. default-config key)
+        description (boolean-description {: name
+                                          : short-name
+                                          : default
+                                          : description})
+        positive-spec {: key
+                       : description
+                       :value true}
+        negative-spec {: key
+                       :value false}
+        short-spec (doto (clone positive-spec)
+                     (tset :description nil))]
+    `(let [options# {}]
+       (tset options# ,(.. "--" name) ,positive-spec)
+       (tset options# ,(.. :--no- name) ,negative-spec)
+       ,(when short-name
+          `(tset options# ,(.. "-" short-name) ,short-spec))
+       options#)))
+
 (fn boolean-recipe [name ...]
   "Make a boolean option and corresponding negative (`--no-*`) counterpart."
-  (assert-type :string name)
-  (let [default (. default-config (.. name :?))]
-    (case ...
-      (short-name description)
-      (do
-        (assert-char short-name)
-        (assert-type :string description)
-        (let [description (boolean-description {: name
-                                                : short-name
-                                                : default
-                                                : description})
-              positive-spec {:key (.. name "?")
-                             : description
-                             :value true}
-              negative-spec {:key (.. name "?")
-                             :value false}
-              short-spec (doto (clone positive-spec)
-                           (tset :description nil))]
-          `(let [options# {}]
-             (tset options# ,(.. "--" name) ,positive-spec)
-             (tset options# ,(.. :--no- name) ,negative-spec)
-             (tset options# ,(.. "-" short-name) ,short-spec)
-             options#)))
-      (description)
-      (do
-        (assert-type :string description)
-        (let [description (boolean-description {: name
-                                                : default
-                                                : description})
-              positive-spec {:key (.. name "?")
-                             : description
-                             :value true}
-              negative-spec {:key (.. name "?")
-                             :value false}]
-          `(let [options# {}]
-             (tset options# ,(.. "--" name) ,positive-spec)
-             (tset options# ,(.. :--no- name) ,negative-spec)
-             options#)))
-      nil (error "argument missing: description"))))
+  (case ...
+    (short-name description)
+    (boolean-recipe* {: name : short-name : description})
+    (description)
+    (boolean-recipe* {: name : description})
+    _ (error "argument missing: description")))
 
 (fn category-description [{: name : short-name : domain : default : description}]
   (let [domain (table.concat domain "|")]
@@ -87,47 +79,39 @@
   (let [domain (collect [_ k (ipairs domain)] k true)]
     `(fn [x#] (or (. ,domain x#) false))))
 
+(fn category-recipe* [{: name : short-name : domain : description}]
+  (assert-type :string name)
+  (when short-name
+    (assert-char short-name))
+  (assert-sequence domain)
+  (each [_ k (ipairs domain)]
+    (assert-type :string k))
+  (assert-type :string description)
+  (let [default (. default-config name)
+        description (category-description {: name
+                                           : short-name
+                                           : domain
+                                           : default
+                                           : description})
+        spec {:key name
+              : description
+              :validator (category-validator domain)}
+        short-spec (doto (clone spec)
+                     (tset :description nil))]
+    `(let [options# {}]
+       (tset options# ,(.. "--" name) ,spec)
+       ,(when short-name
+          `(tset options# ,(.. "-" short-name) ,short-spec))
+       options#)))
+
 (fn category-recipe [name ...]
   "Make a categorical option such like apple, orange, or banana."
-  (assert-type :string name)
-  (let [default (. default-config name)]
-    (case ...
-      (short-name domain description)
-      (do
-        (assert-char short-name)
-        (assert-sequence domain)
-        (each [_ k (ipairs domain)]
-          (assert-type :string k))
-        (assert-type :string description)
-        (let [description (category-description {: name
-                                                 : short-name
-                                                 : domain
-                                                 : default
-                                                 : description})
-              spec {:key name
-                    : description
-                    :validator (category-validator domain)}
-              short-spec (doto (clone spec)
-                           (tset :description nil))]
-          `(let [options# {}]
-             (tset options# ,(.. "--" name) ,spec)
-             (tset options# ,(.. "-" short-name) ,short-spec)
-             options#)))
-      (domain description)
-      (do
-        (assert-sequence domain)
-        (each [_ k (ipairs domain)]
-          (assert-type :string k))
-        (assert-type :string description)
-        (let [description (category-description {: name
-                                                 : domain
-                                                 : default
-                                                 : description})
-              spec {:key name
-                    : description
-                    :validator (category-validator domain)}]
-          `{,(.. "--" name) ,spec}))
-      nil (error "argument missing: domain and description"))))
+  (case ...
+    (short-name domain description)
+    (category-recipe* {: name : short-name : domain : description})
+    (domain description)
+    (category-recipe* {: name : domain : description})
+    nil (error "argument missing: domain and description")))
 
 (fn string-description [{: name : short-name : var-name : default : description}]
   (if short-name
@@ -143,39 +127,36 @@
                      description
                      default)))
 
+(fn string-recipe* [{: name : short-name : var-name : description}]
+  (assert-type :string name)
+  (when short-name
+    (assert-char short-name))
+  (assert-type :string var-name)
+  (assert-type :string description)
+  (let [default (. default-config name)
+        description (string-description {: name
+                                         : short-name
+                                         : var-name
+                                         : default
+                                         : description})
+        spec {:key name
+              : description}
+        short-spec (doto (clone spec)
+                     (tset :description nil))]
+    `(let [options# {}]
+       (tset options# ,(.. "--" name) ,spec)
+       ,(when short-name
+          `(tset options# ,(.. "-" short-name) ,short-spec))
+       options#)))
+
 (fn string-recipe [name ...]
   "Make a simple string option."
-  (assert-type :string name)
-  (let [default (. default-config name)]
-    (case ...
-      (short-name var-name description)
-      (do
-        (assert-char short-name)
-        (assert-type :string description)
-        (let [description (string-description {: name
-                                               : short-name
-                                               : var-name
-                                               : default
-                                               : description})
-              spec {:key name
-                    : description}
-              short-spec (doto (clone spec)
-                           (tset :description nil))]
-          `(let [options# {}]
-             (tset options# ,(.. "--" name) ,spec)
-             (tset options# ,(.. "-" short-name) ,short-spec)
-             options#)))
-      (var-name description)
-      (do
-        (assert-type :string description)
-        (let [description (string-description {: name
-                                               : var-name
-                                               : default
-                                               : description})
-              spec {:key name
-                    : description}]
-          `{,(.. "--" name) ,spec}))
-      nil (error "argument missing: VARNAME and description"))))
+  (case ...
+    (short-name var-name description)
+    (string-recipe* {: name : short-name : var-name : description})
+    (var-name description)
+    (string-recipe* {: name : var-name : description})
+    nil (error "argument missing: VARNAME and description")))
 
 (fn number-description [{: name : short-name : var-name : default : description}]
   (if short-name
@@ -197,44 +178,38 @@
 (fn number-validator []
   `(fn [x#] (= :number (type x#))))
 
+(fn number-recipe* [{: name : short-name : var-name : description}]
+  (assert-type :string name)
+  (when short-name
+    (assert-char short-name))
+  (assert-type :string var-name)
+  (assert-type :string description)
+  (let [default (. default-config name)
+        description (number-description {: name
+                                         : short-name
+                                         : var-name
+                                         : default
+                                         : description})
+        spec {:key name
+              : description
+              :preprocessor (number-preprocessor)
+              :validator (number-validator)}
+        short-spec (doto (clone spec)
+                     (tset :description nil))]
+    `(let [options# {}]
+       (tset options# ,(.. "--" name) ,spec)
+       ,(when short-name
+          `(tset options# ,(.. "-" short-name) ,short-spec))
+       options#)))
+
 (fn number-recipe [name ...]
   "Make a number option."
-  (assert-type :string name)
-  (let [default (. default-config name)]
-    (case ...
-      (short-name var-name description)
-      (do
-        (assert-char short-name)
-        (assert-type :string description)
-        (let [description (number-description {: name
-                                               : short-name
-                                               : var-name
-                                               : default
-                                               : description})
-              spec {:key name
-                    : description
-                    :preprocessor (number-preprocessor)
-                    :validator (number-validator)}
-              short-spec (doto (clone spec)
-                           (tset :description nil))]
-          `(let [options# {}]
-             (tset options# ,(.. "--" name) ,spec)
-             (tset options# ,(.. "-" short-name)
-                   ,short-spec)
-             options#)))
-      (var-name description)
-      (do
-        (assert-type :string description)
-        (let [description (number-description {: name
-                                               : var-name
-                                               : default
-                                               : description})
-              spec {:key name
-                    : description
-                    :preprocessor (number-preprocessor)
-                    :validator (number-validator)}]
-          `{,(.. "--" name) ,spec}))
-      nil (error "argument missing: VARNAME and description"))))
+  (case ...
+    (short-name var-name description)
+    (number-recipe* {: name : short-name : var-name : description})
+    (var-name description)
+    (number-recipe* {: name : var-name : description})
+    nil (error "argument missing: VARNAME and description")))
 
 (fn recipe [recipe-type ...]
   "Make an option recipe of given `recipe-type`.
