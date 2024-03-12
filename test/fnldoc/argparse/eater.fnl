@@ -17,6 +17,26 @@
                   (recipe:preprocess)
                   (recipe:validate)))))
 
+(fn test-parse! []
+  (let [args []
+        config {}
+        recipe (bless {:key :key :value true} {:flag :--key})]
+    (recipe:parse! config args)
+    (t.= {:key true} config)
+    (t.= [] args))
+  (let [args [:arg1]
+        config {}
+        recipe (bless {:key :key} {:flag :--key})]
+    (recipe:parse! config args)
+    (t.= {:key :arg1} config)
+    (t.= [] args))
+  (let [args []
+        config {}
+        recipe (bless {:key :key} {:flag :--key})]
+    (set recipe.__fnldoc_debug? true)
+    (t.error "argument missing while processing option %-%-key"
+             #(recipe:parse! config args))))
+
 (fn test-option-descriptions/order []
   (let [recipes {:--a {:description "-a, --a-flag\tA flag."}
                  :--b {}
@@ -38,4 +58,4 @@
     (t.error "no flag found: %-%-b"
              #(option-descriptions/order [:--b] recipes))))
 
-{: test-bless : test-option-descriptions/order}
+{: test-bless : test-parse! : test-option-descriptions/order}

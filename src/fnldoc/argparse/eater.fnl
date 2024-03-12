@@ -49,9 +49,12 @@ If the head of `args` is missing, report error and exit with failing status."
             (tset config self.key (-> next-arg
                                       (self:preprocess)
                                       (self:validate))))
-          (do
-            (console.error "argument missing while processing option " self.flag)
-            (os.exit 1)))))
+          (let [msg (.. "argument missing while processing option " self.flag)]
+            (if self.__fnldoc_debug?
+                (error msg)
+                (do
+                  (console.error msg)
+                  (os.exit 1)))))))
 
 (local eater-mt {:__index {: preprocess : validate : parse!}})
 
