@@ -6,7 +6,7 @@
 (local default (require :fnldoc.config.default))
 
 (local deprecated
-       {:project-doc-order {:use "the 'doc-order' key in the 'modules-info' table"}
+       {:project-doc-order {:use "the 'order' key in the 'modules-info' table"}
         :keys {:use "the 'modules-info' table to provide module information"}
         :sandbox {:new-key :sandbox?}
         :toc {:new-key :toc?}
@@ -206,7 +206,7 @@ in the module info.
 
 An associative table that holds file names and information about the
 modules, contained in those. Supported keys: `:name`, `:description`,
-`:doc-order`, `:copyright`, `:license`, and `:version`. For example:
+`:order`, `:copyright`, `:license`, and `:version`. For example:
 
 ```fennel
 {:modules-info
@@ -214,7 +214,7 @@ modules, contained in those. Supported keys: `:name`, `:description`,
   {:description \"some module description\"
    :license \"GNU GPL\"
    :name \"Some Module\"
-   :doc-order [\"some-fn1\" \"some-fn2\" \"etc\"]}}}
+   :order [\"some-fn1\" \"some-fn2\" \"etc\"]}}}
 ```"))
 
 {: default : new : merge! : set-fennel-path! : write! : init!}

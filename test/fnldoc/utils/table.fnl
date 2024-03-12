@@ -28,4 +28,14 @@
     (t.= {:c 3} z)
     (t.error "table expected, got nil" #(ut.merge!))))
 
-{: test-clone : test-clone/deeply : test-merge!}
+(fn test-comparator/table []
+  (let [xs [2 3 1 0 3 2]]
+    (table.sort xs (ut.comparator/table [3 2]))
+    (t.= [3 3 2 2 0 1] xs)
+    (table.sort xs (ut.comparator/table [3 0] #(> $1 $2)))
+    (t.= [3 3 0 2 2 1] xs)
+    (table.sort xs (ut.comparator/table {:a 2 :b 3}))
+    (t.= [2 2 3 3 0 1] xs)
+    (table.sort xs (ut.comparator/table [3] (ut.comparator/table [0 1])))
+    (t.= [3 3 0 1 2 2] xs)))
+{: test-clone : test-clone/deeply : test-merge! : test-comparator/table}

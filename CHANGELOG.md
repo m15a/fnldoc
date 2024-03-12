@@ -22,9 +22,18 @@ and this project adheres to [Semantic Versioning][2].
   - `insert-license` -> `license?`
   - `insert-version` -> `version?`
   - `insert-comment` -> `final-comment?`
+  - `modules-info.FILENAME.doc-order` ->`modules-info.FILENAME.order`
+
+### Added
+
+- `modules-info.FILENAME.order` (previously `modules-info.FILENAME.doc-order`,
+  only accepted a table of module item names) has now the same functionality
+  with `order` in `.fenneldoc`. Both accept `alphabetic`, `reverse-alphabetic`,
+  a custom comparator function, or a table of ordered module items.
 
 ### Fixed
 
+- A bug that command line option `--order` not working.
 - Unknown identifier error in sandbox environment depending on Lua version.
 - A bug in ToC generation when there are no exported functions in a module.
 - Unintentional gensym hash increment (e.g. `x#` -> `x###`) in markdown fences.

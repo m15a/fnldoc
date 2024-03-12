@@ -6,6 +6,7 @@
 (local {: sandbox} (require :fnldoc.sandbox))
 (local {: gen-function-signature : gen-item-documentation}
        (require :fnldoc.markdown))
+(local console (require :fnldoc.console))
 
 (fn function-name-from-file [file]
   (let [sep (package.config:sub 1 1)]
@@ -85,8 +86,14 @@ generated."
      :license (or (?. config :modules-info file :license)
                   config.project-license)
      :items (get-module-docs {} (merge module ?macros) config nil {})
-     :doc-order (or (?. config :modules-info file :doc-order)
-                    (?. config :project-doc-order file) [])}
+     :order (or (case (?. config :modules-info file :doc-order)
+                  any (do
+                        (console.warn "the 'doc-order' key in 'modules-info' was "
+                                      "deprecated and no longer supported - use "
+                                      "the 'order' key instead.")
+                        any))
+                (?. config :modules-info file :order)
+                config.order)}
     ;; function modules have no version, license, or description keys,
     ;; as there's no way of adding this as a metadata or embed into
     ;; function itself.  So module description is set to a combination

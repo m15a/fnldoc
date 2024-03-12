@@ -33,4 +33,30 @@ It returns `nil`.
       (each [k v (pairs (assert-type :table from))]
         (tset to k v)))))
 
-{: clone : clone/deeply : merge!}
+(fn comparator/table [tbl ?fallback]
+  "Make a comparator for the elements of `table`.
+
+The returned comparator compares its two arguments, namely *left* and *right*,
+and returns `true` iff
+
+- both the *left* and *right* appear in the table, and the *left*'s index in
+  the `table` is smaller than the *right*'s;
+- only the *left* appears in the `table`; or
+- both do not appear in the table, and the `?fallback` comparator (default:
+  `#(< $1 $2)`) against the *left* and *right* returns `true`.
+
+**CAVEAT**: Make sure that the elements of `table` are each distinct.
+"
+  {:fnl/arglist [table ?fallback]}
+  (let [index (collect [i x (pairs tbl)] x i)
+        fallback (or ?fallback #(< $1 $2))]
+     #(let [l (. index $1) r (. index $2)]
+        (if (and l r)
+            (< l r)
+            (and l (= nil r))
+            true
+            (and (= nil l) r)
+            false
+            (fallback $1 $2)))))
+
+{: clone : clone/deeply : merge! : comparator/table}

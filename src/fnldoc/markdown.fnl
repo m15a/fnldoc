@@ -1,5 +1,9 @@
 ;;;; Functions for generating Markdown.
 
+(local {: view} (require :fennel))
+(local console (require :fnldoc.console))
+(local {: comparator/table} (require :fnldoc.utils.table))
+
 (fn gen-info-comment [lines config]
   (if config.final-comment?
       (doto lines
@@ -89,33 +93,21 @@
                       :**Undocumented**))
     (table.insert "")))
 
-(fn sorter [config]
-  (match config.doc-order
+(fn comparator [order ?fallback-order]
+  (case order
     :alphabetic nil
     :reverse-alphabetic #(> $1 $2)
-    (func ? (= (type func) :function)) func
+    (where tbl (= :table (type tbl)))
+    (comparator/table tbl (when ?fallback-order
+                            (comparator ?fallback-order)))
+    (where fun (= :function (type fun))) fun
     else (do
-           (io.stderr:write "Unsupported sorting algorithm: '" else "'
-Supported algorithms: alphabetic, reverse-alphabetic, or function.
-")
-           (os.exit -1))
-    nil nil))
+           (console.error "unsupported order: " (view else))
+           (os.exit 1))))
 
 (fn get-ordered-items [module-info config]
-  (let [ordered-items (or module-info.doc-order [])
-        sorted-items (doto (icollect [k _ (pairs module-info.items)] k)
-                       (table.sort (sorter config)))
-        found {}
-        result []]
-    (each [_ item (ipairs ordered-items)]
-      (when (not (. found item))
-        (tset found item true)
-        (table.insert result item)))
-    (each [_ item (ipairs sorted-items)]
-      (when (not (. found item))
-        (tset found item true)
-        (table.insert result item)))
-    result))
+  (doto (icollect [k _ (pairs module-info.items)] k)
+    (table.sort (comparator module-info.order config.order))))
 
 (fn heading-link [heading]
   "Markdown valid heading."

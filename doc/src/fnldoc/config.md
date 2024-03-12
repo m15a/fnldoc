@@ -152,7 +152,7 @@ in the module info.
 
 An associative table that holds file names and information about the
 modules, contained in those. Supported keys: `:name`, `:description`,
-`:doc-order`, `:copyright`, `:license`, and `:version`. For example:
+`:order`, `:copyright`, `:license`, and `:version`. For example:
 
 ```fennel
 {:modules-info
@@ -160,7 +160,7 @@ modules, contained in those. Supported keys: `:name`, `:description`,
   {:description "some module description"
    :license "GNU GPL"
    :name "Some Module"
-   :doc-order ["some-fn1" "some-fn2" "etc"]}}}
+   :order ["some-fn1" "some-fn2" "etc"]}}}
 ```
 
 ## `merge!`

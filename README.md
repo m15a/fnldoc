@@ -133,11 +133,11 @@ For example we have a module with two functions:
 
 Because order of the items in the exported table is arbitrary, Fnldoc sorts the table alphabetically by default to achieve reproducible results.
 Thus the order of the documentation will be `another-function` followed by `first-function`.
-You can override this behavior by specifying the `:doc-order` key into the respecting file entry under the `:modules-info` key in the configuration file:
+You can override this behavior by specifying the `:order` key into the respecting file entry under the `:modules-info` key in the configuration file:
 
 ``` clojure
 {;; rest of config
- :modules-info {"path/to/the/file.fnl" {:doc-order [:first-function :another-function]}}}
+ :modules-info {"path/to/the/file.fnl" {:order [:first-function :another-function]}}}
 ```
 
 If you wish to sort items differently from alphabetic order, you can specify either `reverse-alphabetic`, or sorting function.
