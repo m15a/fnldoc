@@ -144,9 +144,9 @@ Accepts `module-info` with items to check, and `config` argument."
                        (set error?
                             (check-function fname docstring arglist module-info
                                             config)))
-    _ (let [funcs (icollect [k _ (pairs module-info.items)] k)]
+    _ (let [funcs (icollect [k _ (pairs module-info.metadata)] k)]
         (each [_ func (ipairs funcs)]
-          (case (. module-info.items func)
+          (case (. module-info.metadata func)
             {: docstring : arglist}
             (let [res (check-function func docstring arglist module-info config)]
               (set error? (or error? res)))))))

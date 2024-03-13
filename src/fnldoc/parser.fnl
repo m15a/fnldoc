@@ -85,7 +85,7 @@ generated."
                     config.project-copyright)
      :license (or (?. config :modules-info file :license)
                   config.project-license)
-     :items (get-module-docs {} (merge module ?macros) config nil {})
+     :metadata (get-module-docs {} (merge module ?macros) config nil {})
      :order (or (case (?. config :modules-info file :doc-order)
                   any (do
                         (console.warn "the 'doc-order' key in 'modules-info' was "
@@ -115,7 +115,7 @@ generated."
                         (gen-item-documentation docstring
                                                 config.inline-references))
        : arglist
-       :items {}})
+       :metadata {}})
     (false err)
     (do
       (io.stderr:write "Error loading " file "\n" err "\n")

@@ -106,7 +106,7 @@
            (os.exit 1))))
 
 (fn get-ordered-items [module-info config]
-  (doto (icollect [k _ (pairs module-info.items)] k)
+  (doto (icollect [k _ (pairs module-info.metadata)] k)
     (table.sort (comparator module-info.order config.order))))
 
 (fn heading-link [heading]
@@ -153,7 +153,7 @@
 
 (fn gen-items-doc [lines ordered-items toc module-info config]
   (accumulate [lines lines _ item (ipairs ordered-items)]
-    (match (. module-info.items item)
+    (match (. module-info.metadata item)
       info (-> (doto lines (table.insert (.. "## `" item "`")))
                (gen-function-signature* item info.arglist config)
                (gen-item-documentation* info.docstring toc
