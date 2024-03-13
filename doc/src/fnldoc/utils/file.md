@@ -5,6 +5,7 @@
 - [`basename`](#basename)
 - [`dirname`](#dirname)
 - [`file-exists?`](#file-exists)
+- [`make-directory`](#make-directory)
 - [`normalize`](#normalize)
 - [`path->function-name`](#path-function-name)
 - [`path->module-name`](#path-module-name)
@@ -78,6 +79,22 @@ Function signature:
 ```
 
 Return `true` if a file at the `path` exists.
+
+## `make-directory`
+Function signature:
+
+```
+(make-directory path ?parents? ?mode)
+```
+
+Make a directory of the `path`. Just a thin wrapper for `mkdir` command.
+
+If `?parents?` is truthy, add `--parents` option. If `?mode` is string or
+number, add `--mode` option with the `?mode`.
+
+It returns multiple values. The first value is `true` or `nil`, indicating
+whether succeeded or failed to make the directory; the second string teaches
+you the type of the third value, which is exit status or terminated signal.
 
 ## `normalize`
 Function signature:

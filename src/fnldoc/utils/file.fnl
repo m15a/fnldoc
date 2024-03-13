@@ -195,10 +195,40 @@ This is used for converting function module file to its function name.
           (any:close) true)
     _ false))
 
+(lambda make-directory [path ?parents? ?mode]
+  "Make a directory of the `path`. Just a thin wrapper for `mkdir` command.
+
+If `?parents?` is truthy, add `--parents` option. If `?mode` is string or
+number, add `--mode` option with the `?mode`.
+
+It returns multiple values. The first value is `true` or `nil`, indicating
+whether succeeded or failed to make the directory; the second string teaches
+you the type of the third value, which is exit status or terminated signal."
+  (let [path (normalize path)
+        cmd (.. "mkdir " (if ?parents? "--parents " "")
+                (if ?mode
+                    (.. :--mode= (assert-type :string (tostring ?mode)) " ")
+                    "")
+                path)]
+    (case (os.execute cmd)
+      ;; Lua >= 5.2
+      (?ok :exit status)
+      (values ?ok :exit status)
+      (?ok :signal signal)
+      (values ?ok :signal signal)
+      ;; Lua 5.1 / LuaJIT
+      (where status (= 0 status))
+      (values true :exit 0)
+      (status)
+      (values nil :exit status)
+      _
+      (error "unknown os.exit returns"))))
+
 {: normalize
  : remove-suffix
  : basename
  : dirname
  : path->function-name
  : path->module-name
- : file-exists?}
+ : file-exists?
+ : make-directory}
