@@ -38,7 +38,7 @@ extension, creating it if not exists."
          : show-help?
          : write-config?
          :config config/arg
-         : files} (argparse.parse [(unpack arg 1 (length arg))])
+         : files} (argparse.parse [(unpack arg 1)])
         config (doto config/file (merge! config/arg))]
     (when show-help?
       (show-help))
