@@ -4,7 +4,7 @@
 (local argparse (require :fnldoc.argparse))
 (local {: merge!} (require :fnldoc.utils.table))
 (local {: test} (require :fnldoc.doctest))
-(local {: module-info} (require :fnldoc.parser))
+(local {: module-info} (require :fnldoc.modinfo))
 (local {: gen-markdown} (require :fnldoc.markdown))
 (local {: write-docs} (require :fnldoc.writer))
 

@@ -160,7 +160,7 @@
                                         config.inline-references))
       nil (do
             (print (.. "WARNING: Could not find '" item "' in "
-                       module-info.module))
+                       module-info.name))
             lines))))
 
 (fn module-version [module-info]
@@ -178,7 +178,7 @@
   "Generate markdown feom `module-info` accordingly to `config`."
   (let [ordered-items (get-ordered-items module-info config)
         toc-table (toc-table ordered-items)
-        lines [(.. (module-heading module-info.module)
+        lines [(.. (module-heading module-info.name)
                    (module-version module-info))]
         lines (if module-info.description
                   (doto lines
@@ -211,4 +211,13 @@ based on `mode`."
   "Generate function signature for `function` from `arglist` accordingly to `config`."
   (table.concat (gen-function-signature* [] function arglist config) "\n"))
 
-{: gen-markdown : gen-item-documentation : gen-function-signature}
+(fn gen-function-module-description [function mdata file config]
+  "Generate function module description for `function` accordingly to `config`."
+  (.. (or (?. config :modules-info file :description) "")
+      "\n"
+      (gen-function-signature function mdata.arglist config)
+      "\n"
+      (gen-item-documentation mdata.docstring config.inline-references)))
+
+{: gen-markdown : gen-item-documentation : gen-function-signature
+ : gen-function-module-description}

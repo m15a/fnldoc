@@ -2,9 +2,19 @@
 
 **Table of contents**
 
+- [`gen-function-module-description`](#gen-function-module-description)
 - [`gen-function-signature`](#gen-function-signature)
 - [`gen-item-documentation`](#gen-item-documentation)
 - [`gen-markdown`](#gen-markdown)
+
+## `gen-function-module-description`
+Function signature:
+
+```
+(gen-function-module-description function mdata file config)
+```
+
+Generate function module description for `function` accordingly to `config`.
 
 ## `gen-function-signature`
 Function signature:
