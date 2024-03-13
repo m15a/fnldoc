@@ -76,7 +76,7 @@ generated."
     {:module (or (?. config :modules-info file :name) file)
      : file
      :type module-type
-     :f-table (if (= module-type :macros) {} module)
+     :functions (if (= module-type :macros) {} module)
      :requirements (or (?. config :test-requirements file) "")
      :version (or (?. config :modules-info file :version)
                   config.project-version)
@@ -105,7 +105,7 @@ generated."
           fname (function-name-from-file file)]
       {:module (or (?. config :modules-info file :name) file)
        : file
-       :f-table {fname function}
+       :functions {fname function}
        :type :function-module
        :requirements (or (?. config :test-requirements file) "")
        :documented? (not (not docstring))

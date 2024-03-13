@@ -46,7 +46,7 @@
 "))})})
                 (copy-table _G))
         requirements (or (-?> requirements (.. "\n")) "")]
-    (each [fname fval (pairs module-info.f-table)]
+    (each [fname fval (pairs module-info.functions)]
       (tset env fname fval))
     (pcall fennel.eval (.. requirements test) {: env})))
 
@@ -137,7 +137,7 @@
 Accepts `module-info` with items to check, and `config` argument."
   (var error? false)
   (match module-info.type
-    :function-module (let [fname (pick-values 1 (next module-info.f-table))
+    :function-module (let [fname (pick-values 1 (next module-info.functions))
                            docstring (and module-info.documented?
                                           module-info.description)
                            arglist module-info.arglist]
