@@ -77,7 +77,7 @@ generated."
      : file
      :type module-type
      :functions (if (= module-type :macros) {} module)
-     :requirements (or (?. config :test-requirements file) "")
+     :test-requirements (or (?. config :test-requirements file) "")
      :version (or (?. config :modules-info file :version)
                   config.project-version)
      :description (?. config :modules-info file :description)
@@ -107,7 +107,7 @@ generated."
        : file
        :functions {fname function}
        :type :function-module
-       :requirements (or (?. config :test-requirements file) "")
+       :test-requirements (or (?. config :test-requirements file) "")
        :documented? (not (not docstring))
        ;; convert to Boolean
        :description (.. (or (?. config :modules-info file :description) "")

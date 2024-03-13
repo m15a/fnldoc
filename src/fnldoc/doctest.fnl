@@ -53,7 +53,7 @@
 (fn run-tests-for-fn [func docstring module-info sandbox?]
   (var error? false)
   (each [n test (ipairs (extract-tests func docstring))]
-    (match (run-test test module-info.requirements module-info sandbox?)
+    (match (run-test test module-info.test-requirements module-info sandbox?)
       (false msg) (let [msg (string.gsub (tostring msg) "^%[.-%]:%d+:%s*" "")]
                     (io.stderr:write "In file: '" module-info.file "'\n"
                                      "Error in docstring for: '" func "'\n" "In test:
