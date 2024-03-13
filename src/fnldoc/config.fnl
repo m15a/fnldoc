@@ -40,7 +40,7 @@
   (each [_ path (ipairs self.fennel-path)]
     (set fennel.path (.. path ";" fennel.path))))
 
-(fn config->file-content [config version]
+(fn config->file-contents [config version]
   (table.concat [";; -*- mode: fennel; -*- vi:ft=fennel"
                  (.. ";; Configuration file for Fnldoc " version)
                  ";; https://sr.ht/~m15a/fnldoc/"
@@ -56,7 +56,7 @@
       f (with-open [file f]
           (let [version self.fnldoc-version]
             (set self.fnldoc-version nil)
-            (file:write (config->file-content self version))
+            (file:write (config->file-contents self version))
             (set self.fnldoc-version version)))
       (nil msg code)
       (let [msg (string.format "failed to open file '%s': %s (%s)" config-file
