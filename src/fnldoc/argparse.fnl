@@ -67,7 +67,7 @@ Supported modes:
             "Create documentation for your Fennel project."
             ""
             "Arguments:"
-            (indent 2 "[FILE]...  File(s to generate documentation.")
+            (indent 2 "[FILE]...  File(s) to generate documentation.")
             ""
             "Options:"
             (indent 2 (option-descriptions/order
