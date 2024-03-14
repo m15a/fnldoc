@@ -228,10 +228,10 @@ The `name` will be expanded to positive flag `--name` and negative flag
 `--no-name`. If it has `short-name`, a short name flag `-x`, where `x` is given
 by the `short-name`, will also be created.
 
-In command line argument parsing, the positive flag and short name flag will
-set the `config` object's attribute corresponding to the `name` (e.g., if the
-`name` is `apple`, the attribute is `apple?`) to `true`, and the negative flag
-set it to `false`.
+In command line argument parsing, a positive flag or a short name flag will
+set the `config` object's corresponding attribute (e.g., if a flag's `name` is
+`apple`, its attribute `key` in the `config` is `apple?`) to `true`, and a negative
+flag set it to `false`.
 
 # Category option recipe
 

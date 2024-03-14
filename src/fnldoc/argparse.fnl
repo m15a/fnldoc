@@ -93,7 +93,7 @@ Supported modes:
                          :--fnldoc-version
                          :--help]
                         meta-option-recipes))
-            (wrap 80 (.. "All options have corresponding entry in '.fenneldoc' "
+            (wrap 80 (.. "All options have respective entries in '.fenneldoc' "
                          "configuration file, and arguments passed via command line "
                          "have higher precedence, therefore will override following "
                          "values in '.fenneldoc'."))
