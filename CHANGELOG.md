@@ -33,6 +33,7 @@ and this project adheres to [Semantic Versioning][2].
 
 ### Fixed
 
+- A bug that file path beginning with `./` won't be handled well.
 - A bug that command line option `--order` not working.
 - Unknown identifier error in sandbox environment depending on Lua version.
 - A bug in ToC generation when there are no exported functions in a module.
@@ -40,6 +41,7 @@ and this project adheres to [Semantic Versioning][2].
 
 ### Internal changes
 
+- Add `fnldoc.processor` module to separate core process functionalities.
 - Move sandboxing functionalities into `fnldoc.sandbox` module.
 - Add `fnldoc.argparse.{cooker,eater}` modules: `cooker` specifies how to parse
   command line arguments, which will be parsed by `eater`.
