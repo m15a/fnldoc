@@ -237,7 +237,7 @@ you the type of the third value, which is exit status or terminated signal."
       (status)
       (values nil :exit status)
       _
-      (error "unknown os.exit returns"))))
+      (error "unknown os.execute returns"))))
 
 {: normalize
  : remove-suffix
