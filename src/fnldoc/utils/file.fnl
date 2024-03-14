@@ -1,5 +1,6 @@
 ;;;;File and file path utilities.
 
+(local unpack (or table.unpack _G.unpack))
 (local {: assert-type} (require :fnldoc.utils))
 (local {: escape-regex} (require :fnldoc.utils.string))
 
@@ -187,6 +188,20 @@ This is used for converting function module file to its function name.
                      (%remove-suffix :.fnl)
                      (string.gsub path-separator "."))))
 
+(lambda join-paths [& paths]
+  "Join all `paths` segments, using separator into one path.
+
+# Examples
+
+```fennel
+(assert (= :a/b/c/ (join-paths :a :b :c/)))
+(assert (= :a/c (join-paths :a :. :c)))
+(assert (= :a/b/ (join-paths :a :b :c :../)))
+```"
+  (normalize (accumulate [path (. paths 1)
+                          _ segment (ipairs [(unpack paths 2)])]
+               (.. path path-separator segment))))
+
 (lambda file-exists? [path]
   "Return `true` if a file at the `path` exists."
   (assert-type :string path)
@@ -230,5 +245,6 @@ you the type of the third value, which is exit status or terminated signal."
  : dirname
  : path->function-name
  : path->module-name
+ : join-paths
  : file-exists?
  : make-directory}

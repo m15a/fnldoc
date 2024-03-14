@@ -5,6 +5,7 @@
 - [`basename`](#basename)
 - [`dirname`](#dirname)
 - [`file-exists?`](#file-exists)
+- [`join-paths`](#join-paths)
 - [`make-directory`](#make-directory)
 - [`normalize`](#normalize)
 - [`path->function-name`](#path-function-name)
@@ -79,6 +80,23 @@ Function signature:
 ```
 
 Return `true` if a file at the `path` exists.
+
+## `join-paths`
+Function signature:
+
+```
+(join-paths & paths)
+```
+
+Join all `paths` segments, using separator into one path.
+
+### Examples
+
+```fennel
+(assert (= :a/b/c/ (join-paths :a :b :c/)))
+(assert (= :a/c (join-paths :a :. :c)))
+(assert (= :a/b/ (join-paths :a :b :c :../)))
+```
 
 ## `make-directory`
 Function signature:
