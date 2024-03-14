@@ -15,7 +15,7 @@ See the [Lua manual][1] for more detail.
 (assert (= \"%.fnl%$\" (escape-regex \".fnl$\")))
 ```"
   {:fnl/arglist [string]}
-  (pick-values 1 (: (assert-type :string str) :gsub
-                    "([%^%$%(%)%%%.%[%]%*%+%-%?])" "%%%1")))
+  (assert-type :string str)
+  (pick-values 1 (str:gsub "([%^%$%(%)%%%.%[%]%*%+%-%?])" "%%%1")))
 
 {: escape-regex}
