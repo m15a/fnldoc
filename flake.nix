@@ -27,7 +27,7 @@
               fennel.lua
               pkgs.gnumake
               pkgs.fnlfmt-unstable
-              pkgs.fennel-ls
+              pkgs.fennel-ls-unstable
             ] ++ (with fennel.lua.pkgs; [
               readline
             ]);
