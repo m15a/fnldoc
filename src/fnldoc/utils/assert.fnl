@@ -1,4 +1,4 @@
-;;;; Miscellaneous utilities.
+;;;; Assertion helpers.
 
 (local {: view} (require :fennel))
 

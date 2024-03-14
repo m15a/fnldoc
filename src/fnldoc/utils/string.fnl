@@ -1,4 +1,4 @@
-(local {: assert-type} (require :fnldoc.utils))
+(local {: assert-type} (require :fnldoc.utils.assert))
 
 (fn escape-regex [str]
   "Escape magic characters of Lua regex pattern in the `string`.

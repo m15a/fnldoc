@@ -1,7 +1,7 @@
 ;;;;File and file path utilities.
 
 (local unpack (or table.unpack _G.unpack))
-(local {: assert-type} (require :fnldoc.utils))
+(local {: assert-type} (require :fnldoc.utils.assert))
 (local {: escape-regex} (require :fnldoc.utils.string))
 
 (local path-separator (package.config:sub 1 1))

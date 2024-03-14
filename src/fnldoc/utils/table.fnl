@@ -1,6 +1,6 @@
 ;;;; Table extras.
 
-(local {: assert-type} (require :fnldoc.utils))
+(local {: assert-type} (require :fnldoc.utils.assert))
 
 (fn clone [tbl]
   "Return a shallow copy of the `table`, assuming that keys are string or number."

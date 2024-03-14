@@ -2,7 +2,7 @@
 ;;;;
 ;;;; FIXME: Support Windows line ending.
 
-(local {: assert-type} (require :fnldoc.utils))
+(local {: assert-type} (require :fnldoc.utils.assert))
 (local {: view} (require :fennel))
 
 (lambda indent [width text]

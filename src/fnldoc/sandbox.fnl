@@ -1,4 +1,4 @@
-(local {: assert-type} (require :fnldoc.utils))
+(local {: assert-type} (require :fnldoc.utils.assert))
 (local {: merge!} (require :fnldoc.utils.table))
 (local console (require :fnldoc.console))
 

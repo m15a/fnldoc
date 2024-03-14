@@ -3,7 +3,7 @@
 (local unpack (or table.unpack _G.unpack))
 (local {: view} (require :fennel))
 (local default-config (require :fnldoc.config.default))
-(local {: assert-type} (require :fnldoc.utils))
+(local {: assert-type} (require :fnldoc.utils.assert))
 (local {: clone} (require :fnldoc.utils.table))
 
 (fn assert-char [x]

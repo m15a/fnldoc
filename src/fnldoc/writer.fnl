@@ -1,6 +1,6 @@
 ;;;; Functions related to writing generated documentation into respecting files.
 
-(local {: assert-type} (require :fnldoc.utils))
+(local {: assert-type} (require :fnldoc.utils.assert))
 (local console (require :fnldoc.console))
 (local {: dirname : make-directory} (require :fnldoc.utils.file))
 
