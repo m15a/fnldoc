@@ -5,23 +5,34 @@
 
 (local path-separator (package.config:sub 1 1))
 
+(fn trailing-sep? [path]
+  (if (path:match (.. path-separator "$")) true false))
+
 (fn %normalize [path]
-  (if (= "" path)
-      ""
-      (let [sep path-separator
-            trailing-sep? (path:match (.. sep "$"))
-            sandwiched-dot (.. sep "%." sep)]
-        (var path (path:gsub (.. sep "+") sep)) ; // => /
-        (while (path:match sandwiched-dot)
-          (set path (path:gsub sandwiched-dot sep))) ; /./ => /
-        (set path (path:gsub (.. "[^" sep "]+" sep "%.%.") ".")) ; a/.. => .
-        (while (path:match sandwiched-dot)
-          (set path (path:gsub sandwiched-dot sep))) ; /./ => / again!
-        (set path (path:gsub (.. "^%." sep) "")) ; ^./ => ""
-        (set path (path:gsub (.. sep "%.$") "")) ; /.$ => ""
-        (if (path:match (.. sep "$")) path (= "" path)
-            (if trailing-sep? (.. "." sep) ".")
-            (if trailing-sep? (.. path sep) path)))))
+  (let [s path-separator
+        had-trailing-sep? (trailing-sep? path)
+        sds (.. s "%." s) ; /./
+        ss->s #($:gsub (.. s "+") s)
+        sds->s! #(do
+                   (while ($:match sds) (set $ ($:gsub sds s)))
+                   $)
+        asdd->d #($:gsub (.. "[^" s "]+" s "%.%.") ".")
+        ^ds-> #($:gsub (.. "^%." s) "")
+        sd$-> #($:gsub (.. s "%.$") "")
+        ->d #(if (= "" $) "." $)
+        path (-> path
+                 (ss->s)   ; //  -> /
+                 (sds->s!) ; /./ -> /
+                 (asdd->d) ; any-dir/.. -> .
+                 (sds->s!) ; again!
+                 (^ds->)   ; ^./ -> ''
+                 (sd$->)   ; /.$ -> ''
+                 (->d))]   ; '' -> .
+    (if (trailing-sep? path)
+        path
+        (if had-trailing-sep?
+            (.. path s)
+            path))))
 
 (lambda normalize [path]
   "Return normalized `path`.
@@ -48,12 +59,13 @@ Trailing slash will be left as is.
 (assert (= :. (normalize :./.)))
 ```"
   (assert-type :string path)
-  (%normalize path))
+  (if (= "" path)
+      ""
+      (%normalize path)))
 
 (fn %remove-suffix [path suffix]
-  (let [sep path-separator
-        stripped (path:match (.. "^(.*)" (escape-regex suffix) "$"))]
-    (if (or (= "" stripped) (stripped:match (.. sep "$")))
+  (let [stripped (path:match (.. "^(.*)" (escape-regex suffix) "$"))]
+    (if (or (= "" stripped) (trailing-sep? stripped))
         path
         stripped)))
 
@@ -99,7 +111,7 @@ Compatible with GNU coreutils' `basename`.
 (assert (= :.ext (basename :/a/b/.ext :.ext)))
 ```"
   (let [sep path-separator
-        path (%normalize path)]
+        path (normalize path)]
     (if (= sep path)
         path
         (case-try (path:match (.. "([^" sep "]*)" sep "?$"))
@@ -132,7 +144,7 @@ at once.
 (assert (= :. (dirname :..)))
 ```"
   (let [sep path-separator
-        path (%normalize path)]
+        path (normalize path)]
     (if (= sep path)
         path
         (case-try (path:match (.. "(.-)" sep "?$"))
@@ -171,13 +183,9 @@ This is used for converting function module file to its function name.
 (let [path \"./a/b/.././c.fnl\"]
   (assert (= :a.c (path->module-name path))))
 ```"
-  (assert-type :string path)
-  (let [sep path-separator
-        path (%normalize path)]
-    (-?> path
-         (%remove-suffix :.fnl)
-         (string.gsub sep ".")
-         (#(pick-values 1 $)))))
+  (pick-values 1 (-> (normalize path)
+                     (%remove-suffix :.fnl)
+                     (string.gsub path-separator "."))))
 
 (lambda file-exists? [path]
   "Return `true` if a file at the `path` exists."
