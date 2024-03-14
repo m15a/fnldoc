@@ -3,8 +3,6 @@
 **Table of contents**
 
 - [`extract-metadata`](#extract-metadata)
-- [`file->function-name`](#file-function-name)
-- [`file->module-name`](#file-module-name)
 - [`find-metadata`](#find-metadata)
 - [`module-info`](#module-info)
 - [`require-file`](#require-file)
@@ -17,36 +15,6 @@ Function signature:
 ```
 
 Extract metadata from the `value`; return `nil` if not found.
-
-## `file->function-name`
-Function signature:
-
-```
-(file->function-name file)
-```
-
-Translate the `file` name to its basename in case this file contains a function.
-
-### Examples
-
-```fennel
-(assert (= :c (file->function-name "a/b/c.fnl")))
-```
-
-## `file->module-name`
-Function signature:
-
-```
-(file->module-name file)
-```
-
-Translate the `file` name to its module name in case this file contains a table.
-
-### Examples
-
-```fennel
-(assert (= :a.b.c (file->module-name "a/b/c.fnl")))
-```
 
 ## `find-metadata`
 Function signature:
