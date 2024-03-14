@@ -26,7 +26,7 @@ Return evaluated `x` if passed the check; otherwise raise an error.
             :userdata true
             :thread true
             :table true)
-          (.. "expected type invalid: " (view expected)))
+          (.. " invalid type name: " (view expected)))
   (assert (= expected (type x)) (.. expected " expected, got " (view x)))
   x)
 
