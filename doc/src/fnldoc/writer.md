@@ -2,19 +2,16 @@
 
 **Table of contents**
 
-- [`write-docs`](#write-docs)
+- [`write!`](#write)
 
-## `write-docs`
+## `write!`
 Function signature:
 
 ```
-(write-docs docs file module-info config)
+(write! text path)
 ```
 
-Accepts `docs` as a vector of lines, and a path to a `file`.
-Concatenates lines in `docs` with newline, and writes result to
-`file`.  `module-info` must contain `module` key with file, and
-`config` must contain `out-dir` key.
+Write out the contents of `text` string to the `path`.
 
 
 ---
