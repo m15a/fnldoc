@@ -18,7 +18,7 @@ Supported modes:
 Supported algorithms:
     alphabetic         - alphabetic order; and
     reverse-alphabetic - reverse alphabetic order.
-You also can specify a custom sorting function in `.fenneldoc' file.")
+You also can specify a custom sorting function in '.fenneldoc' file.")
          (recipe :category :inline-references [:link :code :keep]
            "How to handle inline references.
 Supported modes:
@@ -59,7 +59,7 @@ Supported modes:
          "    --help\tPrint this message and exit."}
         :--config
         {:description
-         "    --config\tParse all regular options and update `.fenneldoc' at the current directory."}})
+         "    --config\tParse all regular options and update '.fenneldoc' at the current directory."}})
 
 (local help
        (-> ["Usage: fnldoc [OPTIONS] [FILE]..."
@@ -93,14 +93,14 @@ Supported modes:
                          :--fnldoc-version
                          :--help]
                         meta-option-recipes))
-            (wrap 80 (.. "All options have corresponding entry in `.fenneldoc' "
+            (wrap 80 (.. "All options have corresponding entry in '.fenneldoc' "
                          "configuration file, and arguments passed via command line "
                          "have higher precedence, therefore will override following "
-                         "values in `.fenneldoc'."))
+                         "values in '.fenneldoc'."))
             ""
-            (wrap 80 (.. "Each boolean option has two variants with and without `no'. "
-                         "For example, passing `--no-toc' will disable generation of "
-                         "contents table, and `--toc` will enable it."))]
+            (wrap 80 (.. "Each boolean option has two variants with and without 'no'. "
+                         "For example, passing '--no-toc' will disable generation of "
+                         "contents table, and '--toc' will enable it."))]
            (table.concat "\n")))
 
 (fn parse [args ?debug]
