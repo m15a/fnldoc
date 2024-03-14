@@ -47,6 +47,7 @@ and this project adheres to [Semantic Versioning][2].
   command line arguments, which will be parsed by `eater`.
 - Add `fnldoc.utils{,.*}` modules for various utilities.
 - Add `fnldoc.console` module for logging.
+- Add `fnldoc.debug` module for testing/debugging.
 - Modules are re-organized according to the above executable name change.
 - Version is now explicitly declared in the source code.
 - Removed dependency to cljlib.

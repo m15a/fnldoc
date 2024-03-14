@@ -1,23 +1,15 @@
 (local {: assert-type} (require :fnldoc.utils.assert))
 (local {: merge!} (require :fnldoc.utils.table))
-(local console (require :fnldoc.console))
+(local {: exit/error} (require :fnldoc.debug))
 
 (lambda deny-access [reason file ?debug]
   (let [msg (.. "access to denied " reason " detected while loading " file)]
-    (if ?debug
-        #(error msg)
-        #(do
-           (console.error msg)
-           (os.exit 1)))))
+    #(exit/error msg ?debug)))
 
 (lambda deny-access/module [module file ?debug]
   (let [msg (.. "access to denied '" module "' module detected while loading "
                 file)]
-    (setmetatable {} {:__index (if ?debug
-                                   #(error msg)
-                                   #(do
-                                      (console.error msg)
-                                      (os.exit 1)))})))
+    (setmetatable {} {:__index #(exit/error msg ?debug)})))
 
 ;; TODO: strict check for each Lua version/implementation.
 (lambda sandbox [file ?debug]

@@ -1,7 +1,7 @@
 ;;;; Various option recipe consumers that help command line argument processing.
 
 (local {: view} (require :fennel))
-(local console (require :fnldoc.console))
+(local {: exit/error} (require :fnldoc.debug))
 (local {: merge!} (require :fnldoc.utils.table))
 (local {: indent : wrap} (require :fnldoc.utils.text))
 
@@ -28,11 +28,7 @@ If validation fails, report error and exit with failing status."
           value
           (let [msg (.. "invalid argument: " (view self.processed-arg))]
             ;; For testing purpose; see test/fnldoc/argparse/eater.fnl.
-            (if self.__fnldoc_debug?
-                (error msg)
-                (do
-                  (console.error msg)
-                  (os.exit 1)))))))
+            (exit/error msg self.__fnldoc_debug?)))))
 
 (fn parse! [self config args]
   "Update the `config` object possibly with consuming the head of `args`.
@@ -49,11 +45,7 @@ If the head of `args` is missing, report error and exit with failing status."
                                       (self:preprocess)
                                       (self:validate))))
           (let [msg (.. "argument missing while processing option " self.flag)]
-            (if self.__fnldoc_debug?
-                (error msg)
-                (do
-                  (console.error msg)
-                  (os.exit 1)))))))
+            (exit/error msg self.__fnldoc_debug?)))))
 
 (local eater-mt {:__index {: preprocess : validate : parse!}})
 

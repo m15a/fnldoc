@@ -2,6 +2,7 @@
 
 (local {: view} (require :fennel))
 (local console (require :fnldoc.console))
+(local {: exit/error} (require :fnldoc.debug))
 (local {: comparator/table} (require :fnldoc.utils.table))
 
 (fn gen-info-comment [lines config]
@@ -93,7 +94,7 @@
                       :**Undocumented**))
     (table.insert "")))
 
-(fn comparator [order ?fallback-order]
+(fn comparator [order ?fallback-order ?debug]
   (case order
     :alphabetic nil
     :reverse-alphabetic #(> $1 $2)
@@ -101,9 +102,8 @@
     (comparator/table tbl (when ?fallback-order
                             (comparator ?fallback-order)))
     (where fun (= :function (type fun))) fun
-    else (do
-           (console.error "unsupported order: " (view else))
-           (os.exit 1))))
+    else (let [msg (.. "unsupported order: " (view else))]
+           (exit/error msg ?debug))))
 
 (fn get-ordered-items [module-info config]
   (doto (icollect [k _ (pairs module-info.metadata)] k)
