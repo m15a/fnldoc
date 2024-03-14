@@ -50,7 +50,7 @@ Function signature:
 (dirname path)
 ```
 
-Remove the last non-slash component from each of the `paths`.
+Remove the last non-slash component from the `path`.
 
 Trailing `/`'s are removed. If the path contains no `/`'s, it returns `.`.
 

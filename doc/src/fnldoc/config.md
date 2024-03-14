@@ -195,10 +195,13 @@ Append `self`'s `fennel-path` to `fennel.path`.
 Function signature:
 
 ```
-(write! self config-file)
+(write! self config-file ?debug)
 ```
 
 Write contents of `self` to the `config-file` (default: `.fenneldoc`).
+
+For testing purpose, if `?debug` is truthy and failing, it raises an error
+instead to exit.
 
 
 ---

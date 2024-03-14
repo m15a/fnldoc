@@ -1,20 +1,17 @@
-# Writer.fnl (1.0.2-dev)
+# Debug.fnl (1.0.2-dev)
 
 **Table of contents**
 
-- [`write!`](#write)
+- [`exit/error`](#exiterror)
 
-## `write!`
+## `exit/error`
 Function signature:
 
 ```
-(write! text path ?debug)
+(exit/error msg ?debug)
 ```
 
-Write out the contents of `text` string to the `path`.
-
-For testing purpose, if `?debug` is truthy and failing, it raises an error
-instead to exit.
+If `?debug` is truthy, raise an error with `msg`; otherwise exit with warning.
 
 
 ---

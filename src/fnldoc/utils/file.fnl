@@ -123,7 +123,7 @@ Compatible with GNU coreutils' `basename`.
           (catch _ (error "unknown path matching error"))))))
 
 (lambda dirname [path]
-  "Remove the last non-slash component from each of the `paths`.
+  "Remove the last non-slash component from the `path`.
 
 Trailing `/`'s are removed. If the path contains no `/`'s, it returns `.`.
 
