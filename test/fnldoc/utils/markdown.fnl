@@ -68,6 +68,10 @@
   (t.= "````\ncode```fence\n````" (um.code-fence "code```fence"))
   (t.error "string expected" #(um.code-fence 1)))
 
+(fn test-promote-headings []
+  (t.= "# A\n## B\n" (um.promote-headings 0 "# A\n## B\n"))
+  (t.= "## A\n### B\n" (um.promote-headings 1 "# A\n## B\n")))
+
 {: test-heading
  : test-ordered-list
  : test-unordered-list
@@ -78,4 +82,5 @@
  : test-link
  : test-string->anchor
  : test-code-block
- : test-code-fence}
+ : test-code-fence
+ : test-promote-headings}

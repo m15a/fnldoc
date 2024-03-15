@@ -101,6 +101,25 @@ Empty ids may occur if we pass only restricted chars. Such ids are ignored."
        backticks]
       (table.concat "\n")))
 
+(fn promote-top-heading [nsigns text]
+  (if (text:match "^[ \t]*#+ ")
+      (pick-values 1 (text:gsub "^(%s*#+) " (.. "%1" nsigns " ")))
+      text))
+
+(fn promote-line-start-headings [nsigns text]
+  (if (text:match "\n[ \t]*#+ ")
+      (pick-values 1 (text:gsub "\n(%s*#+) " (.. "\n%1" nsigns " ")))
+      text))
+
+(lambda promote-headings [level text]
+  "Promote headings included in the `text` by speficied `level`."
+  (assert-type :number level)
+  (assert-type :string text)
+  (let [nsigns (faccumulate [n "" _ 1 level] (.. n "#"))]
+    (->> text
+         (promote-top-heading nsigns)
+         (promote-line-start-headings nsigns))))
+
 {: heading
  : ordered-list
  : unordered-list
@@ -111,4 +130,5 @@ Empty ids may occur if we pass only restricted chars. Such ids are ignored."
  : link
  : string->anchor
  : code-block
- : code-fence}
+ : code-fence
+ : promote-headings}

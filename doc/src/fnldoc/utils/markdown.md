@@ -11,6 +11,7 @@
 - [`italic`](#italic)
 - [`link`](#link)
 - [`ordered-list`](#ordered-list)
+- [`promote-headings`](#promote-headings)
 - [`string->anchor`](#string-anchor)
 - [`unordered-list`](#unordered-list)
 
@@ -98,6 +99,15 @@ Make an ordered list from the sequential table of `texts`.
 1. Apple
 2. Banana
 3. Orange
+
+## `promote-headings`
+Function signature:
+
+```
+(promote-headings level text)
+```
+
+Promote headings included in the `text` by speficied `level`.
 
 ## `string->anchor`
 Function signature:
