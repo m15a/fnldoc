@@ -110,6 +110,11 @@ Append extra paths to `fennel.path` for finding Fennel modules.
 
 Path where to put documentation files.
 
+## `src-dir`
+
+Path where source files are placed in. This path prefix will be
+stripped from destination path to generate documentation.
+
 ## `mode`
 
 Mode to operate in when running Fnldoc. It should be one of

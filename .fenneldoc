@@ -87,6 +87,7 @@ A recipe is a table that possibly contains the following entries depending on th
  :project-license "[MIT](https://git.sr.ht/~m15a/fnldoc/tree/main/item/LICENSE)"
  :project-version "1.0.2-dev"
  :sandbox? true
+ :src-dir "./src"
  :test-requirements {}
  :toc? true
  :version? true}

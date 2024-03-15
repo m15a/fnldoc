@@ -1,5 +1,6 @@
 {:fennel-path []
  :out-dir :./doc
+ :src-dir :./src
  :mode :checkdoc
  :test-requirements {}
  :sandbox? true

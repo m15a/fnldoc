@@ -13,6 +13,8 @@ Supported modes:
     doc      - only generate markdown.")
          (recipe :string :out-dir :DIR
            "Output directory for generated documentation.")
+         (recipe :string :src-dir :DIR
+           "Path where source files located if any. This will be stripped from destination to generate documentation files.")
          (recipe :category :order [:alphabetic :reverse-alphabetic]
            "Sorting of items that were not given particular order.
 Supported algorithms:
@@ -72,6 +74,7 @@ Supported modes:
             "Options:"
             (indent 2 (option-descriptions/order
                         [:--out-dir
+                         :--src-dir
                          :--mode
                          :--toc
                          :--function-signatures

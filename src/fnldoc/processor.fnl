@@ -1,4 +1,7 @@
-(local {: basename : dirname : join-paths} (require :fnldoc.utils.file))
+(local {: basename
+        : dirname
+        : join-paths
+        : remove-prefix-path} (require :fnldoc.utils.file))
 (local {: gen-markdown} (require :fnldoc.markdown))
 (local {: test} (require :fnldoc.doctest))
 (local {: write!} (require :fnldoc.writer))
@@ -6,8 +9,9 @@
 (fn target-path [modinfo config]
   (let [base (-> (or modinfo.name modinfo.file)
                  (basename :.fnl)
-                 (.. :.md))]
-    (join-paths config.out-dir (dirname modinfo.file) base)))
+                 (.. :.md))
+        dir (remove-prefix-path config.src-dir (dirname modinfo.file))]
+    (join-paths config.out-dir dir base)))
 
 (fn process! [modinfo config]
   "Run doctests and generate markdown documentation for `module-info`.

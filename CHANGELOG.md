@@ -26,6 +26,10 @@ and this project adheres to [Semantic Versioning][2].
 
 ### Added
 
+- New option `--src-dir` (or `:src-dir` in `.fenneldoc`): If source files are
+  placed in this directory, this path component will be stripped from destination
+  to generate documentation. For example, running `fnldoc --src-dir src src/file.fnl`
+  generates documentation at `doc/file.md`
 - `modules-info.FILENAME.order` (previously `modules-info.FILENAME.doc-order`,
   only accepted a table of module item names) has now the same functionality
   with `order` in `.fenneldoc`. Both accept `alphabetic`, `reverse-alphabetic`,

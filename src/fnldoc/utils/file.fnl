@@ -202,6 +202,31 @@ This is used for converting function module file to its function name.
                           _ segment (ipairs [(unpack paths 2)])]
                (.. path path-separator segment))))
 
+(lambda remove-prefix-path [prefix path]
+  "Strip the `prefix` component from `path`.
+
+# Examples
+
+```fennel
+(assert (= :b/c/ (remove-prefix-path :./a :a/b/c/)))
+(assert (= :c (remove-prefix-path :a/b/ :a/b/c)))
+(assert (= :. (remove-prefix-path :a/b/c/ :a/b/c)))
+(assert (= :./ (remove-prefix-path :a/b/c :a/b/c/)))
+(assert (= :a/b (remove-prefix-path :a/b/c :a/b)))
+```"
+  (let [s path-separator
+        prefix (-> (normalize prefix)
+                   (string.gsub (.. s "$") ""))
+        path (normalize path)
+        had-trailing-sep? (trailing-sep? path)]
+    (let [removed (path:gsub (.. "^" prefix s "?") "")
+          removed (if (= "" removed) "." removed)]
+      (if (trailing-sep? removed)
+          removed
+          (if had-trailing-sep?
+              (.. removed s)
+              removed)))))
+
 (lambda file-exists? [path]
   "Return `true` if a file at the `path` exists."
   (assert-type :string path)
@@ -246,5 +271,6 @@ you the type of the third value, which is exit status or terminated signal."
  : path->function-name
  : path->module-name
  : join-paths
+ : remove-prefix-path
  : file-exists?
  : make-directory}
