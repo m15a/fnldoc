@@ -3,7 +3,7 @@
 (local {: view} (require :fennel))
 (local {: exit/error} (require :fnldoc.debug))
 (local {: merge!} (require :fnldoc.utils.table))
-(local {: indent : wrap} (require :fnldoc.utils.text))
+(local {: indent : wrap : lines->text} (require :fnldoc.utils.text))
 
 (fn preprocess [self next-arg]
   "Preprocess the `next-arg` and return the processed value.
@@ -79,6 +79,6 @@ To be blessed, `key` and `flag` attributes are mandatory.
                       (.. (. description :flag) "\n"
                           (indent 6 (wrap 72 (. description :desc))) "\n")
                       (error (.. "no flag found: " flag)))))]
-    (table.concat lines "\n")))
+    (lines->text lines)))
 
 {: bless : preprocess : validate : parse! : option-descriptions/order}

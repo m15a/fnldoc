@@ -1,7 +1,7 @@
 (import-macros {: cooking : recipe} :fnldoc.argparse.cooker)
 (local {: bless : option-descriptions/order} (require :fnldoc.argparse.eater))
 (local {: clone} (require :fnldoc.utils.table))
-(local {: indent : wrap} (require :fnldoc.utils.text))
+(local {: indent : wrap : lines->text} (require :fnldoc.utils.text))
 
 (local option-recipes
        (cooking
@@ -101,7 +101,7 @@ Supported modes:
             (wrap 80 (.. "Each boolean option has two variants with and without 'no'. "
                          "For example, passing '--no-toc' will disable generation of "
                          "contents table, and '--toc' will enable it."))]
-           (table.concat "\n")))
+           (lines->text)))
 
 (fn parse [args ?debug]
   "Parse command line `args` and return the result.

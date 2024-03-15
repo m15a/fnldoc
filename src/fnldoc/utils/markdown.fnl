@@ -1,7 +1,7 @@
 ;;;; Markdown-specific text processing facilities.
 
 (local {: assert-type} (require :fnldoc.utils.assert))
-(local {: indent} (require :fnldoc.utils.text))
+(local {: indent : lines->text} (require :fnldoc.utils.text))
 
 (lambda heading [level title]
   "Make a heading of specified `level` by prepending `#` in front of the `title`."
@@ -23,7 +23,7 @@
   (-> (icollect [i text (ipairs texts)]
         (let [line (string.gsub (assert-type :string text) "\n+" " ")]
           (.. i ". " line)))
-      (table.concat "\n")))
+      (lines->text)))
 
 (lambda unordered-list [texts]
   "Make an unordered list from the sequential table of `texts`.
@@ -35,7 +35,7 @@
   (-> (icollect [_ text (ipairs texts)]
         (let [line (string.gsub (assert-type :string text) "\n+" " ")]
           (.. "- " line)))
-      (table.concat "\n")))
+      (lines->text)))
 
 (lambda bold [text]
   "Make a **bold** `text`."
@@ -99,7 +99,7 @@ Empty ids may occur if we pass only restricted chars. Such ids are ignored."
            backticks)
        text
        backticks]
-      (table.concat "\n")))
+      (lines->text)))
 
 (fn promote-top-heading [nsigns text]
   (if (text:match "^[ \t]*#+ ")
