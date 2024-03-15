@@ -38,6 +38,7 @@ The `config` object is merged with the default configuration. In addition,
  :order "alphabetic"
  :out-dir "./doc"
  :sandbox? true
+ :src-dir "./src"
  :test-requirements {}
  :toc? true
  :version? true}
@@ -52,6 +53,11 @@ Append extra paths to `fennel.path` for finding Fennel modules.
 #### `out-dir`
 
 Path where to put documentation files.
+
+#### `src-dir`
+
+Path where source files are placed in. This path prefix will be
+stripped from destination path to generate documentation.
 
 #### `mode`
 

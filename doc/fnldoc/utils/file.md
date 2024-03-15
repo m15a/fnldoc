@@ -10,6 +10,7 @@
 - [`normalize`](#normalize)
 - [`path->function-name`](#path-function-name)
 - [`path->module-name`](#path-module-name)
+- [`remove-prefix-path`](#remove-prefix-path)
 - [`remove-suffix`](#remove-suffix)
 
 ## `basename`
@@ -186,6 +187,25 @@ Translate the `path` to its module name.
 
 (let [path "./a/b/.././c.fnl"]
   (assert (= :a.c (path->module-name path))))
+```
+
+## `remove-prefix-path`
+Function signature:
+
+```
+(remove-prefix-path prefix path)
+```
+
+Strip the `prefix` component from `path`.
+
+### Examples
+
+```fennel
+(assert (= :b/c/ (remove-prefix-path :./a :a/b/c/)))
+(assert (= :c (remove-prefix-path :a/b/ :a/b/c)))
+(assert (= :. (remove-prefix-path :a/b/c/ :a/b/c)))
+(assert (= :./ (remove-prefix-path :a/b/c :a/b/c/)))
+(assert (= :a/b (remove-prefix-path :a/b/c :a/b)))
 ```
 
 ## `remove-suffix`
