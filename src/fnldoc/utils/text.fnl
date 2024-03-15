@@ -7,6 +7,8 @@
 
 (lambda indent [width text]
   "Indent `text` by `width`."
+  (assert-type :number width)
+  (assert-type :string text)
   (let [level (faccumulate [s "" _ 1 width] (.. s " "))]
     (pick-values 1 (-> text
                        (string.gsub "^" level)
@@ -23,6 +25,9 @@
   "Split `text` by `?eol` (default: `\"\\n\"`) into a sequential table of lines.
 
 The last empty after the last end of line (i.e., \"\") will be removed."
+  (assert-type :string text)
+  (when ?eol
+    (assert-type :string ?eol))
   (let [eol (or ?eol "\n")
         lines []]
     (each [line (string.gmatch text (.. "([^" eol "]*)\n?"))]
@@ -33,6 +38,11 @@ The last empty after the last end of line (i.e., \"\") will be removed."
   "Concatenate a sequential table of `lines` with `?eol` into a `text`.
 
 `?eol` defaults to `\"\\n\"`"
+  (assert-type :table lines)
+  (each [_ x (ipairs lines)]
+    (assert-type :string x))
+  (when ?eol
+    (assert-type :string ?eol))
   (let [eol (or ?eol "\n")]
     (table.concat lines eol)))
 
@@ -42,6 +52,10 @@ The last empty after the last end of line (i.e., \"\") will be removed."
 `?eol` defaults to `\"\\n\"`.
 
 FIXME: This is buggy if `width` is too short."
+  (assert-type :string line)
+  (assert-type :number width)
+  (when ?eol
+    (assert-type :string ?eol))
   (let [eol (or ?eol "\n")]
     (if (<= (length line) width)
         line
@@ -59,6 +73,10 @@ FIXME: This is buggy if `width` is too short."
   "Wrap each line in the `text` if the line length is longer than `width`.
 
 `?eol` defaults to `\"\\n\"`."
+  (assert-type :number width)
+  (assert-type :string text)
+  (when ?eol
+    (assert-type :string ?eol))
   (let [eol (or ?eol "\n")
         lines (text->lines text)
         wrapped-lines []]
@@ -67,6 +85,8 @@ FIXME: This is buggy if `width` is too short."
     (table.concat wrapped-lines eol)))
 
 (fn pad* [padder width text ?pad-char]
+  (assert-type :number width)
+  (assert-type :string text)
   (when ?pad-char
     (assert-type :string ?pad-char)
     (assert (= 1 (length ?pad-char))
