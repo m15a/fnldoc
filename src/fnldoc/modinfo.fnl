@@ -73,7 +73,7 @@ The second value is a table that contains
 generated."
   (match (require-file file config.sandbox?)
     (where (true result) (= :table result.type))
-    {:name (or (?. config :modules-info file :name) file)
+    {:name (?. config :modules-info file :name)
      :description (?. config :modules-info file :description)
      : file
      :type (if result.macros? :macros :functions)
@@ -103,7 +103,7 @@ generated."
     (where (true result) (= :function result.type))
     (let [mdata (extract-metadata result.module)
           fname (path->function-name file)]
-      {:name (or (?. config :modules-info file :name) file)
+      {:name (?. config :modules-info file :name)
        :description (gen-function-module-description fname mdata file config)
        : file
        :type :function-module

@@ -7,9 +7,7 @@
 (local {: write!} (require :fnldoc.writer))
 
 (fn target-path [modinfo config]
-  (let [base (-> (or modinfo.name modinfo.file)
-                 (basename :.fnl)
-                 (.. :.md))
+  (let [base (.. (or modinfo.name (basename modinfo.file :.fnl)) :.md)
         dir (remove-prefix-path config.src-dir (dirname modinfo.file))]
     (join-paths config.out-dir dir base)))
 
