@@ -74,7 +74,7 @@ generated."
      :description (?. config :modules-info file :description)
      : file
      :type (if result.macros? :macros :functions)
-     :functions (if result.macros? {} result.module)
+     :items (if result.macros? {} result.module)
      :test-requirements (?. config :test-requirements file)
      :metadata (find-metadata (doto result.module
                                 (merge! result.loaded-macros)))
@@ -104,7 +104,7 @@ generated."
        :description (gen-function-module-description fname mdata file config)
        : file
        :type :function-module
-       :functions {fname result.module}
+       :items {fname result.module}
        :test-requirements (?. config :test-requirements file)
        :metadata {}
        :documented? (if mdata.docstring true false)
