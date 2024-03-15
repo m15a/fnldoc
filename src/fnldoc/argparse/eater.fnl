@@ -26,7 +26,8 @@ If validation fails, report error and exit with failing status."
       value
       (if (self.validator value)
           value
-          (let [msg (.. "invalid argument: " (view self.processed-arg))]
+          (let [msg (.. "invalid argument for option " self.flag ": "
+                        (view self.processed-arg))]
             ;; For testing purpose; see test/fnldoc/argparse/eater.fnl.
             (exit/error msg self.__fnldoc_debug?)))))
 

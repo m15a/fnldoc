@@ -12,7 +12,7 @@
     (t.= 10 (-> "10"
                 (recipe:preprocess)
                 (recipe:validate :debug)))
-    (t.error "invalid argument: \"a\""
+    (t.error "invalid argument for option %-%-num: \"a\""
              #(-> :a
                   (recipe:preprocess)
                   (recipe:validate)))))

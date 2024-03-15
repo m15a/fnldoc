@@ -5,6 +5,7 @@
 (local compiler (require :fennel.compiler))
 (local {: sandbox} (require :fnldoc.sandbox))
 (local console (require :fnldoc.console))
+(local {: file-exists?} (require :fnldoc.utils.file))
 (local {: merge!} (require :fnldoc.utils.table))
 (local {: path->function-name : path->module-name} (require :fnldoc.utils.file))
 (local {: gen-function-module-description} (require :fnldoc.markdown))
@@ -45,24 +46,26 @@ The second value is a table that contains
 * `:module` - module contents;
 * `:macros?` - indicates whether this is a macro module; and
 * `:loaded-macros` - macros if any loaded found."
-  (let [module-name (path->module-name file)
-        try (fn [opts]
-              (merge! opts {:useMetadata true :allowedGlobals false})
-              (pcall dofile file opts module-name))]
-    (case (try {:env (when sandbox? (sandbox file))})
-      (true ?module)
-      (values true {:type (type ?module)
-                    :module ?module
-                    :loaded-macros (. macro-loaded module-name)})
-      ;; try again, now with compiler env
-      (false)
-      (case (try {:env :_COMPILER :scope compiler.scopes.compiler})
-        (true ?module)
-        (values true {:type (type ?module)
-                      :module ?module
-                      :macros? true})
-        (false msg)
-        (values false msg)))))
+  (if (not (file-exists? file))
+      (values false "file not found")
+      (let [module-name (path->module-name file)
+            try (fn [opts]
+                  (merge! opts {:useMetadata true :allowedGlobals false})
+                  (pcall dofile file opts module-name))]
+        (case (try {:env (when sandbox? (sandbox file))})
+          (true ?module)
+          (values true {:type (type ?module)
+                        :module ?module
+                        :loaded-macros (. macro-loaded module-name)})
+          ;; try again, now with compiler env
+          (false)
+          (case (try {:env :_COMPILER :scope compiler.scopes.compiler})
+            (true ?module)
+            (values true {:type (type ?module)
+                          :module ?module
+                          :macros? true})
+            (false msg)
+            (values false msg))))))
 
 (lambda module-info [file config]
   "Returns table containing all relevant information accordingly to

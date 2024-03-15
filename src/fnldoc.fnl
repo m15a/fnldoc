@@ -34,6 +34,6 @@
     (each [_ file (ipairs files)]
       (match (module-info file config)
         modinfo (process! modinfo config)
-        _ (console.info "skipping " file)))))
+        _ (console.info "skipping file: " file)))))
 
 {: version : main}

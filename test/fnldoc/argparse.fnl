@@ -14,7 +14,7 @@
           :files []}
          result))
   (let [args [:--mode :chec]]
-    (t.error "invalid argument: \"chec\"" #(parse args :debug)))
+    (t.error "invalid argument for option %-%-mode: \"chec\"" #(parse args :debug)))
   (let [args [:--inline-references :code :--copyright :--no-license :--no-version]
         result (parse args :debug)]
     (t.= {:config {:inline-references :code
@@ -24,7 +24,7 @@
           :files []}
          result))
   (let [args [:--inline-references :cod]]
-    (t.error "invalid argument: \"cod\"" #(parse args :debug)))
+    (t.error "invalid argument for option %-%-inline%-references: \"cod\"" #(parse args :debug)))
   (let [args [:--final-comment :true :--project-copyright :YES :--project-license :MIT]
         result (parse args :debug)]
     (t.= {:config {:final-comment? true
