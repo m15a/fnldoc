@@ -65,10 +65,11 @@ Trailing slash will be left as is.
       (%normalize path)))
 
 (fn %remove-suffix [path suffix]
-  (let [stripped (path:match (.. "^(.*)" (escape-regex suffix) "$"))]
-    (if (or (= "" stripped) (trailing-sep? stripped))
-        path
-        stripped)))
+  (case (path:match (.. "^(.*)" (escape-regex suffix) "$"))
+    stripped (if (or (= "" stripped) (trailing-sep? stripped))
+                 path
+                 stripped)
+    _ path))
 
 (lambda remove-suffix [path suffix]
   "Remove `suffix` from the `path`.
