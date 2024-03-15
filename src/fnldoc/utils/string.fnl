@@ -18,4 +18,16 @@ See the [Lua manual][1] for more detail.
   (assert-type :string str)
   (pick-values 1 (str:gsub "([%^%$%(%)%%%.%[%]%*%+%-%?])" "%%%1")))
 
-{: escape-regex}
+(lambda capitalize/word [word]
+  "Capitalize the `word`.
+
+# Examples
+
+```fennel
+(assert (= \"String\" (capitalize/word \"string\")))
+(assert (= \"String\" (capitalize/word \"sTrInG\")))
+```"
+  (assert-type :string word)
+  (.. (string.upper (word:sub 1 1)) (string.lower (word:sub 2))))
+
+{: escape-regex : capitalize/word}

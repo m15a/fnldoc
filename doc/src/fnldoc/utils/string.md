@@ -2,7 +2,24 @@
 
 **Table of contents**
 
+- [`capitalize/word`](#capitalizeword)
 - [`escape-regex`](#escape-regex)
+
+## `capitalize/word`
+Function signature:
+
+```
+(capitalize/word word)
+```
+
+Capitalize the `word`.
+
+### Examples
+
+```fennel
+(assert (= "String" (capitalize/word "string")))
+(assert (= "String" (capitalize/word "sTrInG")))
+```
 
 ## `escape-regex`
 Function signature:
