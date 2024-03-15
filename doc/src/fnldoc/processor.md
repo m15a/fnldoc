@@ -14,8 +14,7 @@ Function signature:
 Run doctests and generate markdown documentation for `module-info`.
 
 Whether to run doctests and/or generate markdown depend on preferences specified
-in `config`. Generated documentation will go to a path corresponding to
-`module-info.file` but with `.md` extension under `config.out-dir`.
+in `config`. Generated Markdown documentation will be placed under `config.out-dir`.
 
 
 ---
