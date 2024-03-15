@@ -2,23 +2,27 @@
 
 **Table of contents**
 
-- [`capitalize/word`](#capitalizeword)
+- [`capitalize`](#capitalize)
 - [`escape-regex`](#escape-regex)
 
-## `capitalize/word`
+## `capitalize`
 Function signature:
 
 ```
-(capitalize/word word)
+(capitalize string)
 ```
 
-Capitalize the `word`.
+Capitalize the first word in the `string`.
+
+However, if characters in the first word are all uppercase, it will be kept
+as is.
 
 ### Examples
 
 ```fennel
-(assert (= "String" (capitalize/word "string")))
-(assert (= "String" (capitalize/word "sTrInG")))
+(assert (= "String" (capitalize "string")))
+(assert (= "IO stuff" (capitalize "IO stuff")))
+(assert (= "  One two  " (capitalize "  one two  ")))
 ```
 
 ## `escape-regex`

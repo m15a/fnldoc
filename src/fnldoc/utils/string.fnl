@@ -18,16 +18,29 @@ See the [Lua manual][1] for more detail.
   (assert-type :string str)
   (pick-values 1 (str:gsub "([%^%$%(%)%%%.%[%]%*%+%-%?])" "%%%1")))
 
-(lambda capitalize/word [word]
-  "Capitalize the `word`.
+(fn capitalize [str]
+  "Capitalize the first word in the `string`.
+
+However, if characters in the first word are all uppercase, it will be kept
+as is.
 
 # Examples
 
 ```fennel
-(assert (= \"String\" (capitalize/word \"string\")))
-(assert (= \"String\" (capitalize/word \"sTrInG\")))
+(assert (= \"String\" (capitalize \"string\")))
+(assert (= \"IO stuff\" (capitalize \"IO stuff\")))
+(assert (= \"  One two  \" (capitalize \"  one two  \")))
 ```"
-  (assert-type :string word)
-  (.. (string.upper (word:sub 1 1)) (string.lower (word:sub 2))))
+  {:fnl/arglist [string]}
+  (assert-type :string str)
+  (let [preceding-spaces (str:match "^%s*")
+        first-word (str:match "^%s*([^%s]+)")
+        rest (str:match "^%s*[^%s]+(.*)$")]
+    (if (= first-word (first-word:upper))
+        str
+        (.. preceding-spaces
+            (string.upper (first-word:sub 1 1))
+            (string.lower (first-word:sub 2))
+            rest))))
 
-{: escape-regex : capitalize/word}
+{: escape-regex : capitalize}

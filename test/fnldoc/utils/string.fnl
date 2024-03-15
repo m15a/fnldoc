@@ -5,8 +5,9 @@
   (let [full-regex "^$()%.[]*+-?"]
     (t.= "%^%$%(%)%%%.%[%]%*%+%-%?" (us.escape-regex full-regex))))
 
-(fn test-capitalize/word []
-  (t.= :Snakecase (us.capitalize/word :snakeCase))
-  (t.= " snakecase" (us.capitalize/word " snakeCase")))
+(fn test-capitalize []
+  (t.= :Snakecase (us.capitalize :snakeCase))
+  (t.= " Snakecase " (us.capitalize " snakeCase "))
+  (t.= "UPPER lower" (us.capitalize "UPPER lower")))
 
-{: test-escape-regex : test-capitalize/word}
+{: test-escape-regex : test-capitalize}
