@@ -10,7 +10,13 @@
 
   outputs = { self, nixpkgs, flake-utils, fennel-tools, ... }:
     ({
-      overlays.default = import ./nix/overlay.nix;
+      overlays.default = import ./nix/overlay.nix {
+        shortRev =
+          self.shortRev or
+          self.dirtyShortRev or
+          self.lastModified or
+          "unknown";
+      };
     } // flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = import nixpkgs {
@@ -23,9 +29,8 @@
       in
       rec {
         packages = rec {
-          inherit (pkgs)
-            fnldoc-unstable;
-          default = fnldoc-unstable;
+          inherit (pkgs) fnldoc;
+          default = fnldoc;
         };
 
         apps = with flake-utils.lib;

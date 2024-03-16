@@ -1,3 +1,5 @@
+{ shortRev ? null }:
+
 final: prev:
 
 let
@@ -7,8 +9,9 @@ let
 in
 
 {
-  fnldoc-unstable = final.callPackage ./package.nix rec {
-    version = packageVersions.fnldoc-unstable;
+  fnldoc = final.callPackage ./package.nix rec {
+    version = packageVersions.fnldoc;
+    inherit shortRev;
     src = ../.;
     fennel = final.fennel-unstable-luajit;
   };
