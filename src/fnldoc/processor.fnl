@@ -21,7 +21,6 @@
 
 Whether to run doctests and/or to generate markdown depends on preferences specified
 in the `config`. Generated documentation will be placed under `config.out-dir`."
-  {:fnl/arglist [module-info config]}
   (match (module-info file config)
     modinfo (do
               (when (not= config.mode :doc)

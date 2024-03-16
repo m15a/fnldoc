@@ -20,7 +20,7 @@ Determine path to put generated Markdown according to `module-info` and `config`
 Function signature:
 
 ```
-(process! module-info config)
+(process! file config)
 ```
 
 Extract module information from the `file`, run doctests, and generate Markdown.
