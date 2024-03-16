@@ -34,7 +34,7 @@ and this project adheres to [Semantic Versioning][2].
   destination path to generate documentation. For example, running
   `fnldoc --src-dir foo foo/file.fnl` generates documentation at
   `doc/file.md`.
-- `modules-info.FILENAME.order` entry in `.fenneldoc` [[609a7f45]]:
+- `modules-info.FILENAME.order` entry in `.fenneldoc` [[609a7f4]]:
   This was previously `modules-info.FILENAME.doc-order`, which accepted only
   a table of module item names. It has now the same functionality with `order`
   entry. Both accept `alphabetic`, `reverse-alphabetic`, a custom comparator
@@ -42,22 +42,22 @@ and this project adheres to [Semantic Versioning][2].
  
 [#5]: https://todo.sr.ht/~m15a/fnldoc/5
 [#10]: https://todo.sr.ht/~m15a/fnldoc/10
-[609a7f45]: https://git.sr.ht/~m15a/fnldoc/commit/609a7f45
+[609a7f4]: https://git.sr.ht/~m15a/fnldoc/commit/609a7f4
 
 ### Fixed
 
 - Generating empty documentation for function module [[#16]].
 - Erroneous handling for file path beginning with `./` [[#9]].
-- A bug that command line option `--order` not working [[609a7f45]].
-- Unknown identifier error in sandbox environment [[d242b816]].
-- ToC generation when there are no module exports [[63833345]].
-- Gensym hash increment (e.g. `x#` -> `x###`) in markdown fences [[1a943625]].
+- A bug that command line option `--order` not working [[609a7f4]].
+- Unknown identifier error in sandbox environment [[d242b81]].
+- ToC generation when there are no module exports [[6383334]].
+- Gensym hash increment (e.g. `x#` -> `x###`) in markdown fences [[1a94362]].
 
 [#9]: https://todo.sr.ht/~m15a/fnldoc/9
 [#16]: https://todo.sr.ht/~m15a/fnldoc/16
-[d242b816]: https://git.sr.ht/~m15a/fnldoc/commit/d242b816
-[63833345]: https://git.sr.ht/~m15a/fnldoc/commit/63833345
-[1a943625]: https://git.sr.ht/~m15a/fnldoc/commit/1a943625
+[d242b81]: https://git.sr.ht/~m15a/fnldoc/commit/d242b81
+[6383334]: https://git.sr.ht/~m15a/fnldoc/commit/6383334
+[1a94362]: https://git.sr.ht/~m15a/fnldoc/commit/1a94362
 
 ### Internal changes
 
