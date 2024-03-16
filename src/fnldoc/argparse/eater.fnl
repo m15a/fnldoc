@@ -4,6 +4,7 @@
 (local {: exit/error} (require :fnldoc.debug))
 (local {: merge!} (require :fnldoc.utils.table))
 (local {: indent : wrap : lines->text} (require :fnldoc.utils.text))
+(local color (require :fnldoc.console.color))
 
 (fn preprocess [self next-arg]
   "Preprocess the `next-arg` and return the processed value.
@@ -64,20 +65,26 @@ To be blessed, `key` and `flag` attributes are mandatory.
                          (view option-recipe.flag)))
   (setmetatable option-recipe eater-mt))
 
-(fn recipes->tab-splitted-descriptions [recipes]
-  (collect [k v (pairs recipes)]
-    (when v.description
-      (values k
-              {:flag (pick-values 1 (v.description:match "^[^\t]+"))
-               :desc (pick-values 1 (v.description:match "[^\t]+$"))}))))
+(fn recipes->tab-splitted-descriptions [recipes color?]
+  (let [bold (if color? color.bold #$)
+        italic (if color? color.italic #$)]
+    (collect [k v (pairs recipes)]
+      (when v.description
+        (values k
+                {:spec (let [flags (v.description:match "^[^\t]+")
+                             arg (v.description:match "\t([^\t]+)\t")]
+                         (.. (bold flags) (if arg (.. " " (italic arg)) "")))
+                 :desc (pick-values 1 (v.description:match "[^\t]+$"))})))))
 
-(fn option-descriptions/order [order recipes]
-  "Gather descriptions among option `recipes` and enumerate them in the given `order`."
-  (let [descriptions (recipes->tab-splitted-descriptions recipes)
+(fn option-descriptions/order [order recipes color?]
+  "Gather descriptions among option `recipes` and enumerate them in the given `order`.
+
+If `color?` is truthy, it uses ANSI escape code."
+  (let [descriptions (recipes->tab-splitted-descriptions recipes color?)
         lines (icollect [_ flag (ipairs order)]
                 (let [description (. descriptions flag)]
                   (if description
-                      (lines->text [(. description :flag)
+                      (lines->text [(. description :spec)
                                     (indent 6 (wrap 72 (. description :desc)))
                                     ""])
                       (error (.. "no flag found: " flag)))))]

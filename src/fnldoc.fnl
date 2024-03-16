@@ -1,5 +1,6 @@
 (local unpack (or table.unpack _G.unpack))
 (local {: merge!} (require :fnldoc.utils.table))
+(local console (require :fnldoc.console))
 (local config (require :fnldoc.config))
 (local argparse (require :fnldoc.argparse))
 (local {: process!} (require :fnldoc.processor))
@@ -11,7 +12,8 @@
   (os.exit 0))
 
 (fn show-help []
-  (io.stderr:write argparse.help "\n")
+  (let [color? (console.isatty? 2)]
+    (io.stderr:write (argparse.help color?) "\n"))
   (os.exit 0))
 
 (fn main []

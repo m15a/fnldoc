@@ -27,10 +27,12 @@ To be blessed, `key` and `flag` attributes are mandatory.
 Function signature:
 
 ```
-(option-descriptions/order order recipes)
+(option-descriptions/order order recipes color?)
 ```
 
 Gather descriptions among option `recipes` and enumerate them in the given `order`.
+
+If `color?` is truthy, it uses ANSI escape code.
 
 ## `parse!`
 

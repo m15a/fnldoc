@@ -1,4 +1,5 @@
 (import-macros {: cooking : recipe} :fnldoc.argparse.cooker)
+(local color (require :fnldoc.console.color))
 (local {: bless : option-descriptions/order} (require :fnldoc.argparse.eater))
 (local {: clone} (require :fnldoc.utils.table))
 (local {: indent : wrap : lines->text} (require :fnldoc.utils.text))
@@ -63,48 +64,53 @@ Supported modes:
         {:description
          "    --config\tParse all regular options and update '.fenneldoc' at the current directory."}})
 
-(local help
-       (-> ["Usage: fnldoc [OPTIONS] [FILE]..."
-            ""
-            "Create documentation for your Fennel project."
-            ""
-            "Arguments:"
-            (indent 2 "[FILE]...  File(s) to generate documentation.")
-            ""
-            "Options:"
-            (indent 2 (option-descriptions/order
-                        [:--out-dir
-                         :--src-dir
-                         :--mode
-                         :--toc
-                         :--function-signatures
-                         :--order
-                         :--inline-references
-                         :--copyright
-                         :--license
-                         :--version
-                         :--final-comment
-                         :--project-copyright
-                         :--project-license
-                         :--project-version
-                         :--sandbox]
-                        option-recipes))
-            "Other options:"
-            (indent 2 (option-descriptions/order
-                        [:--
-                         :--config
-                         :--fnldoc-version
-                         :--help]
-                        meta-option-recipes))
-            (wrap 80 (.. "All options have respective entries in '.fenneldoc' "
-                         "configuration file, and arguments passed via command line "
-                         "have higher precedence, therefore will override following "
-                         "values in '.fenneldoc'."))
-            ""
-            (wrap 80 (.. "Each boolean option has two variants with and without 'no'. "
-                         "For example, passing '--no-toc' will disable generation of "
-                         "contents table, and '--toc' will enable it."))]
-           (lines->text)))
+(fn help [color?]
+  "Generate help message.
+
+If `color?` is truthy, it use ANSI escape code."
+  (let [underline (if color? color.underline #$)
+        italic (if color? color.italic #$)]
+    (-> [(.. (underline "Usage:") " fnldoc " (italic "[OPTIONS] [FILE]..."))
+         ""
+         "Create documentation for your Fennel project."
+         ""
+         (underline "Arguments:")
+         (indent 2 (.. (italic "[FILE]...") "  File(s) to generate documentation."))
+         ""
+         (underline "Options:")
+         (indent 2 (option-descriptions/order
+                     [:--out-dir
+                      :--src-dir
+                      :--mode
+                      :--toc
+                      :--function-signatures
+                      :--order
+                      :--inline-references
+                      :--copyright
+                      :--license
+                      :--version
+                      :--final-comment
+                      :--project-copyright
+                      :--project-license
+                      :--project-version
+                      :--sandbox]
+                     option-recipes color?))
+         (underline "Other options:")
+         (indent 2 (option-descriptions/order
+                     [:--
+                      :--config
+                      :--fnldoc-version
+                      :--help]
+                     meta-option-recipes color?))
+         (wrap 80 (.. "All options have respective entries in '.fenneldoc' "
+                      "configuration file, and arguments passed via command line "
+                      "have higher precedence, therefore will override following "
+                      "values in '.fenneldoc'."))
+         ""
+         (wrap 80 (.. "Each boolean option has two variants with and without 'no'. "
+                      "For example, passing '--no-toc' will disable generation of "
+                      "contents table, and '--toc' will enable it."))]
+        (lines->text))))
 
 (fn parse [args ?debug]
   "Parse command line `args` and return the result.
