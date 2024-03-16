@@ -8,12 +8,12 @@
 (local version :1.0.2-dev)
 
 (fn show-version []
-  (io.stderr:write version "\n")
+  (io.stdout:write version "\n")
   (os.exit 0))
 
 (fn show-help []
-  (let [color? (console.isatty? 2)]
-    (io.stderr:write (argparse.help color?) "\n"))
+  (let [color? (console.isatty? 1)]
+    (io.stdout:write (argparse.help color?) "\n"))
   (os.exit 0))
 
 (fn main []
