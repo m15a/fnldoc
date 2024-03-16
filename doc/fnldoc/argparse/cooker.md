@@ -20,19 +20,19 @@ You can generate flag recipes by
 which yields
 
 ```fennel
-{:--ramen {:description "--[no-]ramen\tWhether you like to have ramen noodles"
+{:--ramen {:description "--[no-]ramen\t\tWhether you like to have ramen noodles"
            :key "ramen?"
            :value true}
  :--no-ramen {:key "ramen?"
               :value false}
- :--taste {:description "-t, --taste [shoyu|miso|tonkotsu]\tWhich type of ramen you like to have (default: nil)"
+ :--taste {:description "-t, --taste\t[shoyu|miso|tonkotsu]\tWhich type of ramen you like to have (default: nil)"
            :key "taste"
            :validator #<function: 0x7ffa16ead208>
            :consume-next? true}
  :-t {:key "taste"
       :validator #<function: 0x7ffa16e31310>
       :consume-next? true}
- :--bowls {:description "-n, --bowls NUM\tHow many ramen bowls you like to have (default: nil)"
+ :--bowls {:description "-n, --bowls\tNUM\tHow many ramen bowls you like to have (default: nil)"
            :key "bowls"
            :preprocessor #<function: builtin#17>
            :validator #<function: 0x7ffa16f984e8>
@@ -48,7 +48,8 @@ It gives you no dishes, only recipes, unfortunately.
 A recipe is a table that possibly contains the following entries depending on the needs.
 
 - `:key`: The corresponding key in the `config` object, i.e., `.fenneldoc`.
-- `:description`: a line that explain the flag, which will be shown in help.
+- `:description`: text that explain the flag, which will be shown in help. Flag(s),
+  argument, and description are separated by tab character (`\t`).
 - `:value`: If the flag is not nil, this value will be set; otherwise, the next command
   line argument will be set to the `:value`, possibly after calling `:preprocessor`
   and `:validator`.

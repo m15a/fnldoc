@@ -4,12 +4,12 @@
 (fn test-boolean-flag []
   (let [recipes (cooking (recipe :boolean :yes :YES!)
                          (recipe :bool :no :n :NO!))]
-    (t.= {:--yes {:description "    --[no-]yes\tYES! (default: nil)"
+    (t.= {:--yes {:description "    --[no-]yes\t\tYES! (default: nil)"
                   :key :yes?
                   :value true}
           :--no-yes {:key :yes?
                      :value false}
-          :--no {:description "-n, --[no-]no\tNO! (default: nil)"
+          :--no {:description "-n, --[no-]no\t\tNO! (default: nil)"
                  :key :no?
                  :value true}
           :--no-no {:key :no?
@@ -32,10 +32,10 @@
                               v drink.validator]
                           (set drink.validator nil)
                           v)]
-    (t.= {:--fruit {:description "-f, --fruit [apple|banana]\tFruit! (default: nil)"
+    (t.= {:--fruit {:description "-f, --fruit\t[apple|banana]\tFruit! (default: nil)"
                     :key :fruit}
           :-f {:key :fruit}
-          :--drink {:description "    --drink [beer|another-beer]\tBeer! (default: nil)"
+          :--drink {:description "    --drink\t[beer|another-beer]\tBeer! (default: nil)"
                     :key :drink}}
          recipes)
     (t.= :function (type validator-fruit))
@@ -54,9 +54,9 @@
 (fn test-string-flag []
   (let [recipes (cooking (recipe :string :text :TEXT :text)
                          (recipe :str :output :o :OUT :output))]
-    (t.= {:--text {:description "    --text TEXT\ttext (default: nil)"
+    (t.= {:--text {:description "    --text\tTEXT\ttext (default: nil)"
                    :key :text}
-          :--output {:description "-o, --output OUT\toutput (default: nil)"
+          :--output {:description "-o, --output\tOUT\toutput (default: nil)"
                      :key :output}
           :-o {:key :output}}
          recipes)))
@@ -88,9 +88,9 @@
                           v i.validator]
                       (set i.validator nil)
                       v)]
-    (t.= {:--float {:description "    --float FLOAT\tfloat (default: nil)"
+    (t.= {:--float {:description "    --float\tFLOAT\tfloat (default: nil)"
                     :key :float}
-          :--int {:description "-i, --int INT\tinteger (default: nil)"
+          :--int {:description "-i, --int\tINT\tinteger (default: nil)"
                   :key :int}
           :-i {:key :int}}
          recipes)
