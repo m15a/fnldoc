@@ -26,6 +26,10 @@ and this project adheres to [Semantic Versioning][2].
 
 ### Added
 
+- Module-level description inside Fennel file [[#4]]:
+  In Fennel files, top comments beginning with `;;;; ` are rendered as
+  module-level description in Markdown documentation. You can still use
+  `modules-info.FILENAME.description` in `.fenneldoc` alternatively.
 - Module entries are now shown with their types (function or macro) [[#5]]:
   The type is inferred automatically; otherwise you can explicitly annotate
   it in metadata field `:fnldoc/type`.
@@ -40,6 +44,7 @@ and this project adheres to [Semantic Versioning][2].
   entry. Both accept `alphabetic`, `reverse-alphabetic`, a custom comparator
   function, or a table of ordered module items.
  
+[#4]: https://todo.sr.ht/~m15a/fnldoc/4
 [#5]: https://todo.sr.ht/~m15a/fnldoc/5
 [#10]: https://todo.sr.ht/~m15a/fnldoc/10
 [609a7f4]: https://git.sr.ht/~m15a/fnldoc/commit/609a7f4

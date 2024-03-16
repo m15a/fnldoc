@@ -70,6 +70,73 @@ The second value is a table that contains
             (false msg)
             (values false msg))))))
 
+(lambda extract-module-description [file]
+ "Extract module description from the top of the `file`.
+
+It collects top comments beginning with `^%s*;;;; ` and returns a string in which
+`;;;; ` is stripped from each line. Lines that match `^%s*;;;;$` or `^%s*$` are
+counted as empty lines in the string.
+
+# Example
+
+In the following Fennel module file,
+
+```fennel :skip-test
+;;;; A paragraph.
+
+;;;; Another paragraph.
+;;;;
+;; This is usual comment.
+;;;; More paragraph.
+
+(fn f [] (print :hello))
+
+;;;; This line will be ignored. Only top comments are scanned.
+
+{: f}
+```
+
+Module description is collected as:
+
+```
+A paragraph.
+
+Another paragraph.
+
+More paragraph.
+```"
+  (case (io.open file)
+    in (with-open [in in]
+         (let [lines []
+               empty-line "^%s*$"
+               another-empty-line "^%s*;;;;$"
+               description-line "^%s*;;;; "
+               comment-line "^%s*;"]
+           (var parsing? true)
+           (var empty-lines-count 0)
+           (while parsing?
+             (case (in:read)
+               line (if (line:match description-line)
+                        (do
+                          (for [_ 1 empty-lines-count]
+                            (table.insert lines ""))
+                          (set empty-lines-count 0)
+                          (doto lines
+                            (table.insert (line:match (.. description-line "(.*)$")))))
+                        (line:match empty-line)
+                        (set empty-lines-count (+ 1 empty-lines-count))
+                        (line:match another-empty-line)
+                        (set empty-lines-count (+ 1 empty-lines-count))
+                        (line:match comment-line)
+                        (do :ignore-it!)
+                        (set parsing? nil))
+               _ (set parsing? nil)))
+           (when (< 0 (length lines))
+             (lines->text lines))))
+    _ (do
+        (console.error "error readling file: " file)
+        nil)))
+
 (lambda module-info [file config]
   "Returns table containing all relevant information accordingly to
 `config` about the module in the `file` for which documentation is
@@ -77,7 +144,8 @@ generated."
   (match (require-file file config.sandbox?)
     (where (true result) (= :table result.type))
     {:name (?. config :modules-info file :name)
-     :description (?. config :modules-info file :description)
+     :description (or (?. config :modules-info file :description)
+                      (extract-module-description file))
      : file
      :type (if result.macros? :macros :functions)
      :items (if result.macros? {} result.module)
@@ -143,4 +211,5 @@ generated."
 {: extract-metadata
  : find-metadata
  : require-file
+ : extract-module-description
  : module-info}
