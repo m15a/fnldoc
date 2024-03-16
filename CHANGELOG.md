@@ -37,11 +37,14 @@ and this project adheres to [Semantic Versioning][2].
 
 ### Fixed
 
+- Generating empty documentation for function module [[#16]].
 - A bug that file path beginning with `./` won't be handled well.
 - A bug that command line option `--order` not working.
 - Unknown identifier error in sandbox environment depending on Lua version.
 - A bug in ToC generation when there are no exported functions in a module.
 - Unintentional gensym hash increment (e.g. `x#` -> `x###`) in markdown fences.
+
+[#16]: https://todo.sr.ht/~m15a/fnldoc/16
 
 ### Internal changes
 
