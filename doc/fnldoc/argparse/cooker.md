@@ -1,4 +1,5 @@
 # Cooker.fnl (1.0.2-dev)
+
 Generate command line argument flag recipes.
 
 Macros defined here generate a table that maps command line argument flag
@@ -62,6 +63,7 @@ A recipe is a table that possibly contains the following entries depending on th
 - [`recipe`](#recipe)
 
 ## `cooking`
+
 Function signature:
 
 ```
@@ -71,6 +73,7 @@ Function signature:
 A helper macro to collect option `recipes` into one table.
 
 ## `recipe`
+
 Function signature:
 
 ```
@@ -129,13 +132,11 @@ In command line argument parsing, this option will consumes the next
 argument, validate if it can be converted to number, and set the `config`
 object's corresponding attribute to the converted number.
 
-
 ---
 
 Copyright (C) 2020-2022 Andrey Listopadov, 2024 NACAMURA Mitsuhiro
 
 License: [MIT](https://git.sr.ht/~m15a/fnldoc/tree/main/item/LICENSE)
-
 
 <!-- Generated with Fnldoc 1.0.2-dev
      https://sr.ht/~m15a/fnldoc/ -->

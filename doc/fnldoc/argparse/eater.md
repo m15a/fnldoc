@@ -9,6 +9,7 @@
 - [`validate`](#validate)
 
 ## `bless`
+
 Function signature:
 
 ```
@@ -22,6 +23,7 @@ To be blessed, `key` and `flag` attributes are mandatory.
 
 
 ## `option-descriptions/order`
+
 Function signature:
 
 ```
@@ -31,6 +33,7 @@ Function signature:
 Gather descriptions among option `recipes` and enumerate them in the given `order`.
 
 ## `parse!`
+
 Function signature:
 
 ```
@@ -45,6 +48,7 @@ it to the `config` accordingly.
 If the head of `args` is missing, report error and exit with failing status.
 
 ## `preprocess`
+
 Function signature:
 
 ```
@@ -58,6 +62,7 @@ otherwise pass through it.
 In addition, remember the `next-arg` in the `processed-arg` attribute.
 
 ## `validate`
+
 Function signature:
 
 ```
@@ -70,13 +75,11 @@ If an option recipe `self` has `validator`, call it against the `value`;
 otherwise pass through it.
 If validation fails, report error and exit with failing status.
 
-
 ---
 
 Copyright (C) 2020-2022 Andrey Listopadov, 2024 NACAMURA Mitsuhiro
 
 License: [MIT](https://git.sr.ht/~m15a/fnldoc/tree/main/item/LICENSE)
-
 
 <!-- Generated with Fnldoc 1.0.2-dev
      https://sr.ht/~m15a/fnldoc/ -->

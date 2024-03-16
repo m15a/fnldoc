@@ -1,4 +1,5 @@
 # Fnldoc.fnl (1.0.2-dev)
+
 Fnldoc - generate documentation for Fennel projects.
 
 Generates documentation for Fennel libraries by analyzing project
@@ -21,6 +22,7 @@ metadata at runtime.
 - [`main`](#main)
 
 ## `main`
+
 Function signature:
 
 ```
@@ -29,13 +31,11 @@ Function signature:
 
 Run Fnldoc application.
 
-
 ---
 
 Copyright (C) 2020-2022 Andrey Listopadov, 2024 NACAMURA Mitsuhiro
 
 License: [MIT](https://git.sr.ht/~m15a/fnldoc/tree/main/item/LICENSE)
-
 
 <!-- Generated with Fnldoc 1.0.2-dev
      https://sr.ht/~m15a/fnldoc/ -->

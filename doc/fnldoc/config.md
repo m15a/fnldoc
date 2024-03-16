@@ -9,6 +9,7 @@
 - [`write!`](#write)
 
 ## `init!`
+
 Function signature:
 
 ```
@@ -170,6 +171,7 @@ modules, contained in those. Supported keys: `:name`, `:description`,
 ```
 
 ## `merge!`
+
 Function signature:
 
 ```
@@ -180,6 +182,7 @@ Merge key-value pairs of the `from` table into `self` config object.
 `self` will be mutated. Warn once if each `key` is deprecated.
 
 ## `new`
+
 Function signature:
 
 ```
@@ -189,6 +192,7 @@ Function signature:
 Create a new config object.
 
 ## `set-fennel-path!`
+
 Function signature:
 
 ```
@@ -198,6 +202,7 @@ Function signature:
 Append `self`'s `fennel-path` to `fennel.path`.
 
 ## `write!`
+
 Function signature:
 
 ```
@@ -209,13 +214,11 @@ Write contents of `self` to the `config-file` (default: `.fenneldoc`).
 For testing purpose, if `?debug` is truthy and failing, it raises an error
 instead to exit.
 
-
 ---
 
 Copyright (C) 2020-2022 Andrey Listopadov, 2024 NACAMURA Mitsuhiro
 
 License: [MIT](https://git.sr.ht/~m15a/fnldoc/tree/main/item/LICENSE)
-
 
 <!-- Generated with Fnldoc 1.0.2-dev
      https://sr.ht/~m15a/fnldoc/ -->

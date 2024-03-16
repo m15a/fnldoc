@@ -9,6 +9,7 @@
 - [`warn`](#warn)
 
 ## `error`
+
 Function signature:
 
 ```
@@ -20,6 +21,7 @@ Print error message to STDERR.
 Short hand for `(log* {:level :error} ...)`.
 
 ## `info`
+
 Function signature:
 
 ```
@@ -31,6 +33,7 @@ Print info message to STDERR.
 Short hand for `(log* {:level :info} ...)`.
 
 ## `log`
+
 Function signature:
 
 ```
@@ -42,6 +45,7 @@ Print message, without level specified, to STDERR.
 Short hand for `(log* {} ...)`.
 
 ## `log*`
+
 Function signature:
 
 ```
@@ -81,6 +85,7 @@ If file handle `out` is specified, print it to the `out` instead.
 ```
 
 ## `warn`
+
 Function signature:
 
 ```
@@ -91,13 +96,11 @@ Print warning message to STDERR.
 
 Short hand for `(log* {:level :warning} ...)`.
 
-
 ---
 
 Copyright (C) 2020-2022 Andrey Listopadov, 2024 NACAMURA Mitsuhiro
 
 License: [MIT](https://git.sr.ht/~m15a/fnldoc/tree/main/item/LICENSE)
-
 
 <!-- Generated with Fnldoc 1.0.2-dev
      https://sr.ht/~m15a/fnldoc/ -->

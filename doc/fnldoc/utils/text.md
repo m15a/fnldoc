@@ -11,6 +11,7 @@
 - [`wrap/line`](#wrapline)
 
 ## `indent`
+
 Function signature:
 
 ```
@@ -20,6 +21,7 @@ Function signature:
 Indent `text` by `width`.
 
 ## `lines->text`
+
 Function signature:
 
 ```
@@ -31,6 +33,7 @@ Concatenate a sequential table of `lines` with `?eol` into a `text`.
 `?eol` defaults to `"\n"`
 
 ## `pad`
+
 Function signature:
 
 ```
@@ -40,6 +43,7 @@ Function signature:
 Pad `text` on the left side with `?pad-char` (default: " ") up to `width`.
 
 ## `pad/right`
+
 Function signature:
 
 ```
@@ -49,6 +53,7 @@ Function signature:
 Pad `text` on the right side with `?pad-char` (default: " ") up to `width`.
 
 ## `text->lines`
+
 Function signature:
 
 ```
@@ -60,6 +65,7 @@ Split `text` by `?eol` (default: `"\n"`) into a sequential table of lines.
 The last empty after the last end of line (i.e., "") will be removed.
 
 ## `wrap`
+
 Function signature:
 
 ```
@@ -71,6 +77,7 @@ Wrap each line in the `text` if the line length is longer than `width`.
 `?eol` defaults to `"\n"`.
 
 ## `wrap/line`
+
 Function signature:
 
 ```
@@ -83,13 +90,11 @@ Wrap a `line` into lines of the maximum `width` separated by `?eol`.
 
 FIXME: This is buggy if `width` is too short.
 
-
 ---
 
 Copyright (C) 2020-2022 Andrey Listopadov, 2024 NACAMURA Mitsuhiro
 
 License: [MIT](https://git.sr.ht/~m15a/fnldoc/tree/main/item/LICENSE)
-
 
 <!-- Generated with Fnldoc 1.0.2-dev
      https://sr.ht/~m15a/fnldoc/ -->

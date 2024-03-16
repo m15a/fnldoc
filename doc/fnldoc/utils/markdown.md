@@ -16,6 +16,7 @@
 - [`unordered-list`](#unordered-list)
 
 ## `bold`
+
 Function signature:
 
 ```
@@ -25,6 +26,7 @@ Function signature:
 Make a **bold** `text`.
 
 ## `bold-italic`
+
 Function signature:
 
 ```
@@ -34,6 +36,7 @@ Function signature:
 Make a ***bold italic*** `text`.
 
 ## `code`
+
 Function signature:
 
 ```
@@ -43,6 +46,7 @@ Function signature:
 Show `text` as an inline `code`.
 
 ## `code-block`
+
 Function signature:
 
 ```
@@ -52,6 +56,7 @@ Function signature:
 Indent `text` by four spaces.
 
 ## `code-fence`
+
 Function signature:
 
 ```
@@ -61,6 +66,7 @@ Function signature:
 Enclose `text` by at least three backticks; optionally attaching `?annotation`.
 
 ## `heading`
+
 Function signature:
 
 ```
@@ -70,6 +76,7 @@ Function signature:
 Make a heading of specified `level` by prepending `#` in front of the `title`.
 
 ## `italic`
+
 Function signature:
 
 ```
@@ -79,6 +86,7 @@ Function signature:
 Make an *italic* `text`.
 
 ## `link`
+
 Function signature:
 
 ```
@@ -88,6 +96,7 @@ Function signature:
 Make a hyperlink of `text` pointing to the `url`.
 
 ## `ordered-list`
+
 Function signature:
 
 ```
@@ -101,6 +110,7 @@ Make an ordered list from the sequential table of `texts`.
 3. Orange
 
 ## `promote-headings`
+
 Function signature:
 
 ```
@@ -110,6 +120,7 @@ Function signature:
 Promote headings included in the `text` by speficied `level`.
 
 ## `string->anchor`
+
 Function signature:
 
 ```
@@ -121,6 +132,7 @@ Translate the `string` to Markdown valid anchor id.
 Empty ids may occur if we pass only restricted chars. Such ids are ignored.
 
 ## `unordered-list`
+
 Function signature:
 
 ```
@@ -133,13 +145,11 @@ Make an unordered list from the sequential table of `texts`.
 - Banana
 - Orange
 
-
 ---
 
 Copyright (C) 2020-2022 Andrey Listopadov, 2024 NACAMURA Mitsuhiro
 
 License: [MIT](https://git.sr.ht/~m15a/fnldoc/tree/main/item/LICENSE)
-
 
 <!-- Generated with Fnldoc 1.0.2-dev
      https://sr.ht/~m15a/fnldoc/ -->

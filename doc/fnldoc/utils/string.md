@@ -6,6 +6,7 @@
 - [`escape-regex`](#escape-regex)
 
 ## `capitalize`
+
 Function signature:
 
 ```
@@ -26,6 +27,7 @@ as is.
 ```
 
 ## `escape-regex`
+
 Function signature:
 
 ```
@@ -46,13 +48,11 @@ See the [Lua manual][1] for more detail.
 (assert (= "%.fnl%$" (escape-regex ".fnl$")))
 ```
 
-
 ---
 
 Copyright (C) 2020-2022 Andrey Listopadov, 2024 NACAMURA Mitsuhiro
 
 License: [MIT](https://git.sr.ht/~m15a/fnldoc/tree/main/item/LICENSE)
-
 
 <!-- Generated with Fnldoc 1.0.2-dev
      https://sr.ht/~m15a/fnldoc/ -->

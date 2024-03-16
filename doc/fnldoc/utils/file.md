@@ -14,6 +14,7 @@
 - [`remove-suffix`](#remove-suffix)
 
 ## `basename`
+
 Function signature:
 
 ```
@@ -45,6 +46,7 @@ Compatible with GNU coreutils' `basename`.
 ```
 
 ## `dirname`
+
 Function signature:
 
 ```
@@ -74,6 +76,7 @@ at once.
 ```
 
 ## `file-exists?`
+
 Function signature:
 
 ```
@@ -83,6 +86,7 @@ Function signature:
 Return `true` if a file at the `path` exists.
 
 ## `join-paths`
+
 Function signature:
 
 ```
@@ -100,6 +104,7 @@ Join all `paths` segments, using separator into one path.
 ```
 
 ## `make-directory`
+
 Function signature:
 
 ```
@@ -116,6 +121,7 @@ whether succeeded or failed to make the directory; the second string teaches
 you the type of the third value, which is exit status or terminated signal.
 
 ## `normalize`
+
 Function signature:
 
 ```
@@ -147,6 +153,7 @@ Trailing slash will be left as is.
 ```
 
 ## `path->function-name`
+
 Function signature:
 
 ```
@@ -165,6 +172,7 @@ This is used for converting function module file to its function name.
 ```
 
 ## `path->module-name`
+
 Function signature:
 
 ```
@@ -190,6 +198,7 @@ Translate the `path` to its module name.
 ```
 
 ## `remove-prefix-path`
+
 Function signature:
 
 ```
@@ -209,6 +218,7 @@ Strip the `prefix` component from `path`.
 ```
 
 ## `remove-suffix`
+
 Function signature:
 
 ```
@@ -228,13 +238,11 @@ This is for convenience on manipulating hidden files.
 (assert (= :/a/b/.ext (remove-suffix :/a/b/.ext :.ext)))
 ```
 
-
 ---
 
 Copyright (C) 2020-2022 Andrey Listopadov, 2024 NACAMURA Mitsuhiro
 
 License: [MIT](https://git.sr.ht/~m15a/fnldoc/tree/main/item/LICENSE)
-
 
 <!-- Generated with Fnldoc 1.0.2-dev
      https://sr.ht/~m15a/fnldoc/ -->

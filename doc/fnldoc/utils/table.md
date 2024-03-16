@@ -8,6 +8,7 @@
 - [`merge!`](#merge)
 
 ## `clone`
+
 Function signature:
 
 ```
@@ -17,6 +18,7 @@ Function signature:
 Return a shallow copy of the `table`, assuming that keys are string or number.
 
 ## `clone/deeply`
+
 Function signature:
 
 ```
@@ -26,6 +28,7 @@ Function signature:
 Return a deep copy of the `table`, assuming that keys are string or number.
 
 ## `comparator/table`
+
 Function signature:
 
 ```
@@ -47,6 +50,7 @@ and returns `true` iff
 
 
 ## `merge!`
+
 Function signature:
 
 ```
@@ -64,13 +68,11 @@ It returns `nil`.
 (doto {:a 1} (merge! {:a nil :b 1} {:b 2})) ;=> {:a 1 :b 2}
 ```
 
-
 ---
 
 Copyright (C) 2020-2022 Andrey Listopadov, 2024 NACAMURA Mitsuhiro
 
 License: [MIT](https://git.sr.ht/~m15a/fnldoc/tree/main/item/LICENSE)
-
 
 <!-- Generated with Fnldoc 1.0.2-dev
      https://sr.ht/~m15a/fnldoc/ -->

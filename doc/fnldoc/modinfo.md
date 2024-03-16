@@ -8,6 +8,7 @@
 - [`require-file`](#require-file)
 
 ## `extract-metadata`
+
 Function signature:
 
 ```
@@ -17,6 +18,7 @@ Function signature:
 Extract metadata from the `value`; return `nil` if not found.
 
 ## `find-metadata`
+
 Function signature:
 
 ```
@@ -28,6 +30,7 @@ Find metadata contained in the `module` table recursively.
 It returns a table that maps module (table or function) name to its metadata.
 
 ## `module-info`
+
 Function signature:
 
 ```
@@ -39,6 +42,7 @@ Returns table containing all relevant information accordingly to
 generated.
 
 ## `require-file`
+
 Function signature:
 
 ```
@@ -55,13 +59,11 @@ The second value is a table that contains
 * `:macros?` - indicates whether this is a macro module; and
 * `:loaded-macros` - macros if any loaded found.
 
-
 ---
 
 Copyright (C) 2020-2022 Andrey Listopadov, 2024 NACAMURA Mitsuhiro
 
 License: [MIT](https://git.sr.ht/~m15a/fnldoc/tree/main/item/LICENSE)
-
 
 <!-- Generated with Fnldoc 1.0.2-dev
      https://sr.ht/~m15a/fnldoc/ -->

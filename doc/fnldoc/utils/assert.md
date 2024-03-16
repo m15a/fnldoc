@@ -5,6 +5,7 @@
 - [`assert-type`](#assert-type)
 
 ## `assert-type`
+
 Function signature:
 
 ```
@@ -26,13 +27,11 @@ Return evaluated `x` if passed the check; otherwise raise an error.
 ; => runtime error: number expected, got "string"
 ```
 
-
 ---
 
 Copyright (C) 2020-2022 Andrey Listopadov, 2024 NACAMURA Mitsuhiro
 
 License: [MIT](https://git.sr.ht/~m15a/fnldoc/tree/main/item/LICENSE)
-
 
 <!-- Generated with Fnldoc 1.0.2-dev
      https://sr.ht/~m15a/fnldoc/ -->
