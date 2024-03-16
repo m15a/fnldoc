@@ -9,14 +9,32 @@
   };
 
   outputs = { self, nixpkgs, flake-utils, fennel-tools, ... }:
-    flake-utils.lib.eachDefaultSystem (system:
+    ({
+      overlays.default = import ./nix/overlay.nix;
+    } // flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = import nixpkgs {
           inherit system;
-          overlays = [ fennel-tools.overlays.default ];
+          overlays = [
+            fennel-tools.overlays.default
+            self.overlays.default
+          ];
         };
       in
-      {
+      rec {
+        packages = rec {
+          inherit (pkgs)
+            fnldoc-unstable;
+          default = fnldoc-unstable;
+        };
+
+        apps = with flake-utils.lib;
+          builtins.mapAttrs
+            (name: _: mkApp { drv = self.packages.${system}.${name}; })
+            packages;
+
+        checks = packages;
+
         devShells.default =
           let
             fennel = pkgs.fennel-unstable-luajit;
@@ -34,5 +52,5 @@
             FENNEL_PATH = "./src/?.fnl;./src/?/init.fnl";
             FENNEL_MACRO_PATH = "./src/?.fnl;./src/?/init-macros.fnl";
           };
-      });
+      }));
 }
