@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning][2].
 
 - Executable name has been changed to `fnldoc`. Although, symbolic link
   `fenneldoc` that references `fnldoc` is provided.
-- In `.fenneldoc`, boolean keys have been renamed, and the old keys are deprecated:
+- In `.fenneldoc`, the following keys have been renamed:
   - `sandbox` -> `sandbox?`
   - `toc` -> `toc?`
   - `function-signatures` -> `function-signatures?`
@@ -26,36 +26,38 @@ and this project adheres to [Semantic Versioning][2].
 
 ### Added
 
-- New option `--src-dir` (or `:src-dir` in `.fenneldoc`): If source files are
-  placed in this directory, this path component will be stripped from destination
-  to generate documentation. For example, running `fnldoc --src-dir src src/file.fnl`
-  generates documentation at `doc/file.md`
-- `modules-info.FILENAME.order` (previously `modules-info.FILENAME.doc-order`,
-  only accepted a table of module item names) has now the same functionality
-  with `order` in `.fenneldoc`. Both accept `alphabetic`, `reverse-alphabetic`,
-  a custom comparator function, or a table of ordered module items.
+- New option `--src-dir` (or `src-dir` entry in `.fenneldoc`) [[#10]]:
+  If source files are placed in this directory, it will be stripped from
+  destination path to generate documentation. For example, running
+  `fnldoc --src-dir foo foo/file.fnl` generates documentation at
+  `doc/file.md`.
+- `modules-info.FILENAME.order` entry in `.fenneldoc` [[609a7f45]]:
+  This was previously `modules-info.FILENAME.doc-order`, which accepted only
+  a table of module item names. It has now the same functionality with `order`
+  entry. Both accept `alphabetic`, `reverse-alphabetic`, a custom comparator
+  function, or a table of ordered module items.
+ 
+[#10]: https://todo.sr.ht/~m15a/fnldoc/10
+[609a7f45]: https://git.sr.ht/~m15a/fnldoc/commit/609a7f45
 
 ### Fixed
 
 - Generating empty documentation for function module [[#16]].
-- A bug that file path beginning with `./` won't be handled well.
-- A bug that command line option `--order` not working.
-- Unknown identifier error in sandbox environment depending on Lua version.
-- A bug in ToC generation when there are no exported functions in a module.
-- Unintentional gensym hash increment (e.g. `x#` -> `x###`) in markdown fences.
+- Erroneous handling for file path beginning with `./` [[#9]].
+- A bug that command line option `--order` not working [[609a7f45]].
+- Unknown identifier error in sandbox environment [[d242b816]].
+- ToC generation when there are no module exports [[63833345]].
+- Gensym hash increment (e.g. `x#` -> `x###`) in markdown fences [[1a943625]].
 
+[#9]: https://todo.sr.ht/~m15a/fnldoc/9
 [#16]: https://todo.sr.ht/~m15a/fnldoc/16
+[d242b816]: https://git.sr.ht/~m15a/fnldoc/commit/d242b816
+[63833345]: https://git.sr.ht/~m15a/fnldoc/commit/63833345
+[1a943625]: https://git.sr.ht/~m15a/fnldoc/commit/1a943625
 
 ### Internal changes
 
-- Add `fnldoc.processor` module to separate core process functionalities.
-- Move sandboxing functionalities into `fnldoc.sandbox` module.
-- Add `fnldoc.argparse.{cooker,eater}` modules: `cooker` specifies how to parse
-  command line arguments, which will be parsed by `eater`.
-- Add `fnldoc.utils{,.*}` modules for various utilities.
-- Add `fnldoc.console` module for logging.
-- Add `fnldoc.debug` module for testing/debugging.
-- Modules are re-organized according to the above executable name change.
+- Modules are reorganized according to the above executable name change.
 - Version is now explicitly declared in the source code.
 - Removed dependency to cljlib.
 
