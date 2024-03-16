@@ -2,7 +2,18 @@
 
 **Table of contents**
 
+- [`destination-path`](#destination-path)
 - [`process!`](#process)
+
+## `destination-path`
+
+Function signature:
+
+```
+(destination-path module-info config)
+```
+
+Determine path to put generated Markdown according to `module-info` and `config`.
 
 ## `process!`
 
@@ -12,10 +23,10 @@ Function signature:
 (process! module-info config)
 ```
 
-Run doctests and generate markdown documentation for `module-info`.
+Extract module information from the `file`, run doctests, and generate Markdown.
 
-Whether to run doctests and/or generate markdown depend on preferences specified
-in `config`. Generated Markdown documentation will be placed under `config.out-dir`.
+Whether to run doctests and/or to generate markdown depends on preferences specified
+in the `config`. Generated documentation will be placed under `config.out-dir`.
 
 ---
 

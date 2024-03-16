@@ -1,9 +1,7 @@
 (local unpack (or table.unpack _G.unpack))
-(local console (require :fnldoc.console))
 (local {: merge!} (require :fnldoc.utils.table))
 (local config (require :fnldoc.config))
 (local argparse (require :fnldoc.argparse))
-(local {: module-info} (require :fnldoc.modinfo))
 (local {: process!} (require :fnldoc.processor))
 
 (local version :1.0.2-dev)
@@ -32,8 +30,6 @@
     (when write-config?
       (config:write!))
     (each [_ file (ipairs files)]
-      (match (module-info file config)
-        modinfo (process! modinfo config)
-        _ (console.info "skipping file: " file)))))
+      (process! file config))))
 
 {: version : main}
