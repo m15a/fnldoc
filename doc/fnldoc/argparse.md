@@ -2,12 +2,12 @@
 
 **Table of contents**
 
-- [`help`](#help)
-- [`parse`](#parse)
+- Function: [`help`](#function-help)
+- Function: [`parse`](#function-parse)
 
-## `help`
+## Function: `help`
 
-Function signature:
+Signature:
 
 ```
 (help color?)
@@ -17,9 +17,9 @@ Generate help message.
 
 If `color?` is truthy, it use ANSI escape code.
 
-## `parse`
+## Function: `parse`
 
-Function signature:
+Signature:
 
 ```
 (parse args ?debug)

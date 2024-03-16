@@ -2,14 +2,14 @@
 
 **Table of contents**
 
-- [`clone`](#clone)
-- [`clone/deeply`](#clonedeeply)
-- [`comparator/table`](#comparatortable)
-- [`merge!`](#merge)
+- Function: [`clone`](#function-clone)
+- Function: [`clone/deeply`](#function-clonedeeply)
+- Function: [`comparator/table`](#function-comparatortable)
+- Function: [`merge!`](#function-merge)
 
-## `clone`
+## Function: `clone`
 
-Function signature:
+Signature:
 
 ```
 (clone table)
@@ -17,9 +17,9 @@ Function signature:
 
 Return a shallow copy of the `table`, assuming that keys are string or number.
 
-## `clone/deeply`
+## Function: `clone/deeply`
 
-Function signature:
+Signature:
 
 ```
 (clone/deeply table)
@@ -27,9 +27,9 @@ Function signature:
 
 Return a deep copy of the `table`, assuming that keys are string or number.
 
-## `comparator/table`
+## Function: `comparator/table`
 
-Function signature:
+Signature:
 
 ```
 (comparator/table table ?fallback)
@@ -49,9 +49,9 @@ and returns `true` iff
 **CAVEAT**: Make sure that the elements of `table` are each distinct.
 
 
-## `merge!`
+## Function: `merge!`
 
-Function signature:
+Signature:
 
 ```
 (merge! table & tables)

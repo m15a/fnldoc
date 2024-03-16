@@ -2,15 +2,15 @@
 
 **Table of contents**
 
-- [`bless`](#bless)
-- [`option-descriptions/order`](#option-descriptionsorder)
-- [`parse!`](#parse)
-- [`preprocess`](#preprocess)
-- [`validate`](#validate)
+- Function: [`bless`](#function-bless)
+- Function: [`option-descriptions/order`](#function-option-descriptionsorder)
+- Function: [`parse!`](#function-parse)
+- Function: [`preprocess`](#function-preprocess)
+- Function: [`validate`](#function-validate)
 
-## `bless`
+## Function: `bless`
 
-Function signature:
+Signature:
 
 ```
 (bless option-recipe extra)
@@ -22,9 +22,9 @@ In addition, attach `extra` key-value pairs to the table.
 To be blessed, `key` and `flag` attributes are mandatory.
 
 
-## `option-descriptions/order`
+## Function: `option-descriptions/order`
 
-Function signature:
+Signature:
 
 ```
 (option-descriptions/order order recipes color?)
@@ -34,9 +34,9 @@ Gather descriptions among option `recipes` and enumerate them in the given `orde
 
 If `color?` is truthy, it uses ANSI escape code.
 
-## `parse!`
+## Function: `parse!`
 
-Function signature:
+Signature:
 
 ```
 (parse! self config args)
@@ -49,9 +49,9 @@ If the option recipe `self` has `value`, append it to the `config` using `self`'
 it to the `config` accordingly.
 If the head of `args` is missing, report error and exit with failing status.
 
-## `preprocess`
+## Function: `preprocess`
 
-Function signature:
+Signature:
 
 ```
 (preprocess self next-arg)
@@ -63,9 +63,9 @@ If an option recipe `self` has `preprocessor`, call it against the `next-arg`;
 otherwise pass through it.
 In addition, remember the `next-arg` in the `processed-arg` attribute.
 
-## `validate`
+## Function: `validate`
 
-Function signature:
+Signature:
 
 ```
 (validate self value)

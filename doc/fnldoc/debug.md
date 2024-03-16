@@ -2,11 +2,11 @@
 
 **Table of contents**
 
-- [`exit/error`](#exiterror)
+- Function: [`exit/error`](#function-exiterror)
 
-## `exit/error`
+## Function: `exit/error`
 
-Function signature:
+Signature:
 
 ```
 (exit/error msg ?debug)

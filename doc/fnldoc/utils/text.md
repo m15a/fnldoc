@@ -2,17 +2,17 @@
 
 **Table of contents**
 
-- [`indent`](#indent)
-- [`lines->text`](#lines-text)
-- [`pad`](#pad)
-- [`pad/right`](#padright)
-- [`text->lines`](#text-lines)
-- [`wrap`](#wrap)
-- [`wrap/line`](#wrapline)
+- Function: [`indent`](#function-indent)
+- Function: [`lines->text`](#function-lines-text)
+- Function: [`pad`](#function-pad)
+- Function: [`pad/right`](#function-padright)
+- Function: [`text->lines`](#function-text-lines)
+- Function: [`wrap`](#function-wrap)
+- Function: [`wrap/line`](#function-wrapline)
 
-## `indent`
+## Function: `indent`
 
-Function signature:
+Signature:
 
 ```
 (indent width text)
@@ -20,9 +20,9 @@ Function signature:
 
 Indent `text` by `width`.
 
-## `lines->text`
+## Function: `lines->text`
 
-Function signature:
+Signature:
 
 ```
 (lines->text lines ?eol)
@@ -32,9 +32,9 @@ Concatenate a sequential table of `lines` with `?eol` into a `text`.
 
 `?eol` defaults to `"\n"`
 
-## `pad`
+## Function: `pad`
 
-Function signature:
+Signature:
 
 ```
 (pad width text ?pad-char)
@@ -42,9 +42,9 @@ Function signature:
 
 Pad `text` on the left side with `?pad-char` (default: " ") up to `width`.
 
-## `pad/right`
+## Function: `pad/right`
 
-Function signature:
+Signature:
 
 ```
 (pad/right width text ?pad-char)
@@ -52,9 +52,9 @@ Function signature:
 
 Pad `text` on the right side with `?pad-char` (default: " ") up to `width`.
 
-## `text->lines`
+## Function: `text->lines`
 
-Function signature:
+Signature:
 
 ```
 (text->lines text ?eol)
@@ -64,9 +64,9 @@ Split `text` by `?eol` (default: `"\n"`) into a sequential table of lines.
 
 The last empty after the last end of line (i.e., "") will be removed.
 
-## `wrap`
+## Function: `wrap`
 
-Function signature:
+Signature:
 
 ```
 (wrap width text ?eol)
@@ -76,9 +76,9 @@ Wrap each line in the `text` if the line length is longer than `width`.
 
 `?eol` defaults to `"\n"`.
 
-## `wrap/line`
+## Function: `wrap/line`
 
-Function signature:
+Signature:
 
 ```
 (wrap/line line width ?eol)

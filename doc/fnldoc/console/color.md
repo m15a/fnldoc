@@ -2,31 +2,31 @@
 
 **Table of contents**
 
-- [`background-black`](#background-black)
-- [`background-blue`](#background-blue)
-- [`background-cyan`](#background-cyan)
-- [`background-green`](#background-green)
-- [`background-magenta`](#background-magenta)
-- [`background-red`](#background-red)
-- [`background-white`](#background-white)
-- [`background-yellow`](#background-yellow)
-- [`black`](#black)
-- [`blue`](#blue)
-- [`bold`](#bold)
-- [`cyan`](#cyan)
-- [`green`](#green)
-- [`inverse`](#inverse)
-- [`italic`](#italic)
-- [`magenta`](#magenta)
-- [`red`](#red)
-- [`reset`](#reset)
-- [`underline`](#underline)
-- [`white`](#white)
-- [`yellow`](#yellow)
+- Function: [`background-black`](#function-background-black)
+- Function: [`background-blue`](#function-background-blue)
+- Function: [`background-cyan`](#function-background-cyan)
+- Function: [`background-green`](#function-background-green)
+- Function: [`background-magenta`](#function-background-magenta)
+- Function: [`background-red`](#function-background-red)
+- Function: [`background-white`](#function-background-white)
+- Function: [`background-yellow`](#function-background-yellow)
+- Function: [`black`](#function-black)
+- Function: [`blue`](#function-blue)
+- Function: [`bold`](#function-bold)
+- Function: [`cyan`](#function-cyan)
+- Function: [`green`](#function-green)
+- Function: [`inverse`](#function-inverse)
+- Function: [`italic`](#function-italic)
+- Function: [`magenta`](#function-magenta)
+- Function: [`red`](#function-red)
+- Function: [`reset`](#function-reset)
+- Function: [`underline`](#function-underline)
+- Function: [`white`](#function-white)
+- Function: [`yellow`](#function-yellow)
 
-## `background-black`
+## Function: `background-black`
 
-Function signature:
+Signature:
 
 ```
 (background-black text)
@@ -34,9 +34,9 @@ Function signature:
 
 Show `text` in black background color.
 
-## `background-blue`
+## Function: `background-blue`
 
-Function signature:
+Signature:
 
 ```
 (background-blue text)
@@ -44,9 +44,9 @@ Function signature:
 
 Show `text` in blue background color.
 
-## `background-cyan`
+## Function: `background-cyan`
 
-Function signature:
+Signature:
 
 ```
 (background-cyan text)
@@ -54,9 +54,9 @@ Function signature:
 
 Show `text` in cyan background color.
 
-## `background-green`
+## Function: `background-green`
 
-Function signature:
+Signature:
 
 ```
 (background-green text)
@@ -64,9 +64,9 @@ Function signature:
 
 Show `text` in green background color.
 
-## `background-magenta`
+## Function: `background-magenta`
 
-Function signature:
+Signature:
 
 ```
 (background-magenta text)
@@ -74,9 +74,9 @@ Function signature:
 
 Show `text` in magenta background color.
 
-## `background-red`
+## Function: `background-red`
 
-Function signature:
+Signature:
 
 ```
 (background-red text)
@@ -84,9 +84,9 @@ Function signature:
 
 Show `text` in red background color.
 
-## `background-white`
+## Function: `background-white`
 
-Function signature:
+Signature:
 
 ```
 (background-white text)
@@ -94,9 +94,9 @@ Function signature:
 
 Show `text` in white background color.
 
-## `background-yellow`
+## Function: `background-yellow`
 
-Function signature:
+Signature:
 
 ```
 (background-yellow text)
@@ -104,9 +104,9 @@ Function signature:
 
 Show `text` in yellow background color.
 
-## `black`
+## Function: `black`
 
-Function signature:
+Signature:
 
 ```
 (black text)
@@ -114,9 +114,9 @@ Function signature:
 
 Show `text` in black foreground color.
 
-## `blue`
+## Function: `blue`
 
-Function signature:
+Signature:
 
 ```
 (blue text)
@@ -124,9 +124,9 @@ Function signature:
 
 Show `text` in blue foreground color.
 
-## `bold`
+## Function: `bold`
 
-Function signature:
+Signature:
 
 ```
 (bold text)
@@ -134,9 +134,9 @@ Function signature:
 
 Show `text` in bold style.
 
-## `cyan`
+## Function: `cyan`
 
-Function signature:
+Signature:
 
 ```
 (cyan text)
@@ -144,9 +144,9 @@ Function signature:
 
 Show `text` in cyan foreground color.
 
-## `green`
+## Function: `green`
 
-Function signature:
+Signature:
 
 ```
 (green text)
@@ -154,9 +154,9 @@ Function signature:
 
 Show `text` in green foreground color.
 
-## `inverse`
+## Function: `inverse`
 
-Function signature:
+Signature:
 
 ```
 (inverse text)
@@ -164,9 +164,9 @@ Function signature:
 
 Show `text` with foreground and background colors inversed.
 
-## `italic`
+## Function: `italic`
 
-Function signature:
+Signature:
 
 ```
 (italic text)
@@ -174,9 +174,9 @@ Function signature:
 
 Show `text` in italic style.
 
-## `magenta`
+## Function: `magenta`
 
-Function signature:
+Signature:
 
 ```
 (magenta text)
@@ -184,9 +184,9 @@ Function signature:
 
 Show `text` in magenta foreground color.
 
-## `red`
+## Function: `red`
 
-Function signature:
+Signature:
 
 ```
 (red text)
@@ -194,9 +194,9 @@ Function signature:
 
 Show `text` in red foreground color.
 
-## `reset`
+## Function: `reset`
 
-Function signature:
+Signature:
 
 ```
 (reset)
@@ -204,9 +204,9 @@ Function signature:
 
 Reset color.
 
-## `underline`
+## Function: `underline`
 
-Function signature:
+Signature:
 
 ```
 (underline text)
@@ -214,9 +214,9 @@ Function signature:
 
 Show `text` in underlined style.
 
-## `white`
+## Function: `white`
 
-Function signature:
+Signature:
 
 ```
 (white text)
@@ -224,9 +224,9 @@ Function signature:
 
 Show `text` in white foreground color.
 
-## `yellow`
+## Function: `yellow`
 
-Function signature:
+Signature:
 
 ```
 (yellow text)

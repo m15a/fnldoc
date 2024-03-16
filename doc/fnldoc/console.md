@@ -2,16 +2,16 @@
 
 **Table of contents**
 
-- [`error`](#error)
-- [`info`](#info)
-- [`isatty?`](#isatty)
-- [`log`](#log)
-- [`log*`](#log-1)
-- [`warn`](#warn)
+- Function: [`error`](#function-error)
+- Function: [`info`](#function-info)
+- Function: [`isatty?`](#function-isatty)
+- Function: [`log`](#function-log)
+- Function: [`log*`](#function-log-1)
+- Function: [`warn`](#function-warn)
 
-## `error`
+## Function: `error`
 
-Function signature:
+Signature:
 
 ```
 (error ...)
@@ -21,9 +21,9 @@ Print error message to STDERR.
 
 Short hand for `(log* {:level :error} ...)`.
 
-## `info`
+## Function: `info`
 
-Function signature:
+Signature:
 
 ```
 (info ...)
@@ -33,9 +33,9 @@ Print info message to STDERR.
 
 Short hand for `(log* {:level :info} ...)`.
 
-## `isatty?`
+## Function: `isatty?`
 
-Function signature:
+Signature:
 
 ```
 (isatty? fd)
@@ -43,9 +43,9 @@ Function signature:
 
 Check if the file descriptor `fd` is a TTY.
 
-## `log`
+## Function: `log`
 
-Function signature:
+Signature:
 
 ```
 (log ...)
@@ -55,9 +55,9 @@ Print message, without level specified, to STDERR.
 
 Short hand for `(log* {} ...)`.
 
-## `log*`
+## Function: `log*`
 
-Function signature:
+Signature:
 
 ```
 (log* {:color? color? :level level :out out} ...)
@@ -98,9 +98,9 @@ use no color; and if `nil`, it infers whether to use color.
              (log+ {:level :error} "error"))))
 ```
 
-## `warn`
+## Function: `warn`
 
-Function signature:
+Signature:
 
 ```
 (warn ...)

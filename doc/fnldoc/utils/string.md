@@ -2,12 +2,12 @@
 
 **Table of contents**
 
-- [`capitalize`](#capitalize)
-- [`escape-regex`](#escape-regex)
+- Function: [`capitalize`](#function-capitalize)
+- Function: [`escape-regex`](#function-escape-regex)
 
-## `capitalize`
+## Function: `capitalize`
 
-Function signature:
+Signature:
 
 ```
 (capitalize string)
@@ -26,9 +26,9 @@ as is.
 (assert (= "  One two  " (capitalize "  one two  ")))
 ```
 
-## `escape-regex`
+## Function: `escape-regex`
 
-Function signature:
+Signature:
 
 ```
 (escape-regex string)

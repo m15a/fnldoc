@@ -2,12 +2,12 @@
 
 **Table of contents**
 
-- [`sandbox`](#sandbox)
-- [`sandbox/overrides`](#sandboxoverrides)
+- Function: [`sandbox`](#function-sandbox)
+- Function: [`sandbox/overrides`](#function-sandboxoverrides)
 
-## `sandbox`
+## Function: `sandbox`
 
-Function signature:
+Signature:
 
 ```
 (sandbox file ?debug)
@@ -25,15 +25,15 @@ level, or run any code when file is loaded that uses those modules.
 For testing purpose, if `?debug` is truthy and failing, it raises an error
 instead to exit.
 
-## `sandbox/overrides`
+## Function: `sandbox/overrides`
 
-Function signature:
+Signature:
 
 ```
 (sandbox/overrides file overrides ?debug)
 ```
 
-A variant of [`sandbox`](#sandbox) that will be overridden before running `file`.
+A variant of [`sandbox`](#function-sandbox) that will be overridden before running `file`.
 
 You can provide an `overrides` table, which contains function name as
 a key, and function as a value. This function will be used instead of

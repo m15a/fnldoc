@@ -2,20 +2,20 @@
 
 **Table of contents**
 
-- [`basename`](#basename)
-- [`dirname`](#dirname)
-- [`file-exists?`](#file-exists)
-- [`join-paths`](#join-paths)
-- [`make-directory`](#make-directory)
-- [`normalize`](#normalize)
-- [`path->function-name`](#path-function-name)
-- [`path->module-name`](#path-module-name)
-- [`remove-prefix-path`](#remove-prefix-path)
-- [`remove-suffix`](#remove-suffix)
+- Function: [`basename`](#function-basename)
+- Function: [`dirname`](#function-dirname)
+- Function: [`file-exists?`](#function-file-exists)
+- Function: [`join-paths`](#function-join-paths)
+- Function: [`make-directory`](#function-make-directory)
+- Function: [`normalize`](#function-normalize)
+- Function: [`path->function-name`](#function-path-function-name)
+- Function: [`path->module-name`](#function-path-module-name)
+- Function: [`remove-prefix-path`](#function-remove-prefix-path)
+- Function: [`remove-suffix`](#function-remove-suffix)
 
-## `basename`
+## Function: `basename`
 
-Function signature:
+Signature:
 
 ```
 (basename path ?suffix)
@@ -45,9 +45,9 @@ Compatible with GNU coreutils' `basename`.
 (assert (= :.ext (basename :/a/b/.ext :.ext)))
 ```
 
-## `dirname`
+## Function: `dirname`
 
-Function signature:
+Signature:
 
 ```
 (dirname path)
@@ -75,9 +75,9 @@ at once.
 (assert (= :. (dirname :..)))
 ```
 
-## `file-exists?`
+## Function: `file-exists?`
 
-Function signature:
+Signature:
 
 ```
 (file-exists? path)
@@ -85,9 +85,9 @@ Function signature:
 
 Return `true` if a file at the `path` exists.
 
-## `join-paths`
+## Function: `join-paths`
 
-Function signature:
+Signature:
 
 ```
 (join-paths & paths)
@@ -103,9 +103,9 @@ Join all `paths` segments, using separator into one path.
 (assert (= :a/b/ (join-paths :a :b :c :../)))
 ```
 
-## `make-directory`
+## Function: `make-directory`
 
-Function signature:
+Signature:
 
 ```
 (make-directory path ?parents? ?mode)
@@ -120,9 +120,9 @@ It returns multiple values. The first value is `true` or `nil`, indicating
 whether succeeded or failed to make the directory; the second string teaches
 you the type of the third value, which is exit status or terminated signal.
 
-## `normalize`
+## Function: `normalize`
 
-Function signature:
+Signature:
 
 ```
 (normalize path)
@@ -152,9 +152,9 @@ Trailing slash will be left as is.
 (assert (= :. (normalize :./.)))
 ```
 
-## `path->function-name`
+## Function: `path->function-name`
 
-Function signature:
+Signature:
 
 ```
 (path->function-name path)
@@ -171,9 +171,9 @@ This is used for converting function module file to its function name.
   (assert (= :c (path->function-name path))))
 ```
 
-## `path->module-name`
+## Function: `path->module-name`
 
-Function signature:
+Signature:
 
 ```
 (path->module-name path)
@@ -197,9 +197,9 @@ Translate the `path` to its module name.
   (assert (= :a.c (path->module-name path))))
 ```
 
-## `remove-prefix-path`
+## Function: `remove-prefix-path`
 
-Function signature:
+Signature:
 
 ```
 (remove-prefix-path prefix path)
@@ -217,9 +217,9 @@ Strip the `prefix` component from `path`.
 (assert (= :a/b (remove-prefix-path :a/b/c :a/b)))
 ```
 
-## `remove-suffix`
+## Function: `remove-suffix`
 
-Function signature:
+Signature:
 
 ```
 (remove-suffix path suffix)

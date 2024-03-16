@@ -2,11 +2,11 @@
 
 **Table of contents**
 
-- [`assert-type`](#assert-type)
+- Function: [`assert-type`](#function-assert-type)
 
-## `assert-type`
+## Function: `assert-type`
 
-Function signature:
+Signature:
 
 ```
 (assert-type expected x)

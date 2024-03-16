@@ -2,12 +2,12 @@
 
 **Table of contents**
 
-- [`destination-path`](#destination-path)
-- [`process!`](#process)
+- Function: [`destination-path`](#function-destination-path)
+- Function: [`process!`](#function-process)
 
-## `destination-path`
+## Function: `destination-path`
 
-Function signature:
+Signature:
 
 ```
 (destination-path module-info config)
@@ -15,9 +15,9 @@ Function signature:
 
 Determine path to put generated Markdown according to `module-info` and `config`.
 
-## `process!`
+## Function: `process!`
 
-Function signature:
+Signature:
 
 ```
 (process! file config)

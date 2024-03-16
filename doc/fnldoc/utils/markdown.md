@@ -2,22 +2,22 @@
 
 **Table of contents**
 
-- [`bold`](#bold)
-- [`bold-italic`](#bold-italic)
-- [`code`](#code)
-- [`code-block`](#code-block)
-- [`code-fence`](#code-fence)
-- [`heading`](#heading)
-- [`italic`](#italic)
-- [`link`](#link)
-- [`ordered-list`](#ordered-list)
-- [`promote-headings`](#promote-headings)
-- [`string->anchor`](#string-anchor)
-- [`unordered-list`](#unordered-list)
+- Function: [`bold`](#function-bold)
+- Function: [`bold-italic`](#function-bold-italic)
+- Function: [`code`](#function-code)
+- Function: [`code-block`](#function-code-block)
+- Function: [`code-fence`](#function-code-fence)
+- Function: [`heading`](#function-heading)
+- Function: [`italic`](#function-italic)
+- Function: [`link`](#function-link)
+- Function: [`ordered-list`](#function-ordered-list)
+- Function: [`promote-headings`](#function-promote-headings)
+- Function: [`string->anchor`](#function-string-anchor)
+- Function: [`unordered-list`](#function-unordered-list)
 
-## `bold`
+## Function: `bold`
 
-Function signature:
+Signature:
 
 ```
 (bold text)
@@ -25,9 +25,9 @@ Function signature:
 
 Make a **bold** `text`.
 
-## `bold-italic`
+## Function: `bold-italic`
 
-Function signature:
+Signature:
 
 ```
 (bold-italic text)
@@ -35,9 +35,9 @@ Function signature:
 
 Make a ***bold italic*** `text`.
 
-## `code`
+## Function: `code`
 
-Function signature:
+Signature:
 
 ```
 (code text)
@@ -45,9 +45,9 @@ Function signature:
 
 Show `text` as an inline `code`.
 
-## `code-block`
+## Function: `code-block`
 
-Function signature:
+Signature:
 
 ```
 (code-block text)
@@ -55,9 +55,9 @@ Function signature:
 
 Indent `text` by four spaces.
 
-## `code-fence`
+## Function: `code-fence`
 
-Function signature:
+Signature:
 
 ```
 (code-fence text ?annotation)
@@ -65,9 +65,9 @@ Function signature:
 
 Enclose `text` by at least three backticks; optionally attaching `?annotation`.
 
-## `heading`
+## Function: `heading`
 
-Function signature:
+Signature:
 
 ```
 (heading level title)
@@ -75,9 +75,9 @@ Function signature:
 
 Make a heading of specified `level` by prepending `#` in front of the `title`.
 
-## `italic`
+## Function: `italic`
 
-Function signature:
+Signature:
 
 ```
 (italic text)
@@ -85,9 +85,9 @@ Function signature:
 
 Make an *italic* `text`.
 
-## `link`
+## Function: `link`
 
-Function signature:
+Signature:
 
 ```
 (link text url)
@@ -95,9 +95,9 @@ Function signature:
 
 Make a hyperlink of `text` pointing to the `url`.
 
-## `ordered-list`
+## Function: `ordered-list`
 
-Function signature:
+Signature:
 
 ```
 (ordered-list texts)
@@ -109,9 +109,9 @@ Make an ordered list from the sequential table of `texts`.
 2. Banana
 3. Orange
 
-## `promote-headings`
+## Function: `promote-headings`
 
-Function signature:
+Signature:
 
 ```
 (promote-headings level text)
@@ -119,9 +119,9 @@ Function signature:
 
 Promote headings included in the `text` by speficied `level`.
 
-## `string->anchor`
+## Function: `string->anchor`
 
-Function signature:
+Signature:
 
 ```
 (string->anchor string)
@@ -131,9 +131,9 @@ Translate the `string` to Markdown valid anchor id.
 
 Empty ids may occur if we pass only restricted chars. Such ids are ignored.
 
-## `unordered-list`
+## Function: `unordered-list`
 
-Function signature:
+Signature:
 
 ```
 (unordered-list texts)

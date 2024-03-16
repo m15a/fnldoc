@@ -2,15 +2,15 @@
 
 **Table of contents**
 
-- [`init!`](#init)
-- [`merge!`](#merge)
-- [`new`](#new)
-- [`set-fennel-path!`](#set-fennel-path)
-- [`write!`](#write)
+- Function: [`init!`](#function-init)
+- Function: [`merge!`](#function-merge)
+- Function: [`new`](#function-new)
+- Function: [`set-fennel-path!`](#function-set-fennel-path)
+- Function: [`write!`](#function-write)
 
-## `init!`
+## Function: `init!`
 
-Function signature:
+Signature:
 
 ```
 (init! {:config-file config-file :version version})
@@ -170,9 +170,9 @@ modules, contained in those. Supported keys: `:name`, `:description`,
    :order ["some-fn1" "some-fn2" "etc"]}}}
 ```
 
-## `merge!`
+## Function: `merge!`
 
-Function signature:
+Signature:
 
 ```
 (merge! self from)
@@ -181,9 +181,9 @@ Function signature:
 Merge key-value pairs of the `from` table into `self` config object.
 `self` will be mutated. Warn once if each `key` is deprecated.
 
-## `new`
+## Function: `new`
 
-Function signature:
+Signature:
 
 ```
 (new)
@@ -191,9 +191,9 @@ Function signature:
 
 Create a new config object.
 
-## `set-fennel-path!`
+## Function: `set-fennel-path!`
 
-Function signature:
+Signature:
 
 ```
 (set-fennel-path! self)
@@ -201,9 +201,9 @@ Function signature:
 
 Append `self`'s `fennel-path` to `fennel.path`.
 
-## `write!`
+## Function: `write!`
 
-Function signature:
+Signature:
 
 ```
 (write! self config-file ?debug)

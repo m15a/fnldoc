@@ -19,11 +19,11 @@ metadata at runtime.
 
 **Table of contents**
 
-- [`main`](#main)
+- Function: [`main`](#function-main)
 
-## `main`
+## Function: `main`
 
-Function signature:
+Signature:
 
 ```
 (main)

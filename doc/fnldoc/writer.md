@@ -2,11 +2,11 @@
 
 **Table of contents**
 
-- [`write!`](#write)
+- Function: [`write!`](#function-write)
 
-## `write!`
+## Function: `write!`
 
-Function signature:
+Signature:
 
 ```
 (write! text path ?debug)

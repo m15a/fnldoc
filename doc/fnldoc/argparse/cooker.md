@@ -60,12 +60,12 @@ A recipe is a table that possibly contains the following entries depending on th
 
 **Table of contents**
 
-- [`cooking`](#cooking)
-- [`recipe`](#recipe)
+- Macro: [`cooking`](#macro-cooking)
+- Macro: [`recipe`](#macro-recipe)
 
-## `cooking`
+## Macro: `cooking`
 
-Function signature:
+Signature:
 
 ```
 (cooking & recipes)
@@ -73,9 +73,9 @@ Function signature:
 
 A helper macro to collect option `recipes` into one table.
 
-## `recipe`
+## Macro: `recipe`
 
-Function signature:
+Signature:
 
 ```
 (recipe recipe-type & recipe-spec)

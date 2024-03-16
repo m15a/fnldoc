@@ -2,14 +2,14 @@
 
 **Table of contents**
 
-- [`extract-metadata`](#extract-metadata)
-- [`find-metadata`](#find-metadata)
-- [`module-info`](#module-info)
-- [`require-file`](#require-file)
+- Function: [`extract-metadata`](#function-extract-metadata)
+- Function: [`find-metadata`](#function-find-metadata)
+- Function: [`module-info`](#function-module-info)
+- Function: [`require-file`](#function-require-file)
 
-## `extract-metadata`
+## Function: `extract-metadata`
 
-Function signature:
+Signature:
 
 ```
 (extract-metadata value)
@@ -17,9 +17,9 @@ Function signature:
 
 Extract metadata from the `value`; return `nil` if not found.
 
-## `find-metadata`
+## Function: `find-metadata`
 
-Function signature:
+Signature:
 
 ```
 (find-metadata module)
@@ -29,9 +29,9 @@ Find metadata contained in the `module` table recursively.
 
 It returns a table that maps module (table or function) name to its metadata.
 
-## `module-info`
+## Function: `module-info`
 
-Function signature:
+Signature:
 
 ```
 (module-info file config)
@@ -41,9 +41,9 @@ Returns table containing all relevant information accordingly to
 `config` about the module in the `file` for which documentation is
 generated.
 
-## `require-file`
+## Function: `require-file`
 
-Function signature:
+Signature:
 
 ```
 (require-file file sandbox?)

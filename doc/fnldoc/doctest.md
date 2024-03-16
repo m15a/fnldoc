@@ -2,11 +2,11 @@
 
 **Table of contents**
 
-- [`test`](#test)
+- Function: [`test`](#function-test)
 
-## `test`
+## Function: `test`
 
-Function signature:
+Signature:
 
 ```
 (test module-info config)
