@@ -77,8 +77,9 @@ To be blessed, `key` and `flag` attributes are mandatory.
         lines (icollect [_ flag (ipairs order)]
                 (let [description (. descriptions flag)]
                   (if description
-                      (.. (. description :flag) "\n"
-                          (indent 6 (wrap 72 (. description :desc))) "\n")
+                      (lines->text [(. description :flag)
+                                    (indent 6 (wrap 72 (. description :desc)))
+                                    ""])
                       (error (.. "no flag found: " flag)))))]
     (lines->text lines)))
 
