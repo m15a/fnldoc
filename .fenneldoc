@@ -1,5 +1,5 @@
 ;; -*- mode: fennel; -*- vi:ft=fennel
-;; Configuration file for Fnldoc 1.0.2-dev
+;; Configuration file for Fnldoc 1.1.0-dev
 ;; https://sr.ht/~m15a/fnldoc/
 {:copyright? true
  :fennel-path {}
@@ -86,7 +86,7 @@ A recipe is a table that possibly contains the following entries depending on th
  :out-dir "./doc"
  :project-copyright "Copyright (C) 2020-2022 Andrey Listopadov, 2024 NACAMURA Mitsuhiro"
  :project-license "[MIT](https://git.sr.ht/~m15a/fnldoc/tree/main/item/LICENSE)"
- :project-version "1.0.2-dev"
+ :project-version "1.1.0-dev"
  :sandbox? true
  :src-dir "./src"
  :test-requirements {}

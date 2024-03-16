@@ -5,7 +5,7 @@
 (local argparse (require :fnldoc.argparse))
 (local {: process!} (require :fnldoc.processor))
 
-(local version :1.0.2-dev)
+(local version :1.1.0-dev)
 
 (fn show-version []
   (io.stdout:write version "\n")
