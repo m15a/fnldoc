@@ -15,9 +15,10 @@
 (lambda extract-metadata [value]
   "Extract metadata from the `value`; return `nil` if not found."
   (let [docstring (metadata:get value :fnl/docstring)
-        arglist (metadata:get value :fnl/arglist)]
-    (when (or docstring arglist)
-      {: docstring : arglist})))
+        arglist (metadata:get value :fnl/arglist)
+        ftype (metadata:get value :fnldoc/type)]
+    (when (or docstring arglist ftype)
+      {: docstring : arglist :type ftype})))
 
 (lambda find-metadata [module]
   "Find metadata contained in the `module` table recursively.
@@ -81,8 +82,13 @@ generated."
      :type (if result.macros? :macros :functions)
      :items (if result.macros? {} result.module)
      :test-requirements (?. config :test-requirements file)
-     :metadata (find-metadata (doto result.module
-                                (merge! result.loaded-macros)))
+     :metadata (let [mdata (find-metadata (doto result.module
+                                            (merge! result.loaded-macros)))]
+                 (when result.macros?
+                   (each [item (pairs mdata)]
+                     (when (not (?. mdata item :type))
+                       (tset mdata item :type :macro))))
+                 mdata)
      :order (or (case (?. config :modules-info file :doc-order)
                   any (do
                         (console.warn "the 'doc-order' key in 'modules-info' was "
@@ -107,7 +113,7 @@ generated."
           fname (path->function-name file)]
       {:name (?. config :modules-info file :name)
        :description (let [desc (?. config :modules-info file :description)
-                          anchors (item-index->anchor-map [fname])]
+                          anchors (item-index->anchor-map [fname] {fname mdata})]
                       (if desc
                           (-> [desc
                                ""

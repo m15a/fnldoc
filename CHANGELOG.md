@@ -26,6 +26,9 @@ and this project adheres to [Semantic Versioning][2].
 
 ### Added
 
+- Module entries are now shown with their types (function or macro) [[#5]]:
+  The type is inferred automatically; otherwise you can explicitly annotate
+  it in metadata field `:fnldoc/type`.
 - New option `--src-dir` (or `src-dir` entry in `.fenneldoc`) [[#10]]:
   If source files are placed in this directory, it will be stripped from
   destination path to generate documentation. For example, running
@@ -37,6 +40,7 @@ and this project adheres to [Semantic Versioning][2].
   entry. Both accept `alphabetic`, `reverse-alphabetic`, a custom comparator
   function, or a table of ordered module items.
  
+[#5]: https://todo.sr.ht/~m15a/fnldoc/5
 [#10]: https://todo.sr.ht/~m15a/fnldoc/10
 [609a7f45]: https://git.sr.ht/~m15a/fnldoc/commit/609a7f45
 

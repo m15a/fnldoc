@@ -48,29 +48,38 @@ or specified in `.fenneldoc`."
                ""))
        (heading 1)))
 
-(lambda item-index->anchor-map [item-index]
-  "Get mapping from item to its HTML internal link anchor for the `item-index`."
+(lambda item-index->anchor-map [item-index mdata]
+  "Get mapping from item to its HTML internal link anchor for the `item-index`.
+
+`metadata` is used to make anchor depending on function's type: function or macro."
+  {:fnl/arglist [item-index metadata]}
   (let [map {} seen {}]
     (each [_ item (ipairs item-index)]
-      (match (string->anchor item)
+      (match (string->anchor (.. (or (?. mdata item :type) :function) ": " item))
         anchor (let [id (. seen anchor)
                      anchor (.. anchor (if id (.. "-" id) ""))]
                  (tset seen anchor (+ (or id 0) 1))
                  (tset map item anchor))))
     map))
 
-(lambda table-of-contents [item-index]
+(lambda table-of-contents [item-index mdata]
   "Generate Table of contents for the `item-index`.
 
 It returns multiple values in which firstly the ToC itself, and secondary
-corresponding anchor mapping."
-  (let [anchor-map (item-index->anchor-map item-index)
+corresponding anchor mapping.
+
+`metadata` is used to show each function's type: function or macro."
+  {:fnl/arglist [item-index metadata]}
+  (let [anchor-map (item-index->anchor-map item-index mdata)
         toc (-> [(bold "Table of contents")
                  ""
                  (unordered-list (icollect [_ item (ipairs item-index)]
-                                   (match (. anchor-map item)
-                                     anchor (link (code item) anchor)
-                                     _ (code item))))]
+                                   (let [ftype (case (?. mdata item :type)
+                                                 :macro :Macro
+                                                 _ :Function)]
+                                     (.. ftype ": " (match (. anchor-map item)
+                                                      anchor (link (code item) anchor)
+                                                      _ (code item))))))]
                 (lines->text))]
     (values toc anchor-map)))
 
@@ -78,7 +87,7 @@ corresponding anchor mapping."
   "Make a signature line of `function` with the `arglist`."
   (let [arglist (table.concat arglist " ")
         signature (.. "(" function (if (= "" arglist) "" (.. " " arglist)) ")")]
-    (lines->text ["Function signature:"
+    (lines->text ["Signature:"
                   ""
                   (code-fence signature)])))
 
@@ -115,7 +124,13 @@ corresponding anchor mapping."
 
 `anchor-map` is used to translate ```item'`` to internal link."
   {:fnl/arglist [item metadata anchor-map config]}
-  (let [lines [(heading 2 (code item)) ""]]
+  (let [lines []
+        ftype (case mdata.type
+                :macro :Macro
+                _ :Function)]
+    (doto lines
+      (table.insert (heading 2 (.. ftype ": " (code item))))
+      (table.insert ""))
     (when (and config.function-signatures? mdata.arglist)
       (doto lines
         (table.insert (function-signature item mdata.arglist))
@@ -156,7 +171,7 @@ corresponding anchor mapping."
   "Generate markdown from `module-info` accordingly to `config`."
   {:fnl/arglist [module-info config]}
   (let [item-index (sorted-item-index modinfo config)
-        (toc anchor-map) (table-of-contents item-index)
+        (toc anchor-map) (table-of-contents item-index modinfo.metadata)
         lines []]
     (add-section-to lines
       (title-heading (or modinfo.name (basename modinfo.file))
