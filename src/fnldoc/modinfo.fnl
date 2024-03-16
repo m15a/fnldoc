@@ -123,7 +123,7 @@ generated."
        :arglist mdata.arglist})
     (true result)
     (do
-      (console.info "skipping a module of type '" (type result) "': " file)
+      (console.info "skipping a module of type '" result.type "': " file)
       nil)
     (false msg)
     (do
