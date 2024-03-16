@@ -7,8 +7,10 @@
 (local console (require :fnldoc.console))
 (local {: file-exists?} (require :fnldoc.utils.file))
 (local {: merge!} (require :fnldoc.utils.table))
+(local {: lines->text} (require :fnldoc.utils.text))
 (local {: path->function-name : path->module-name} (require :fnldoc.utils.file))
-(local {: gen-function-module-description} (require :fnldoc.markdown))
+(local {: item-index->anchor-map : item-documentation}
+       (require :fnldoc.markdown))
 
 (lambda extract-metadata [value]
   "Extract metadata from the `value`; return `nil` if not found."
@@ -104,7 +106,14 @@ generated."
     (let [mdata (extract-metadata result.module)
           fname (path->function-name file)]
       {:name (?. config :modules-info file :name)
-       :description (gen-function-module-description fname mdata file config)
+       :description (let [desc (?. config :modules-info file :description)
+                          anchors (item-index->anchor-map [fname])]
+                      (if desc
+                          (-> [desc
+                               ""
+                               (item-documentation fname mdata anchors config)]
+                              (lines->text))
+                          (item-documentation fname mdata anchors config)))
        : file
        :type :function-module
        :items {fname result.module}

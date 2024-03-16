@@ -2,7 +2,7 @@
         : dirname
         : join-paths
         : remove-prefix-path} (require :fnldoc.utils.file))
-(local {: gen-markdown} (require :fnldoc.markdown))
+(local {: module-info->markdown} (require :fnldoc.markdown))
 (local {: test} (require :fnldoc.doctest))
 (local {: write!} (require :fnldoc.writer))
 
@@ -19,7 +19,7 @@ in `config`. Generated Markdown documentation will be placed under `config.out-d
   {:fnl/arglist [module-info config]}
   (when (not= config.mode :doc)
     (test modinfo config))
-  (let [markdown (gen-markdown modinfo config)]
+  (let [markdown (module-info->markdown modinfo config)]
     (when (not= config.mode :check)
       (let [path (target-path modinfo config)]
         (write! markdown path)))))
