@@ -29,8 +29,11 @@ The last empty after the last end of line (i.e., \"\") will be removed."
   (when ?eol
     (assert-type :string ?eol))
   (let [eol (or ?eol "\n")
+        pat (if (= "Lua 5.1" _G._VERSION) ; WHY????
+                (.. "([^" eol "]*)\n?")
+                (.. "[^" eol "]*"))
         lines []]
-    (each [line (string.gmatch text (.. "([^" eol "]*)\n?"))]
+    (each [line (text:gmatch pat)]
       (table.insert lines line))
     (remove-last-empty-if-any lines)))
 
