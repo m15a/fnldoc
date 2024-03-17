@@ -13,7 +13,7 @@ tasks:
   - clone: |
       rm -rf $WORK_DIR
       git clone --bare $SRC_URL $WORK_DIR
-  - setup: |
+  - prep: |
       cd $WORK_DIR
       git remote set-url --push origin $DST_URL
       git fetch --prune origin
