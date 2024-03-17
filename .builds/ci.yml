@@ -1,0 +1,8 @@
+image: nixos/latest
+environment:
+  NIX_CONFIG: experimental-features = nix-command flakes
+  SRC_DIR: fnldoc
+tasks:
+  - check: |
+      cd $SRC_DIR
+      nix flake check --verbose
