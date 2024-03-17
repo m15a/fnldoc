@@ -1,6 +1,6 @@
 ;;;; Utilities to print messages to console STDERR.
 
-(local color (require :fnldoc.console.color))
+(local color (require :fnldoc.utils.color))
 
 (local isatty?-cache {})
 
@@ -13,7 +13,11 @@
       status (= 0 status))))
 
 (lambda isatty? [fd]
-  "Check if the file descriptor `fd` is a TTY."
+  "Check if the file descriptor `fd` is a TTY.
+
+`fd` should be a number of file descriptor; `1` for STDOUT and `2` for
+STDERR. Internally, it runs `test -t $fd`. Results of this query is
+cached."
   (case (. isatty?-cache fd)
     cached cached
     _ (let [tty? (%isatty? fd)]
@@ -34,12 +38,9 @@
   "Print `...` to STDERR (default) in specified `level`.
 
 `level` can be one of `:info`, `:warning` (or `:warn`), and `:error`;
-other than those will be ignored.
-
-If file handle `out` is specified, print it to the `out` instead.
-
-If `color?` is truthy, use color to print messages; if `false`,
-use no color; and if `nil`, it infers whether to use color.
+other than those will be ignored. If file handle `out` is specified, print
+it to the `out` instead. If `color?` is truthy, use color to print messages;
+if `false`, use no color; and if `nil`, it infers whether to use color.
 
 # Examples
 
@@ -49,20 +50,15 @@ use no color; and if `nil`, it infers whether to use color.
                (log* {: level : out :color? false} msg)
                (out:seek :set)
                (out:read :*a)))] 
-  (assert (= \"fnldoc: no level
-\"
+  (assert (= \"fnldoc: no level\n\"
              (log+ {} \"no level\")))
-  (assert (= \"fnldoc [INFO]: info
-\"
+  (assert (= \"fnldoc [INFO]: info\n\"
              (log+ {:level :info} \"info\")))
-  (assert (= \"fnldoc [WARNING]: warn
-\"
+  (assert (= \"fnldoc [WARNING]: warn\n\"
              (log+ {:level :warn} \"warn\")))
-  (assert (= \"fnldoc [WARNING]: warning
-\"
+  (assert (= \"fnldoc [WARNING]: warning\n\"
              (log+ {:level :warning} \"warning\")))
-  (assert (= \"fnldoc [ERROR]: error
-\"
+  (assert (= \"fnldoc [ERROR]: error\n\"
              (log+ {:level :error} \"error\"))))
 ```"
   (let [out (or out io.stderr)

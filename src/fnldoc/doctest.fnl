@@ -119,7 +119,7 @@
 (fn check-function [func docstring arglist module-info config]
   (if (or (not docstring) (= docstring ""))
       (do
-        (if (= module-info.type :function-module)
+        (if (= module-info.type :function)
             (io.stderr:write "WARNING: file '" module-info.file "' exports undocumented value
 ")
             (io.stderr:write "WARNING: in file '" module-info.file
@@ -137,13 +137,13 @@
 Accepts `module-info` with items to check, and `config` argument."
   (var error? false)
   (match module-info.type
-    :function-module (let [fname (pick-values 1 (next module-info.items))
-                           docstring (and module-info.documented?
-                                          module-info.description)
-                           arglist module-info.arglist]
-                       (set error?
-                            (check-function fname docstring arglist module-info
-                                            config)))
+    :function (let [fname (pick-values 1 (next module-info.items))
+                    docstring (and module-info.documented?
+                                   module-info.description)
+                    arglist module-info.arglist]
+                (set error?
+                     (check-function fname docstring arglist module-info
+                                     config)))
     _ (let [funcs (icollect [k _ (pairs module-info.metadata)] k)]
         (each [_ func (ipairs funcs)]
           (case (. module-info.metadata func)

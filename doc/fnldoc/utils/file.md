@@ -1,4 +1,4 @@
-# File.fnl (1.0.2-dev)
+# File.fnl (1.1.0-dev)
 
 **Table of contents**
 
@@ -14,8 +14,6 @@
 - Function: [`remove-suffix`](#function-remove-suffix)
 
 ## Function: `basename`
-
-Signature:
 
 ```
 (basename path ?suffix)
@@ -47,8 +45,6 @@ Compatible with GNU coreutils' `basename`.
 
 ## Function: `dirname`
 
-Signature:
-
 ```
 (dirname path)
 ```
@@ -77,8 +73,6 @@ at once.
 
 ## Function: `file-exists?`
 
-Signature:
-
 ```
 (file-exists? path)
 ```
@@ -86,8 +80,6 @@ Signature:
 Return `true` if a file at the `path` exists.
 
 ## Function: `join-paths`
-
-Signature:
 
 ```
 (join-paths & paths)
@@ -105,8 +97,6 @@ Join all `paths` segments, using separator into one path.
 
 ## Function: `make-directory`
 
-Signature:
-
 ```
 (make-directory path ?parents? ?mode)
 ```
@@ -121,8 +111,6 @@ whether succeeded or failed to make the directory; the second string teaches
 you the type of the third value, which is exit status or terminated signal.
 
 ## Function: `normalize`
-
-Signature:
 
 ```
 (normalize path)
@@ -154,8 +142,6 @@ Trailing slash will be left as is.
 
 ## Function: `path->function-name`
 
-Signature:
-
 ```
 (path->function-name path)
 ```
@@ -172,8 +158,6 @@ This is used for converting function module file to its function name.
 ```
 
 ## Function: `path->module-name`
-
-Signature:
 
 ```
 (path->module-name path)
@@ -199,8 +183,6 @@ Translate the `path` to its module name.
 
 ## Function: `remove-prefix-path`
 
-Signature:
-
 ```
 (remove-prefix-path prefix path)
 ```
@@ -218,8 +200,6 @@ Strip the `prefix` component from `path`.
 ```
 
 ## Function: `remove-suffix`
-
-Signature:
 
 ```
 (remove-suffix path suffix)
@@ -244,5 +224,5 @@ Copyright (C) 2020-2022 Andrey Listopadov, 2024 NACAMURA Mitsuhiro
 
 License: [MIT](https://git.sr.ht/~m15a/fnldoc/tree/main/item/LICENSE)
 
-<!-- Generated with Fnldoc 1.0.2-dev
+<!-- Generated with Fnldoc 1.1.0-dev
      https://sr.ht/~m15a/fnldoc/ -->

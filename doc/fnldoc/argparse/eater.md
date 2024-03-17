@@ -1,4 +1,6 @@
-# Eater.fnl (1.0.2-dev)
+# Eater.fnl (1.1.0-dev)
+
+Various option recipe consumers that help command line argument processing.
 
 **Table of contents**
 
@@ -10,21 +12,17 @@
 
 ## Function: `bless`
 
-Signature:
-
 ```
 (bless option-recipe extra)
 ```
 
-Enable the `option-recipe` table to consume command line arguments.
+Enable the `option-recipe` table to process command line argument.
 
-In addition, attach `extra` key-value pairs to the table.
-To be blessed, `key` and `flag` attributes are mandatory.
-
+By blessing an option recipe, it can [`parse!`](#function-parse) command line argument.
+It merges `extra` key-value pairs to the table.
+To be blessed, `key` and `flag` entries are mandatory.
 
 ## Function: `option-descriptions/order`
-
-Signature:
 
 ```
 (option-descriptions/order order recipes color?)
@@ -36,22 +34,18 @@ If `color?` is truthy, it uses ANSI escape code.
 
 ## Function: `parse!`
 
-Signature:
-
 ```
 (parse! self config args)
 ```
 
-Update the `config` object possibly with consuming the head of `args`.
+Update the `config` possibly with consuming the head of `args`.
 
-If the option recipe `self` has `value`, append it to the `config` using `self`'s
-`key`. If not, consume the head of `args`, possibly preprocess, validate, and append
-it to the `config` accordingly.
+If `self`, an option recipe, has `value`, append it to the `config` using
+`self.key`. If not, consume the head of `args`, possibly [`preprocess`](#function-preprocess),
+[`validate`](#function-validate), and append it to the `config` accordingly.
 If the head of `args` is missing, report error and exit with failing status.
 
 ## Function: `preprocess`
-
-Signature:
 
 ```
 (preprocess self next-arg)
@@ -59,21 +53,19 @@ Signature:
 
 Preprocess the `next-arg` and return the processed value.
 
-If an option recipe `self` has `preprocessor`, call it against the `next-arg`;
+If option recipe `self` has `preprocessor`, call it against the `next-arg`;
 otherwise pass through it.
 In addition, remember the `next-arg` in the `processed-arg` attribute.
 
 ## Function: `validate`
 
-Signature:
-
 ```
 (validate self value)
 ```
 
-Validate the `value` and return it if successes.
+Validate the `value` and return it if fine.
 
-If an option recipe `self` has `validator`, call it against the `value`;
+If option recipe `self` has `validator`, call it against the `value`;
 otherwise pass through it.
 If validation fails, report error and exit with failing status.
 
@@ -83,5 +75,5 @@ Copyright (C) 2020-2022 Andrey Listopadov, 2024 NACAMURA Mitsuhiro
 
 License: [MIT](https://git.sr.ht/~m15a/fnldoc/tree/main/item/LICENSE)
 
-<!-- Generated with Fnldoc 1.0.2-dev
+<!-- Generated with Fnldoc 1.1.0-dev
      https://sr.ht/~m15a/fnldoc/ -->

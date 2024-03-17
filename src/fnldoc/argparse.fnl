@@ -1,5 +1,7 @@
+;;;; Process command line arguments.
+
 (import-macros {: cooking : recipe} :fnldoc.argparse.cooker)
-(local color (require :fnldoc.console.color))
+(local color (require :fnldoc.utils.color))
 (local {: bless : option-descriptions/order} (require :fnldoc.argparse.eater))
 (local {: clone} (require :fnldoc.utils.table))
 (local {: indent : wrap : lines->text} (require :fnldoc.utils.text))
@@ -65,9 +67,7 @@ Supported modes:
          "    --config\tParse all regular options and update '.fenneldoc' at the current directory."}})
 
 (fn help [color?]
-  "Generate help message.
-
-If `color?` is truthy, it use ANSI escape code."
+  "Generate help message, decorated with ANSI escape code if `color?` is truthy."
   (let [underline (if color? color.underline #$)
         italic (if color? color.italic #$)]
     (-> [(.. (underline "Usage:") " fnldoc " (italic "[OPTIONS] [FILE]..."))
@@ -113,19 +113,20 @@ If `color?` is truthy, it use ANSI escape code."
         (lines->text))))
 
 (fn parse [args ?debug]
-  "Parse command line `args` and return the result.
+  "Parse command line `args` and return its result.
 
 The result contains attributes:
 
-- `write-config?`: Whether to write the final config, after merged with that comming
-  from `.fenneldoc`, to `.fenneldoc`.
+- `write-config?`: Whether to write configuration, after merged with that
+  coming from `.fenneldoc`, to `.fenneldoc`.
 - `show-help?`: Whether to show Fnldoc help and exit.
 - `show-version?`: Whether to show Fnldoc version and exit.
-- `config`: Parsed config that will be merged into that comming from `.fenneldoc`.
-- `files`: Target Fennel file names to be proccessed.
+- `config`: Parsed configuration that will be merged into that coming from
+  `.fenneldoc`.
+- `files`: Target Fennel file names, which will be processed by Fnldoc.
 
-For testing purpose, if `?debug` is truthy and failing, it raises an error
-instead to exit."
+For testing purpose, if `?debug` is truthy and `parse` fails, it raises an
+error instead to exit."
   (let [args (clone args)
         state {:config {} :files []}]
     (while (and (not state.show-version?)

@@ -1,4 +1,4 @@
-# Processor.fnl (1.0.2-dev)
+# Processor.fnl (1.1.0-dev)
 
 **Table of contents**
 
@@ -7,8 +7,6 @@
 
 ## Function: `destination-path`
 
-Signature:
-
 ```
 (destination-path module-info config)
 ```
@@ -16,8 +14,6 @@ Signature:
 Determine path to put generated Markdown according to `module-info` and `config`.
 
 ## Function: `process!`
-
-Signature:
 
 ```
 (process! file config)
@@ -34,5 +30,5 @@ Copyright (C) 2020-2022 Andrey Listopadov, 2024 NACAMURA Mitsuhiro
 
 License: [MIT](https://git.sr.ht/~m15a/fnldoc/tree/main/item/LICENSE)
 
-<!-- Generated with Fnldoc 1.0.2-dev
+<!-- Generated with Fnldoc 1.1.0-dev
      https://sr.ht/~m15a/fnldoc/ -->

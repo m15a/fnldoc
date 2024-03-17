@@ -1,4 +1,4 @@
-;;;; Utilities convenient in testing/debugging purpose.
+;;;; Utilities convenient for testing/debugging purpose.
 
 (local console (require :fnldoc.console))
 

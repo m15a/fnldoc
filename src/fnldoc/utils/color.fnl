@@ -1,4 +1,4 @@
-;;;; Colorize console messages using ANSI escape code.
+;;;; Colorize text using ANSI escape code.
 
 (fn reset []
   "Reset color."
@@ -17,7 +17,7 @@
   (.. "\x1B[4m" text "\x1B[24m"))
 
 (lambda inverse [text]
-  "Show `text` with foreground and background colors inversed."
+  "Show `text` with foreground and background colors flipped."
   (.. "\x1B[7m" text "\x1B[27m"))
 
 (lambda black [text]

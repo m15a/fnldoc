@@ -1,4 +1,6 @@
-# Table.fnl (1.0.2-dev)
+# Table.fnl (1.1.0-dev)
+
+Table extras.
 
 **Table of contents**
 
@@ -9,8 +11,6 @@
 
 ## Function: `clone`
 
-Signature:
-
 ```
 (clone table)
 ```
@@ -19,8 +19,6 @@ Return a shallow copy of the `table`, assuming that keys are string or number.
 
 ## Function: `clone/deeply`
 
-Signature:
-
 ```
 (clone/deeply table)
 ```
@@ -28,8 +26,6 @@ Signature:
 Return a deep copy of the `table`, assuming that keys are string or number.
 
 ## Function: `comparator/table`
-
-Signature:
 
 ```
 (comparator/table table ?fallback)
@@ -50,8 +46,6 @@ and returns `true` iff
 
 
 ## Function: `merge!`
-
-Signature:
 
 ```
 (merge! table & tables)
@@ -74,5 +68,5 @@ Copyright (C) 2020-2022 Andrey Listopadov, 2024 NACAMURA Mitsuhiro
 
 License: [MIT](https://git.sr.ht/~m15a/fnldoc/tree/main/item/LICENSE)
 
-<!-- Generated with Fnldoc 1.0.2-dev
+<!-- Generated with Fnldoc 1.1.0-dev
      https://sr.ht/~m15a/fnldoc/ -->

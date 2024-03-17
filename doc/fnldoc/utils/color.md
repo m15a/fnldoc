@@ -1,4 +1,6 @@
-# Color.fnl (1.0.2-dev)
+# Color.fnl (1.1.0-dev)
+
+Colorize text using ANSI escape code.
 
 **Table of contents**
 
@@ -26,8 +28,6 @@
 
 ## Function: `background-black`
 
-Signature:
-
 ```
 (background-black text)
 ```
@@ -35,8 +35,6 @@ Signature:
 Show `text` in black background color.
 
 ## Function: `background-blue`
-
-Signature:
 
 ```
 (background-blue text)
@@ -46,8 +44,6 @@ Show `text` in blue background color.
 
 ## Function: `background-cyan`
 
-Signature:
-
 ```
 (background-cyan text)
 ```
@@ -55,8 +51,6 @@ Signature:
 Show `text` in cyan background color.
 
 ## Function: `background-green`
-
-Signature:
 
 ```
 (background-green text)
@@ -66,8 +60,6 @@ Show `text` in green background color.
 
 ## Function: `background-magenta`
 
-Signature:
-
 ```
 (background-magenta text)
 ```
@@ -75,8 +67,6 @@ Signature:
 Show `text` in magenta background color.
 
 ## Function: `background-red`
-
-Signature:
 
 ```
 (background-red text)
@@ -86,8 +76,6 @@ Show `text` in red background color.
 
 ## Function: `background-white`
 
-Signature:
-
 ```
 (background-white text)
 ```
@@ -95,8 +83,6 @@ Signature:
 Show `text` in white background color.
 
 ## Function: `background-yellow`
-
-Signature:
 
 ```
 (background-yellow text)
@@ -106,8 +92,6 @@ Show `text` in yellow background color.
 
 ## Function: `black`
 
-Signature:
-
 ```
 (black text)
 ```
@@ -115,8 +99,6 @@ Signature:
 Show `text` in black foreground color.
 
 ## Function: `blue`
-
-Signature:
 
 ```
 (blue text)
@@ -126,8 +108,6 @@ Show `text` in blue foreground color.
 
 ## Function: `bold`
 
-Signature:
-
 ```
 (bold text)
 ```
@@ -135,8 +115,6 @@ Signature:
 Show `text` in bold style.
 
 ## Function: `cyan`
-
-Signature:
 
 ```
 (cyan text)
@@ -146,8 +124,6 @@ Show `text` in cyan foreground color.
 
 ## Function: `green`
 
-Signature:
-
 ```
 (green text)
 ```
@@ -156,17 +132,13 @@ Show `text` in green foreground color.
 
 ## Function: `inverse`
 
-Signature:
-
 ```
 (inverse text)
 ```
 
-Show `text` with foreground and background colors inversed.
+Show `text` with foreground and background colors flipped.
 
 ## Function: `italic`
-
-Signature:
 
 ```
 (italic text)
@@ -176,8 +148,6 @@ Show `text` in italic style.
 
 ## Function: `magenta`
 
-Signature:
-
 ```
 (magenta text)
 ```
@@ -185,8 +155,6 @@ Signature:
 Show `text` in magenta foreground color.
 
 ## Function: `red`
-
-Signature:
 
 ```
 (red text)
@@ -196,8 +164,6 @@ Show `text` in red foreground color.
 
 ## Function: `reset`
 
-Signature:
-
 ```
 (reset)
 ```
@@ -205,8 +171,6 @@ Signature:
 Reset color.
 
 ## Function: `underline`
-
-Signature:
 
 ```
 (underline text)
@@ -216,8 +180,6 @@ Show `text` in underlined style.
 
 ## Function: `white`
 
-Signature:
-
 ```
 (white text)
 ```
@@ -225,8 +187,6 @@ Signature:
 Show `text` in white foreground color.
 
 ## Function: `yellow`
-
-Signature:
 
 ```
 (yellow text)
@@ -240,5 +200,5 @@ Copyright (C) 2020-2022 Andrey Listopadov, 2024 NACAMURA Mitsuhiro
 
 License: [MIT](https://git.sr.ht/~m15a/fnldoc/tree/main/item/LICENSE)
 
-<!-- Generated with Fnldoc 1.0.2-dev
+<!-- Generated with Fnldoc 1.1.0-dev
      https://sr.ht/~m15a/fnldoc/ -->

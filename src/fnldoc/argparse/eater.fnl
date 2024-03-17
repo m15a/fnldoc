@@ -4,12 +4,12 @@
 (local {: exit/error} (require :fnldoc.debug))
 (local {: merge!} (require :fnldoc.utils.table))
 (local {: indent : wrap : lines->text} (require :fnldoc.utils.text))
-(local color (require :fnldoc.console.color))
+(local color (require :fnldoc.utils.color))
 
 (fn preprocess [self next-arg]
   "Preprocess the `next-arg` and return the processed value.
 
-If an option recipe `self` has `preprocessor`, call it against the `next-arg`;
+If option recipe `self` has `preprocessor`, call it against the `next-arg`;
 otherwise pass through it.
 In addition, remember the `next-arg` in the `processed-arg` attribute."
   (set self.processed-arg next-arg)
@@ -18,9 +18,9 @@ In addition, remember the `next-arg` in the `processed-arg` attribute."
       (self.preprocessor next-arg)))
 
 (fn validate [self value]
-  "Validate the `value` and return it if successes.
+  "Validate the `value` and return it if fine.
 
-If an option recipe `self` has `validator`, call it against the `value`;
+If option recipe `self` has `validator`, call it against the `value`;
 otherwise pass through it.
 If validation fails, report error and exit with failing status."
   (if (not self.validator)
@@ -33,11 +33,11 @@ If validation fails, report error and exit with failing status."
             (exit/error msg self.__fnldoc_debug?)))))
 
 (fn parse! [self config args]
-  "Update the `config` object possibly with consuming the head of `args`.
+  "Update the `config` possibly with consuming the head of `args`.
 
-If the option recipe `self` has `value`, append it to the `config` using `self`'s
-`key`. If not, consume the head of `args`, possibly preprocess, validate, and append
-it to the `config` accordingly.
+If `self`, an option recipe, has `value`, append it to the `config` using
+`self.key`. If not, consume the head of `args`, possibly `preprocess',
+`validate', and append it to the `config` accordingly.
 If the head of `args` is missing, report error and exit with failing status."
   (if (not= nil self.value)
       (tset config self.key self.value)
@@ -52,11 +52,11 @@ If the head of `args` is missing, report error and exit with failing status."
 (local eater-mt {:__index {: preprocess : validate : parse!}})
 
 (fn bless [option-recipe extra]
-  "Enable the `option-recipe` table to consume command line arguments.
+  "Enable the `option-recipe` table to process command line argument.
 
-In addition, attach `extra` key-value pairs to the table.
-To be blessed, `key` and `flag` attributes are mandatory.
-"
+By blessing an option recipe, it can `parse!' command line argument.
+It merges `extra` key-value pairs to the table.
+To be blessed, `key` and `flag` entries are mandatory."
   (merge! option-recipe extra)
   (assert (and (= :string (type option-recipe.key))
                (= :string (type option-recipe.flag)))

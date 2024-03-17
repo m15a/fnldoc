@@ -1,4 +1,8 @@
-# Text.fnl (1.0.2-dev)
+# Text.fnl (1.1.0-dev)
+
+Utilities for text processing.
+
+FIXME: Support Windows line ending.
 
 **Table of contents**
 
@@ -12,8 +16,6 @@
 
 ## Function: `indent`
 
-Signature:
-
 ```
 (indent width text)
 ```
@@ -21,8 +23,6 @@ Signature:
 Indent `text` by `width`.
 
 ## Function: `lines->text`
-
-Signature:
 
 ```
 (lines->text lines ?eol)
@@ -34,8 +34,6 @@ Concatenate a sequential table of `lines` with `?eol` into a `text`.
 
 ## Function: `pad`
 
-Signature:
-
 ```
 (pad width text ?pad-char)
 ```
@@ -44,8 +42,6 @@ Pad `text` on the left side with `?pad-char` (default: " ") up to `width`.
 
 ## Function: `pad/right`
 
-Signature:
-
 ```
 (pad/right width text ?pad-char)
 ```
@@ -53,8 +49,6 @@ Signature:
 Pad `text` on the right side with `?pad-char` (default: " ") up to `width`.
 
 ## Function: `text->lines`
-
-Signature:
 
 ```
 (text->lines text ?eol)
@@ -66,8 +60,6 @@ The last empty after the last end of line (i.e., "") will be removed.
 
 ## Function: `wrap`
 
-Signature:
-
 ```
 (wrap width text ?eol)
 ```
@@ -77,8 +69,6 @@ Wrap each line in the `text` if the line length is longer than `width`.
 `?eol` defaults to `"\n"`.
 
 ## Function: `wrap/line`
-
-Signature:
 
 ```
 (wrap/line line width ?eol)
@@ -96,5 +86,5 @@ Copyright (C) 2020-2022 Andrey Listopadov, 2024 NACAMURA Mitsuhiro
 
 License: [MIT](https://git.sr.ht/~m15a/fnldoc/tree/main/item/LICENSE)
 
-<!-- Generated with Fnldoc 1.0.2-dev
+<!-- Generated with Fnldoc 1.1.0-dev
      https://sr.ht/~m15a/fnldoc/ -->

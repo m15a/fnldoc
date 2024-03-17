@@ -1,4 +1,4 @@
-# Sandbox.fnl (1.0.2-dev)
+# Sandbox.fnl (1.1.0-dev)
 
 **Table of contents**
 
@@ -6,8 +6,6 @@
 - Function: [`sandbox/overrides`](#function-sandboxoverrides)
 
 ## Function: `sandbox`
-
-Signature:
 
 ```
 (sandbox file ?debug)
@@ -26,8 +24,6 @@ For testing purpose, if `?debug` is truthy and failing, it raises an error
 instead to exit.
 
 ## Function: `sandbox/overrides`
-
-Signature:
 
 ```
 (sandbox/overrides file overrides ?debug)
@@ -49,5 +45,5 @@ Copyright (C) 2020-2022 Andrey Listopadov, 2024 NACAMURA Mitsuhiro
 
 License: [MIT](https://git.sr.ht/~m15a/fnldoc/tree/main/item/LICENSE)
 
-<!-- Generated with Fnldoc 1.0.2-dev
+<!-- Generated with Fnldoc 1.1.0-dev
      https://sr.ht/~m15a/fnldoc/ -->
