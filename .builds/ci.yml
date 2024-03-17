@@ -5,4 +5,4 @@ environment:
 tasks:
   - check: |
       cd $SRC_DIR
-      nix flake check --verbose
+      nix flake check
