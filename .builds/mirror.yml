@@ -1,0 +1,22 @@
+image: alpine/edge
+packages:
+  - git
+  - openssh-client
+secrets:
+  - deb4e7d8-9cff-41bf-b44c-2a1a8d2629c1
+environment:
+  SRC_URL: https://git.sr.ht/~m15a/fnldoc
+  WORK_DIR: fnldoc
+  DST_URL: git@github.com:m15a/fnldoc.git
+tasks:
+  - clone: |
+      rm -rf $WORK_DIR
+      git clone --bare $SRC_URL $WORK_DIR
+  - setup: |
+      cd $WORK_DIR
+      git remote set-url --push origin $DST_URL
+      git fetch --prune origin
+      git for-each-ref --format 'delete %(refname)' refs/pull | git update-ref --stdin
+  - push: |
+      cd $WORK_DIR
+      GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no" git push --mirror
