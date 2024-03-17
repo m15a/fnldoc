@@ -4,7 +4,11 @@ final: prev:
 
 let
   inherit (prev.lib)
-    strings readFile optionalAttrs cartesianProductOfSets;
+    strings
+    readFile
+    optionalAttrs
+    optionalString
+    cartesianProductOfSets;
 
   packageVersions = strings.fromJSON (readFile ./versions.json);
 
@@ -30,8 +34,9 @@ in
 
 {
   fnldoc = final.callPackage ./package.nix rec {
-    version = packageVersions.fnldoc;
-    inherit shortRev;
+    version =
+      packageVersions.fnldoc +
+      optionalString (shortRev != null) "-${shortRev}";
     src = ../.;
     fennel = final.fennel-unstable-luajit;
   };

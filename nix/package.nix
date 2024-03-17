@@ -1,19 +1,13 @@
 { version
-, shortRev ? null
 , src
 , fennel
 , stdenv
 , lib
 }:
 
-let
-  version' = version;
-in
-
 stdenv.mkDerivation rec {
   pname = "fnldoc";
-  version = version' + lib.optionalString (shortRev != null) "-${shortRev}";
-  inherit src;
+  inherit version src;
 
   nativeBuildInputs = [
     fennel.lua
