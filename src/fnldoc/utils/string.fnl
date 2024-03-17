@@ -1,3 +1,5 @@
+;;;; String manipulation extras.
+
 (local {: assert-type} (require :fnldoc.utils.assert))
 
 (fn escape-regex [str]

@@ -1,5 +1,7 @@
 # String.fnl (1.1.0-dev)
 
+String manipulation extras.
+
 **Table of contents**
 
 - Function: [`capitalize`](#function-capitalize)

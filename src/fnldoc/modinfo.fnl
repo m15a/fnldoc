@@ -1,19 +1,14 @@
 ;;;; Analyze Fennel code and extract module information.
 
-;;;; ## Overview for extracting module information
+;;;; ## Overview
 
-;;;; ### Modules types
+;;;; ### Module types
 ;;;;
-;;;; There are three module types for generating documentation:
-;;;; (A) a table of functions,
-;;;; (B) a table of macros, and
-;;;; (C) just a function.
-;;;; Here, we use terminology to distinguish them:
-;;;; (A) *functions* module,
-;;;; (B) *macros* module, and
-;;;; (C) *function* module, respectively.
-;;;; These types are detected by trying to `require-file' and see the
-;;;; result.
+;;;; There are three module types for generating documentation: a table
+;;;; of functions, a table of macros, and just a function. Here, we use
+;;;; terminology to distinguish them: *functions* module, *macros*
+;;;; module, and *function* module, respectively. These types are
+;;;; detected by trying to `require-file' and see the result.
 
 ;;;; ### Extracting metadata
 ;;;;
@@ -90,12 +85,13 @@ its metadata."
   "Require `file` as module in protected call with/out `sandbox?`-ing.
 
 Return multiple values with the first value corresponding to `pcall`
-result. The second value is a table that contains
+result. The second value is a table that contains the following
+entries.
 
-* `:type` - module's value type, i.e., `:table`, `:string`, etc.;
-* `:module` - module contents;
-* `:macros?` - indicates whether this is a *macros* module; and
-* `:loaded-macros` - macros if any loaded found."
+- `type`: Module's value type, i.e., `:table`, `:string`, etc.
+- `module`: Module contents.
+- `macros?`: Indicates whether this is a *macros* module.
+- `loaded-macros`: Macros if any loaded found."
   (if (not (file-exists? file))
       (values false "file not found")
       (let [module-name (path->module-name file)
@@ -187,20 +183,19 @@ More paragraph.
 (lambda module-info [file config]
   "Return a table containing all relevant information accordingly
 to `config` about the module in the `file` for which documentation is
-generated. The result contains the following entries:
+generated. The result contains the following entries.
 
-* `:name` - module name if specified in `.fenneldoc`;
-* `:description` - module description, specified in `.fenneldoc` or
-  extracted from the top comments of the file;
-* `:type` - module type, either `:functions`, `:macros`, or `:function`;
-* `:items` - module contents, which will be used for doctest-ing;  
-* `:test-requirements` - doctest requirements if specified in
-  `.fenneldoc`;  
-* `:metadata` - recursively extracted metadata of module items;
-* `:order` - item sorting order if specified in `.fenneldoc`;
-* `:copyright` - copyright information if specified in `.fenneldoc`;
-* `:license` - license information if specified in `.fenneldoc`; and
-* `:version` - version information if specified in `.fenneldoc`."
+- `name`: Module name if specified in `.fenneldoc`.
+- `description`: Module description, specified in `.fenneldoc` or
+  extracted from the top comments of the file.
+- `type`: Module type, either `:functions`, `:macros`, or `:function`.
+- `items`: Module contents, which will be used for doctest-ing.
+- `test-requirements`: Doctest requirements if specified in `.fenneldoc`.
+- `metadata`: Recursively extracted metadata of module items.
+- `order`: Item sorting order if specified in `.fenneldoc`.
+- `copyright`: Copyright information if specified in `.fenneldoc`.
+- `license`: License information if specified in `.fenneldoc`.
+- `version`: Version information if specified in `.fenneldoc`."
   (match (require-file file config.sandbox?)
     (where (true result) (= :table result.type))
     {:name (?. config :modules-info file :name)

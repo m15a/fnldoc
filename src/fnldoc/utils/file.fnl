@@ -1,4 +1,4 @@
-;;;;File and file path utilities.
+;;;; File and file path utilities.
 
 (local unpack (or table.unpack _G.unpack))
 (local {: assert-type} (require :fnldoc.utils.assert))
@@ -41,8 +41,8 @@
 The following things will be done.
 
 1. Remove duplicated separators such like `a//b///c`;
-3. resolve parent directory path element (i.e., `a/b/../d` => `a/d`);
-2. remove current directory path element (i.e., `a/./b` => `a/b`); and
+2. resolve parent directory path element (i.e., `a/b/../d` => `a/d`);
+3. remove current directory path element (i.e., `a/./b` => `a/b`); and
 4. finally, if `path` gets empty string, replace it with `.`. However,
    if `path` is empty string at the beginning, it returns as is.
 
@@ -91,10 +91,9 @@ This is for convenience on manipulating hidden files.
 (lambda basename [path ?suffix]
   "Remove leading directory components from the `path`.
 
-Trailing `/`'s are also removed unless the `path` is just `/`.
-Optionally, a trailing `?suffix` will be removed if specified. 
-However, if the *basename* of `path` and `?suffix` is identical,
-it does not remove suffix.
+Trailing `/`'s are also removed unless the `path` is just `/`. Optionally,
+a trailing `?suffix` will be removed if specified. However, if the
+*basename* of `path` and `?suffix` is identical, it does not remove suffix.
 This is for convenience on manipulating hidden files.
 
 Compatible with GNU coreutils' `basename`.
@@ -155,7 +154,7 @@ at once.
           (catch _ ".")))))
 
 (lambda path->function-name [path]
-  "Translate the `path` to its basename without `.fnl` extension.
+  "Translate the `path` to its *basename* without `.fnl` extension.
 
 This is used for converting function module file to its function name.
 
@@ -190,7 +189,7 @@ This is used for converting function module file to its function name.
                      (string.gsub path-separator "."))))
 
 (lambda join-paths [& paths]
-  "Join all `paths` segments, using separator into one path.
+  "Join all `paths` segments into one path.
 
 # Examples
 
@@ -237,8 +236,9 @@ This is used for converting function module file to its function name.
     _ false))
 
 (lambda make-directory [path ?parents? ?mode]
-  "Make a directory of the `path`. Just a thin wrapper for `mkdir` command.
+  "Make a directory of the `path`.
 
+Just a thin wrapper for `mkdir` command.
 If `?parents?` is truthy, add `--parents` option. If `?mode` is string or
 number, add `--mode` option with the `?mode`.
 

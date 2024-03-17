@@ -1,5 +1,7 @@
 # Processor.fnl (1.1.0-dev)
 
+Orchestrate tasks.
+
 **Table of contents**
 
 - Function: [`destination-path`](#function-destination-path)

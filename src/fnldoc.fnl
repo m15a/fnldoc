@@ -17,9 +17,9 @@
 ;;;; - [fnldoc/doctest.fnl](./fnldoc/doctest.md) -
 ;;;;   Run documentation testing.
 ;;;; - [fnldoc/markdown.fnl](./fnldoc/markdown.md) -
-;;;;   Generate Markdown documentation from `module-info`.
+;;;;   Generate Markdown documentation from module information.
 ;;;; - [fnldoc/modinfo.fnl](./fnldoc/modinfo.md) -
-;;;;   Analyze Fennel file and provide `module-info`.
+;;;;   Analyze Fennel file and provide module information.
 ;;;; - [fnldoc/processor.fnl](./fnldoc/processor.md) -
 ;;;;   Orchestrate tasks.
 ;;;; - [fnldoc/utils/*.fnl](./fnldoc/utils/) -
