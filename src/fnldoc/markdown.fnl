@@ -21,6 +21,7 @@
 ;;;; ```
 ;;;; (some-function signature)
 ;;;; ```
+;;;; 
 ;;;; Some function description.
 ;;;; ...
 ;;;; 
@@ -32,7 +33,6 @@
 ;;;; 
 ;;;; Some macro description.
 ;;;; ...
-;;;; 
 ;;;; 
 ;;;; ---
 ;;;; 

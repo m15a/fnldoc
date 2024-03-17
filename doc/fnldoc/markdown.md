@@ -23,6 +23,7 @@ Module top-level description.
 ```
 (some-function signature)
 ```
+
 Some function description.
 ...
 
@@ -34,7 +35,6 @@ Some function description.
 
 Some macro description.
 ...
-
 
 ---
 
