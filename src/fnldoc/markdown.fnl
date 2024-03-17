@@ -87,9 +87,7 @@ corresponding anchor mapping.
   "Make a signature line of `function` with the `arglist`."
   (let [arglist (table.concat arglist " ")
         signature (.. "(" function (if (= "" arglist) "" (.. " " arglist)) ")")]
-    (lines->text ["Signature:"
-                  ""
-                  (code-fence signature)])))
+    (lines->text [(code-fence signature)])))
 
 (lambda remove-test-skip [text]
   "Remove all `:skip-test` annotations from markdown fences in the `text`."
