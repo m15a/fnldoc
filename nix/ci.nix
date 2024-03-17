@@ -12,10 +12,11 @@ let
       then "fennel-${luaVariant}"
       else "fennel-${fennelVariant}-${luaVariant}";
   in {
-    name = "ci-check-fnldoc-${fennelName}";
+    name = "ci-check-${fennelName}";
     value = (final.fnldoc.override {
       fennel = final.${fennelName};
-    }).overrideAttrs (_: {
+    }).overrideAttrs (old: {
+      pname = old.pname + "-ci-check-${fennelName}";
       dontBuild = true;
       doCheck = true;
       checkTarget = "test";
