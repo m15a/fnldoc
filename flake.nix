@@ -24,6 +24,7 @@
           overlays = [
             fennel-tools.overlays.default
             self.overlays.default
+            (import ./nix/ci.nix)
           ];
         };
       in
