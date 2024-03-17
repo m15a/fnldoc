@@ -1,3 +1,4 @@
+(local {: runtime-version} (require :fennel.utils))
 (local faith (require :test.faith))
 
 (fn path->module [path]
@@ -15,5 +16,6 @@
           (table.insert modules (path->module path)))))
     modules))
 
-(io.stderr:write "Faith " faith.version)
+(io.stderr:write (runtime-version) "\n")
+(io.stderr:write "Faith " faith.version "\n")
 (faith.run (find-test-modules))
