@@ -46,6 +46,7 @@
 (local compiler (require :fennel.compiler))
 (local {: sandbox} (require :fnldoc.sandbox))
 (local console (require :fnldoc.console))
+(local {: exit/error} (require :fnldoc.debug))
 (local {: file-exists?} (require :fnldoc.utils.file))
 (local {: merge!} (require :fnldoc.utils.table))
 (local {: lines->text} (require :fnldoc.utils.text))
@@ -180,7 +181,7 @@ More paragraph.
         (console.error "error readling file: " file)
         nil)))
 
-(lambda module-info [file config]
+(lambda module-info [file config ?debug]
   "Return a table containing all relevant information accordingly
 to `config` about the module in the `file` for which documentation is
 generated. The result contains the following entries.
@@ -195,7 +196,10 @@ generated. The result contains the following entries.
 - `order`: Item sorting order if specified in `.fenneldoc`.
 - `copyright`: Copyright information if specified in `.fenneldoc`.
 - `license`: License information if specified in `.fenneldoc`.
-- `version`: Version information if specified in `.fenneldoc`."
+- `version`: Version information if specified in `.fenneldoc`.
+
+For testing purpose, if `?debug` is truthy and failing, it raises an error
+instead to exit."
   (match (require-file file config.sandbox?)
     (where (true result) (= :table result.type))
     {:name (?. config :modules-info file :name)
@@ -255,13 +259,9 @@ generated. The result contains the following entries.
       (console.info "skipping a module of type '" result.type "': " file)
       nil)
     (false msg)
-    (do
-      (console.error "error loading " file ": " msg)
-      nil)
+    (exit/error (.. "error loading " file ": " msg) ?debug)
     _
-    (do
-      (console.error "UNHANDLED ERROR LOADING " file ": " (tostring _))
-      nil)))
+    (exit/error (.. "UNHANDLED ERROR LOADING " file ": " (tostring _)) ?debug))) 
 
 {: extract-metadata
  : find-metadata
