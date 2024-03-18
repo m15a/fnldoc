@@ -7,15 +7,11 @@ secrets:
 environment:
   NIX_CONFIG: experimental-features = nix-command flakes
   SRC_DIR: fnldoc
+  DST_URL: git@git.sr.ht:~m15a/fnldoc
 tasks:
   - check: |
       cd $SRC_DIR
       nix flake check
   - doc: |
       cd $SRC_DIR
-      nix develop .#ci-doc --command bash -c "make doc"
-      git config --local user.name 'NACAMURA Mitsuhiro'
-      git config --local user.email m15@m15a.dev
-      git add doc
-      git commit -m "docs: auto update"
-      git push
+      bash .builds/doc.bash

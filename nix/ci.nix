@@ -31,10 +31,15 @@ in
 
 {
   ci-doc = final.mkShell {
-    buildInputs = [
+    buildInputs = let
+      fennel = final.fennel-unstable-luajit;
+    in [
       final.gnumake
-      final.fnldoc
+      fennel
+      fennel.lua
     ];
+    FENNEL_PATH = "./src/?.fnl;./src/?/init.fnl";
+    FENNEL_MACRO_PATH = "./src/?.fnl;./src/?/init-macros.fnl";
   };
 } // (buildPackageSet {
   builder = mkCITest;
