@@ -29,7 +29,14 @@ let
     builtins.listToAttrs (map builder args);
 in
 
-buildPackageSet {
+{
+  ci-doc = final.mkShell {
+    buildInputs = [
+      final.gnumake
+      final.fnldoc
+    ];
+  };
+} // (buildPackageSet {
   builder = mkCITest;
   args = cartesianProductOfSets {
     fennelVariant = [
@@ -44,4 +51,4 @@ buildPackageSet {
       "luajit"
     ];
   };
-}
+})

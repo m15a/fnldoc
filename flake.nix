@@ -52,22 +52,26 @@
             ci-check-fennel-unstable-luajit;
         };
 
-        devShells.default =
-          let
-            fennel = pkgs.fennel-unstable-luajit;
-          in
-          pkgs.mkShell {
-            buildInputs = [
-              fennel
-              fennel.lua
-              pkgs.gnumake
-              pkgs.fnlfmt-unstable
-              pkgs.fennel-ls-unstable
-            ] ++ (with fennel.lua.pkgs; [
-              readline
-            ]);
-            FENNEL_PATH = "./src/?.fnl;./src/?/init.fnl";
-            FENNEL_MACRO_PATH = "./src/?.fnl;./src/?/init-macros.fnl";
-          };
+        devShells = {
+          inherit (pkgs) ci-doc;
+
+          default =
+            let
+              fennel = pkgs.fennel-unstable-luajit;
+            in
+            pkgs.mkShell {
+              buildInputs = [
+                fennel
+                fennel.lua
+                pkgs.gnumake
+                pkgs.fnlfmt-unstable
+                pkgs.fennel-ls-unstable
+              ] ++ (with fennel.lua.pkgs; [
+                readline
+              ]);
+              FENNEL_PATH = "./src/?.fnl;./src/?/init.fnl";
+              FENNEL_MACRO_PATH = "./src/?.fnl;./src/?/init-macros.fnl";
+            };
+        };
       }));
 }
