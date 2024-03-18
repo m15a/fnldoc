@@ -115,7 +115,7 @@ its metadata.
 ## Function: `module-info`
 
 ```
-(module-info file config)
+(module-info file config ?debug)
 ```
 
 Return a table containing all relevant information accordingly
@@ -133,6 +133,9 @@ generated. The result contains the following entries.
 - `copyright`: Copyright information if specified in `.fenneldoc`.
 - `license`: License information if specified in `.fenneldoc`.
 - `version`: Version information if specified in `.fenneldoc`.
+
+For testing purpose, if `?debug` is truthy and failing, it raises an error
+instead to exit.
 
 ## Function: `require-file`
 
