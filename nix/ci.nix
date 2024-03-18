@@ -34,6 +34,7 @@ in
     buildInputs = let
       fennel = final.fennel-unstable-luajit;
     in [
+      final.git
       final.gnumake
       fennel
       fennel.lua

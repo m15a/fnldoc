@@ -1,6 +1,4 @@
 image: nixos/latest
-packages:
-  - nixos.git
 secrets:
   - deb4e7d8-9cff-41bf-b44c-2a1a8d2629c1
   - dc2b856e-1a4b-4d71-84a1-3b4e767f1352
@@ -14,4 +12,4 @@ tasks:
       nix flake check
   - doc: |
       cd $SRC_DIR
-      bash .builds/doc.bash
+      nix develop .#ci-doc --command bash -c "./tools/auto-update-doc.bash"
