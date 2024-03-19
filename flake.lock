@@ -102,11 +102,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1710512822,
-        "narHash": "sha256-oABQzE4HfTPxHoaDpnKaBPhaET7l8xsIvf8+o/lhcd4=",
+        "lastModified": 1710815206,
+        "narHash": "sha256-eOZ6/h9n3KK7pEat46kv/dz/hKqIKKECNrwSS1yee9c=",
         "owner": "m15a",
         "repo": "flake-fennel-tools",
-        "rev": "79805efb6cde67670753ccdf83a2f2adbd581d17",
+        "rev": "4d664eb9f03192f5893cc8b2bb1439fb84ed93cf",
         "type": "github"
       },
       "original": {
@@ -221,11 +221,11 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1710534455,
-        "narHash": "sha256-huQT4Xs0y4EeFKn2BTBVYgEwJSv8SDlm82uWgMnCMmI=",
+        "lastModified": 1710765496,
+        "narHash": "sha256-p7ryWEeQfMwTB6E0wIUd5V2cFTgq+DRRBz2hYGnJZyA=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "9af9c1c87ed3e3ed271934cb896e0cdd33dae212",
+        "rev": "e367f7a1fb93137af22a3908f00b9a35e2d286a7",
         "type": "github"
       },
       "original": {
