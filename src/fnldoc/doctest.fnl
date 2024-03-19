@@ -149,7 +149,9 @@ Accepts `module-info` with items to check, and `config` argument."
             (let [res (check-function func docstring arglist module-info config)]
               (set error? (or error? res)))))))
   (when error?
-    (console.error "errors in module " module-info.module)
+    (console.error "errors in " (if module-info.name
+                                    (.. "module " module-info.name)
+                                    (.. "file '" module-info.file "'")))
     (os.exit 1)))
 
 {: test}
