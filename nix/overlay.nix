@@ -14,8 +14,12 @@ in
 {
   fnldoc = final.callPackage ./package.nix rec {
     version =
-      packageVersions.fnldoc +
-      optionalString (shortRev != null) "-${shortRev}";
+      let
+        version' = packageVersions.fnldoc;
+      in
+      if isNull (builtins.match ".*-[^-]+$" version')
+      then version'
+      else version' + optionalString (shortRev != null) "-${shortRev}";
     src = ../.;
     fennel = final.fennel-unstable-luajit;
   };
