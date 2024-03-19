@@ -5,7 +5,7 @@ let
     optionalAttrs
     cartesianProductOfSets;
 
-  mkCITest = { fennelVariant, luaVariant }:
+  mkCICheck = { fennelVariant, luaVariant }:
   let
     fennelName =
       if fennelVariant == "stable"
@@ -43,7 +43,7 @@ in
     FENNEL_MACRO_PATH = "./src/?.fnl;./src/?/init-macros.fnl";
   };
 } // (buildPackageSet {
-  builder = mkCITest;
+  builder = mkCICheck;
   args = cartesianProductOfSets {
     fennelVariant = [
       "stable"
