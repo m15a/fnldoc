@@ -141,3 +141,5 @@ First stable release of Fenneldoc.
   - Analyze documentation to contain descriptions arguments of the described function;
   - Run documentation tests, by looking for code inside backticks.
 - Parse macro modules.
+
+<!-- vim: set tw=73 spell: -->

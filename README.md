@@ -271,3 +271,5 @@ Unless otherwise stated, this software is distributed under the [MIT license](./
   Copyright (c) 2009-2024 Scott Vokes, Phil Hagelberg, and contributors.
   Distributed under the MIT license. See the license paragraphs at the beginning
   of the file.
+
+<!-- vim: set tw=73 spell: -->
