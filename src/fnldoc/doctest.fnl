@@ -2,6 +2,7 @@
 
 (local fennel (require :fennel))
 (local {: sandbox/overrides} (require :fnldoc.sandbox))
+(local console (require :fnldoc.console))
 
 (fn extract-tests [name fn-doc]
   (icollect [test (fn-doc:gmatch "\n?```%s*fennel.-\n```")]
@@ -11,7 +12,7 @@
             (string.gsub "\n%s*```" "")
             (string.gsub "^\n" ""))
         (do
-          (io.stderr:write "skipping test in '" (tostring name) "'\n")
+          (console.info "skipping test in '" (tostring name) "'")
           nil))))
 
 (fn copy-table [t]
@@ -23,27 +24,25 @@
 (fn run-test [test requirements module-info sandbox?]
   (let [env (if sandbox?
                 (sandbox/overrides module-info.file {:print (fn [...]
-                                                              (io.stderr:write "WARNING: IO detected in the '"
-                                                                               (or module-info.file
-                                                                                   :unknown)
-                                                                               "' file in the following test:
+                                                              (console.warn "IO detected in the '"
+                                                                            (or module-info.file
+                                                                                :unknown)
+                                                                            "' file in the following test:
 ``` fennel
 "
-                                                                               test
-                                                                               "
-```
-"))
+                                                                            test
+                                                                            "
+```"))
                                                      :io (setmetatable {} {:__index (fn []
-                                                                                      (io.stderr:write "WARNING: 'io' module access detected in the '"
-                                                                                                       (or module-info.file
-                                                                                                           :unknown)
-                                                                                                       "' file in the following test:
+                                                                                      (console.warn "'io' module access detected in the '"
+                                                                                                    (or module-info.file
+                                                                                                        :unknown)
+                                                                                                    "' file in the following test:
 ``` fennel
 "
-                                                                                                       test
-                                                                                                       "
-```
-"))})})
+                                                                                                    test
+                                                                                                    "
+```"))})})
                 (copy-table _G))
         requirements (or (-?> requirements (.. "\n")) "")]
     (each [fname fval (pairs module-info.items)]
@@ -55,11 +54,11 @@
   (each [n test (ipairs (extract-tests func docstring))]
     (match (run-test test module-info.test-requirements module-info sandbox?)
       (false msg) (let [msg (string.gsub (tostring msg) "^%[.-%]:%d+:%s*" "")]
-                    (io.stderr:write "In file: '" module-info.file "'\n"
-                                     "Error in docstring for: '" func "'\n" "In test:
+                    (console.error "In file: '" module-info.file "'\n"
+                                   "Error in docstring for: '" func "'\n" "In test:
 ``` fennel
 "
-                                     test "\n```\n" "Error:\n" msg "\n\n")
+                                   test "\n```\n" "Error:\n" msg "\n")
                     (set error? true))))
   error?)
 
@@ -72,14 +71,14 @@
           (if (and (string.find docstring
                                 (.. "%f[%w_]" argument-pat "%f[^%w_]")))
               ;; %f[%w_] emulates \b
-              (io.stderr:write "WARNING: in file '" file "' argument '"
-                               argument
-                               "' should appear in backtics in docstring for '"
-                               func "'\n")
+              (console.warn "in file '" file "' argument '"
+                            argument
+                            "' should appear in backtics in docstring for '"
+                            func "'")
               (if (not= argument "...")
-                  (io.stderr:write "WARNING: in file '" file "' function '"
-                                   func "' has undocumented argument '" argument
-                                   "'\n"))))))))
+                  (console.warn "in file '" file "' function '"
+                                func "' has undocumented argument '" argument
+                                "'"))))))))
 
 (fn skip-arg-check? [argument patterns]
   (if (next (icollect [_ pattern (ipairs patterns)]
@@ -120,10 +119,9 @@
   (if (or (not docstring) (= docstring ""))
       (do
         (if (= module-info.type :function)
-            (io.stderr:write "WARNING: file '" module-info.file "' exports undocumented value
-")
-            (io.stderr:write "WARNING: in file '" module-info.file
-                             "' undocumented exported value '" func "'\n"))
+            (console.warn "file '" module-info.file "' exports undocumented value")
+            (console.warn "in file '" module-info.file
+                          "' undocumented exported value '" func "'"))
         nil) ; io.stderr:write returns non-nil value, which is treated as mark that errors occured
       arglist
       (do
@@ -151,7 +149,7 @@ Accepts `module-info` with items to check, and `config` argument."
             (let [res (check-function func docstring arglist module-info config)]
               (set error? (or error? res)))))))
   (when error?
-    (io.stderr:write "Errors in module " module-info.module "\n")
+    (console.error "errors in module " module-info.module)
     (os.exit 1)))
 
 {: test}
