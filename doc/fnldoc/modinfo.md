@@ -6,11 +6,14 @@ Analyze Fennel code and extract module information.
 
 ### Module types
 
-There are three module types for generating documentation: a table
-of functions, a table of macros, and just a function. Here, we use
-terminology to distinguish them: *functions* module, *macros*
-module, and *function* module, respectively. These types are
-detected by trying to [`require-file`](#function-require-file) and see the result.
+There are three module types for generating documentation:
+
+- a table of *functions*,
+- a table of *macros*, and
+- just a *function*.
+
+These types are detected by trying to [`require-file`](#function-require-file) and see its
+result.
 
 ### Extracting metadata
 
@@ -19,23 +22,31 @@ need to care about table and function, since Fennel attaches
 metadata only to functions. Tables are recursively searched for
 metadata by [`find-metadata`](#function-find-metadata).
 
-Each function may have attached metadata, which contain
-`:fnl/arglist` and/or `:fnl/docstring`. These two entries are
-extracted by `extract-metadata` and used for rendering
-function/macro signature and description.
+Each function may have metadata, which contains `:fnl/arglist`
+and/or `:fnl/docstring`. These two entries are extracted by
+[`extract-metadata`](#function-extract-metadata) and used for rendering function/macro signature
+and description.
 
 In addition, Fnldoc has its own metadata entry `:fnldoc/type`,
 which will also be extracted and used to show which type the
-function is: either function or macro. If the result of module
-type detection is *macros* module, this field will be set as
-`:macro`; otherwise, this will be kept as `nil`.
+function is. An example usage:
+
+```fennel
+(fn a-macro []
+  {:fnldoc/type :macro}
+  `(print :a-macro))
+```
+
+However, `:fnldoc/type` annotation is not mandatory for *macros*
+module, since it is clear that functions in a *macros* module are
+macros, and it will properly detected.
 
 ### Module description
 
 In addition to [`require-file`](#function-require-file), Fnldoc does
-[`extract-module-description`](#function-extract-module-description) by scanning the file lazily and
-search for top-level module description. The module description
-should begin with four semicolons `;;;; `.
+[`extract-module-description`](#function-extract-module-description) by scanning the file and searching
+for top-level module description. The module description should
+begin with four semicolons `;;;; `.
 
 ### Module information
 
