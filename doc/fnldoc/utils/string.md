@@ -4,12 +4,12 @@ String manipulation extras.
 
 **Table of contents**
 
-- Function: [`capitalize`](#function-capitalize)
-- Function: [`escape-regex`](#function-escape-regex)
+- Function: [capitalize](#function-capitalize)
+- Function: [escape-regex](#function-escape-regex)
 
-## Function: `capitalize`
+## Function: capitalize
 
-```
+```fennel
 (capitalize string)
 ```
 
@@ -26,9 +26,9 @@ as is.
 (assert (= "  One two  " (capitalize "  one two  ")))
 ```
 
-## Function: `escape-regex`
+## Function: escape-regex
 
-```
+```fennel
 (escape-regex string)
 ```
 

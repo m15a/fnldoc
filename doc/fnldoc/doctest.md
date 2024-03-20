@@ -4,11 +4,11 @@ Documentation testing facilities.
 
 **Table of contents**
 
-- Function: [`test`](#function-test)
+- Function: [test](#function-test)
 
-## Function: `test`
+## Function: test
 
-```
+```fennel
 (test module-info config)
 ```
 

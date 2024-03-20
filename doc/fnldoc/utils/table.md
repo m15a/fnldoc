@@ -4,30 +4,30 @@ Table extras.
 
 **Table of contents**
 
-- Function: [`clone`](#function-clone)
-- Function: [`clone/deeply`](#function-clonedeeply)
-- Function: [`comparator/table`](#function-comparatortable)
-- Function: [`merge!`](#function-merge)
+- Function: [clone](#function-clone)
+- Function: [clone/deeply](#function-clonedeeply)
+- Function: [comparator/table](#function-comparatortable)
+- Function: [merge!](#function-merge)
 
-## Function: `clone`
+## Function: clone
 
-```
+```fennel
 (clone table)
 ```
 
 Return a shallow copy of the `table`, assuming that keys are string or number.
 
-## Function: `clone/deeply`
+## Function: clone/deeply
 
-```
+```fennel
 (clone/deeply table)
 ```
 
 Return a deep copy of the `table`, assuming that keys are string or number.
 
-## Function: `comparator/table`
+## Function: comparator/table
 
-```
+```fennel
 (comparator/table table ?fallback)
 ```
 
@@ -45,9 +45,9 @@ and returns `true` iff
 **CAVEAT**: Make sure that the elements of `table` are each distinct.
 
 
-## Function: `merge!`
+## Function: merge!
 
-```
+```fennel
 (merge! table & tables)
 ```
 

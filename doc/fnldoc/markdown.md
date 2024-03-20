@@ -75,54 +75,54 @@ version) by configuration.
 
 **Table of contents**
 
-- Function: [`copyright-and-license`](#function-copyright-and-license)
-- Function: [`final-comment`](#function-final-comment)
-- Function: [`function-signature`](#function-function-signature)
-- Function: [`inline-references`](#function-inline-references)
-- Function: [`item-documentation`](#function-item-documentation)
-- Function: [`item-index->anchor-map`](#function-item-index-anchor-map)
-- Function: [`module-info->markdown`](#function-module-info-markdown)
-- Function: [`remove-test-skip`](#function-remove-test-skip)
-- Function: [`replace-inline-references`](#function-replace-inline-references)
-- Function: [`sorted-item-index`](#function-sorted-item-index)
-- Function: [`table-of-contents`](#function-table-of-contents)
-- Function: [`title-heading`](#function-title-heading)
+- Function: [copyright-and-license](#function-copyright-and-license)
+- Function: [final-comment](#function-final-comment)
+- Function: [function-signature](#function-function-signature)
+- Function: [inline-references](#function-inline-references)
+- Function: [item-documentation](#function-item-documentation)
+- Function: [item-index->anchor-map](#function-item-index-anchor-map)
+- Function: [module-info->markdown](#function-module-info-markdown)
+- Function: [remove-test-skip](#function-remove-test-skip)
+- Function: [replace-inline-references](#function-replace-inline-references)
+- Function: [sorted-item-index](#function-sorted-item-index)
+- Function: [table-of-contents](#function-table-of-contents)
+- Function: [title-heading](#function-title-heading)
 
-## Function: `copyright-and-license`
+## Function: copyright-and-license
 
-```
+```fennel
 (copyright-and-license ?copyright ?license)
 ```
 
 Generate `?copyright` and/or `?license` text if any.
 
-## Function: `final-comment`
+## Function: final-comment
 
-```
+```fennel
 (final-comment fnldoc-version)
 ```
 
 Generate the final comment with `fnldoc-version`.
 
-## Function: `function-signature`
+## Function: function-signature
 
-```
+```fennel
 (function-signature function arglist)
 ```
 
 Make a signature code fence of `function` with the `arglist`.
 
-## Function: `inline-references`
+## Function: inline-references
 
-```
+```fennel
 (inline-references text)
 ```
 
 Collect all inline references (e.g., ```ref```) in the `text`.
 
-## Function: `item-documentation`
+## Function: item-documentation
 
-```
+```fennel
 (item-documentation item metadata anchor-map config)
 ```
 
@@ -130,9 +130,9 @@ Generate `item`'s documentation with `metadata` accordingly to `config`.
 
 `anchor-map` is used to translate ```item``` to internal link.
 
-## Function: `item-index->anchor-map`
+## Function: item-index->anchor-map
 
-```
+```fennel
 (item-index->anchor-map item-index metadata)
 ```
 
@@ -141,25 +141,25 @@ Get mapping from item to its internal link anchor for the `item-index`.
 `metadata` is used to make anchor depending on function's type: function
 or macro.
 
-## Function: `module-info->markdown`
+## Function: module-info->markdown
 
-```
+```fennel
 (module-info->markdown module-info config)
 ```
 
 Generate markdown from `module-info` accordingly to the `config`.
 
-## Function: `remove-test-skip`
+## Function: remove-test-skip
 
-```
+```fennel
 (remove-test-skip text)
 ```
 
 Remove all `:skip-test` annotations from markdown fences in the `text`.
 
-## Function: `replace-inline-references`
+## Function: replace-inline-references
 
-```
+```fennel
 (replace-inline-references text anchor-map mode)
 ```
 
@@ -167,9 +167,9 @@ Replace inline references in the `text` using `anchor-map`.
 
 `mode` should be either `:link` or `:code`.
 
-## Function: `sorted-item-index`
+## Function: sorted-item-index
 
-```
+```fennel
 (sorted-item-index module-info config)
 ```
 
@@ -178,9 +178,9 @@ Sort the item index of `module-info` and return it as a sequential table.
 The sort will be done according to the `order` specified in `module-info`
 or the `config`.
 
-## Function: `table-of-contents`
+## Function: table-of-contents
 
-```
+```fennel
 (table-of-contents item-index metadata)
 ```
 
@@ -191,9 +191,9 @@ corresponding anchor mapping.
 
 `metadata` is used to show each function's type: function or macro.
 
-## Function: `title-heading`
+## Function: title-heading
 
-```
+```fennel
 (title-heading title ?version)
 ```
 

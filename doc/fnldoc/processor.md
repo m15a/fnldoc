@@ -4,20 +4,20 @@ Orchestrate tasks.
 
 **Table of contents**
 
-- Function: [`destination-path`](#function-destination-path)
-- Function: [`process!`](#function-process)
+- Function: [destination-path](#function-destination-path)
+- Function: [process!](#function-process)
 
-## Function: `destination-path`
+## Function: destination-path
 
-```
+```fennel
 (destination-path module-info config)
 ```
 
 Determine path to put generated Markdown according to `module-info` and `config`.
 
-## Function: `process!`
+## Function: process!
 
-```
+```fennel
 (process! file config)
 ```
 

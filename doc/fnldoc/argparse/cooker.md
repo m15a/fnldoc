@@ -65,20 +65,20 @@ types.
 
 **Table of contents**
 
-- Macro: [`cooking`](#macro-cooking)
-- Macro: [`recipe`](#macro-recipe)
+- Macro: [cooking](#macro-cooking)
+- Macro: [recipe](#macro-recipe)
 
-## Macro: `cooking`
+## Macro: cooking
 
-```
+```fennel
 (cooking & recipes)
 ```
 
 A helper macro to collect option `recipes` into one table.
 
-## Macro: `recipe`
+## Macro: recipe
 
-```
+```fennel
 (recipe recipe-type & recipe-spec)
 ```
 

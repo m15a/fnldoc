@@ -4,20 +4,20 @@ File and file path utilities.
 
 **Table of contents**
 
-- Function: [`basename`](#function-basename)
-- Function: [`dirname`](#function-dirname)
-- Function: [`file-exists?`](#function-file-exists)
-- Function: [`join-paths`](#function-join-paths)
-- Function: [`make-directory`](#function-make-directory)
-- Function: [`normalize`](#function-normalize)
-- Function: [`path->function-name`](#function-path-function-name)
-- Function: [`path->module-name`](#function-path-module-name)
-- Function: [`remove-prefix-path`](#function-remove-prefix-path)
-- Function: [`remove-suffix`](#function-remove-suffix)
+- Function: [basename](#function-basename)
+- Function: [dirname](#function-dirname)
+- Function: [file-exists?](#function-file-exists)
+- Function: [join-paths](#function-join-paths)
+- Function: [make-directory](#function-make-directory)
+- Function: [normalize](#function-normalize)
+- Function: [path->function-name](#function-path-function-name)
+- Function: [path->module-name](#function-path-module-name)
+- Function: [remove-prefix-path](#function-remove-prefix-path)
+- Function: [remove-suffix](#function-remove-suffix)
 
-## Function: `basename`
+## Function: basename
 
-```
+```fennel
 (basename path ?suffix)
 ```
 
@@ -44,9 +44,9 @@ Compatible with GNU coreutils' `basename`.
 (assert (= :.ext (basename :/a/b/.ext :.ext)))
 ```
 
-## Function: `dirname`
+## Function: dirname
 
-```
+```fennel
 (dirname path)
 ```
 
@@ -72,17 +72,17 @@ at once.
 (assert (= :. (dirname :..)))
 ```
 
-## Function: `file-exists?`
+## Function: file-exists?
 
-```
+```fennel
 (file-exists? path)
 ```
 
 Return `true` if a file at the `path` exists.
 
-## Function: `join-paths`
+## Function: join-paths
 
-```
+```fennel
 (join-paths & paths)
 ```
 
@@ -96,9 +96,9 @@ Join all `paths` segments into one path.
 (assert (= :a/b/ (join-paths :a :b :c :../)))
 ```
 
-## Function: `make-directory`
+## Function: make-directory
 
-```
+```fennel
 (make-directory path ?parents? ?mode)
 ```
 
@@ -112,9 +112,9 @@ It returns multiple values. The first value is `true` or `nil`, indicating
 whether succeeded or failed to make the directory; the second string teaches
 you the type of the third value, which is exit status or terminated signal.
 
-## Function: `normalize`
+## Function: normalize
 
-```
+```fennel
 (normalize path)
 ```
 
@@ -142,9 +142,9 @@ Trailing slash will be left as is.
 (assert (= :. (normalize :./.)))
 ```
 
-## Function: `path->function-name`
+## Function: path->function-name
 
-```
+```fennel
 (path->function-name path)
 ```
 
@@ -159,9 +159,9 @@ This is used for converting function module file to its function name.
   (assert (= :c (path->function-name path))))
 ```
 
-## Function: `path->module-name`
+## Function: path->module-name
 
-```
+```fennel
 (path->module-name path)
 ```
 
@@ -183,9 +183,9 @@ Translate the `path` to its module name.
   (assert (= :a.c (path->module-name path))))
 ```
 
-## Function: `remove-prefix-path`
+## Function: remove-prefix-path
 
-```
+```fennel
 (remove-prefix-path prefix path)
 ```
 
@@ -201,9 +201,9 @@ Strip the `prefix` component from `path`.
 (assert (= :a/b (remove-prefix-path :a/b/c :a/b)))
 ```
 
-## Function: `remove-suffix`
+## Function: remove-suffix
 
-```
+```fennel
 (remove-suffix path suffix)
 ```
 

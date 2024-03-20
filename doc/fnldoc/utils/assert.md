@@ -4,11 +4,11 @@ Assertion helpers.
 
 **Table of contents**
 
-- Function: [`assert-type`](#function-assert-type)
+- Function: [assert-type](#function-assert-type)
 
-## Function: `assert-type`
+## Function: assert-type
 
-```
+```fennel
 (assert-type expected x)
 ```
 

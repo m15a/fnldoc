@@ -4,11 +4,11 @@ Functions related to writing generated documentation into respecting files.
 
 **Table of contents**
 
-- Function: [`write!`](#function-write)
+- Function: [write!](#function-write)
 
-## Function: `write!`
+## Function: write!
 
-```
+```fennel
 (write! text path ?debug)
 ```
 

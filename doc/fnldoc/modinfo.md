@@ -57,23 +57,23 @@ and contains all relevant metadata. This task is done by
 
 **Table of contents**
 
-- Function: [`extract-metadata`](#function-extract-metadata)
-- Function: [`extract-module-description`](#function-extract-module-description)
-- Function: [`find-metadata`](#function-find-metadata)
-- Function: [`module-info`](#function-module-info)
-- Function: [`require-file`](#function-require-file)
+- Function: [extract-metadata](#function-extract-metadata)
+- Function: [extract-module-description](#function-extract-module-description)
+- Function: [find-metadata](#function-find-metadata)
+- Function: [module-info](#function-module-info)
+- Function: [require-file](#function-require-file)
 
-## Function: `extract-metadata`
+## Function: extract-metadata
 
-```
+```fennel
 (extract-metadata value)
 ```
 
 Extract metadata from the `value`; return `nil` if not found.
 
-## Function: `extract-module-description`
+## Function: extract-module-description
 
-```
+```fennel
 (extract-module-description file)
 ```
 
@@ -113,9 +113,9 @@ Another paragraph.
 More paragraph.
 ```
 
-## Function: `find-metadata`
+## Function: find-metadata
 
-```
+```fennel
 (find-metadata module)
 ```
 
@@ -124,9 +124,9 @@ Find metadata contained in the `module` table recursively.
 It returns a table that maps module (table or function) name to
 its metadata.
 
-## Function: `module-info`
+## Function: module-info
 
-```
+```fennel
 (module-info file config ?debug)
 ```
 
@@ -149,9 +149,9 @@ generated. The result contains the following entries.
 For testing purpose, if `?debug` is truthy and failing, it raises an error
 instead to exit.
 
-## Function: `require-file`
+## Function: require-file
 
-```
+```fennel
 (require-file file sandbox?)
 ```
 

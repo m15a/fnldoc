@@ -31,11 +31,11 @@ Fnldoc - generate documentation for Fennel projects.
 
 **Table of contents**
 
-- Function: [`main`](#function-main)
+- Function: [main](#function-main)
 
-## Function: `main`
+## Function: main
 
-```
+```fennel
 (main)
 ```
 

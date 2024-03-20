@@ -4,15 +4,15 @@ Various option recipe consumers that help command line argument processing.
 
 **Table of contents**
 
-- Function: [`bless`](#function-bless)
-- Function: [`option-descriptions/order`](#function-option-descriptionsorder)
-- Function: [`parse!`](#function-parse)
-- Function: [`preprocess`](#function-preprocess)
-- Function: [`validate`](#function-validate)
+- Function: [bless](#function-bless)
+- Function: [option-descriptions/order](#function-option-descriptionsorder)
+- Function: [parse!](#function-parse)
+- Function: [preprocess](#function-preprocess)
+- Function: [validate](#function-validate)
 
-## Function: `bless`
+## Function: bless
 
-```
+```fennel
 (bless option-recipe extra)
 ```
 
@@ -22,9 +22,9 @@ By blessing an option recipe, it can [`parse!`](#function-parse) command line ar
 It merges `extra` key-value pairs to the table.
 To be blessed, `key` and `flag` entries are mandatory.
 
-## Function: `option-descriptions/order`
+## Function: option-descriptions/order
 
-```
+```fennel
 (option-descriptions/order order recipes color?)
 ```
 
@@ -32,9 +32,9 @@ Gather descriptions among option `recipes` and enumerate them in the given `orde
 
 If `color?` is truthy, it uses ANSI escape code.
 
-## Function: `parse!`
+## Function: parse!
 
-```
+```fennel
 (parse! self config args)
 ```
 
@@ -45,9 +45,9 @@ If `self`, an option recipe, has `value`, append it to the `config` using
 [`validate`](#function-validate), and append it to the `config` accordingly.
 If the head of `args` is missing, report error and exit with failing status.
 
-## Function: `preprocess`
+## Function: preprocess
 
-```
+```fennel
 (preprocess self next-arg)
 ```
 
@@ -57,9 +57,9 @@ If option recipe `self` has `preprocessor`, call it against the `next-arg`;
 otherwise pass through it.
 In addition, remember the `next-arg` in the `processed-arg` attribute.
 
-## Function: `validate`
+## Function: validate
 
-```
+```fennel
 (validate self value)
 ```
 

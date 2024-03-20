@@ -4,15 +4,15 @@ Process configuration file.
 
 **Table of contents**
 
-- Function: [`init!`](#function-init)
-- Function: [`merge!`](#function-merge)
-- Function: [`new`](#function-new)
-- Function: [`set-fennel-path!`](#function-set-fennel-path)
-- Function: [`write!`](#function-write)
+- Function: [init!](#function-init)
+- Function: [merge!](#function-merge)
+- Function: [new](#function-new)
+- Function: [set-fennel-path!](#function-set-fennel-path)
+- Function: [write!](#function-write)
 
-## Function: `init!`
+## Function: init!
 
-```
+```fennel
 (init! {:config-file config-file :version version})
 ```
 
@@ -183,34 +183,34 @@ as comments beginning with `;;;; `.
 `:order` can be `:alphabetic`, `:reverse-alphabetic`, a comparator function,
 or a sequential table of item names, as the same as global `order` entry.
 
-## Function: `merge!`
+## Function: merge!
 
-```
+```fennel
 (merge! self from)
 ```
 
 Merge key-value pairs of the `from` table into `self` config object.
 `self` will be mutated. Warn once if each `key` is deprecated.
 
-## Function: `new`
+## Function: new
 
-```
+```fennel
 (new)
 ```
 
 Create a new config object.
 
-## Function: `set-fennel-path!`
+## Function: set-fennel-path!
 
-```
+```fennel
 (set-fennel-path! self)
 ```
 
 Append `self`'s `fennel-path` to `fennel.path`.
 
-## Function: `write!`
+## Function: write!
 
-```
+```fennel
 (write! self config-file ?debug)
 ```
 

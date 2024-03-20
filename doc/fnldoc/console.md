@@ -4,16 +4,16 @@ Utilities to print messages to console STDERR.
 
 **Table of contents**
 
-- Function: [`error`](#function-error)
-- Function: [`info`](#function-info)
-- Function: [`isatty?`](#function-isatty)
-- Function: [`log`](#function-log)
-- Function: [`log*`](#function-log-1)
-- Function: [`warn`](#function-warn)
+- Function: [error](#function-error)
+- Function: [info](#function-info)
+- Function: [isatty?](#function-isatty)
+- Function: [log](#function-log)
+- Function: [log*](#function-log-1)
+- Function: [warn](#function-warn)
 
-## Function: `error`
+## Function: error
 
-```
+```fennel
 (error ...)
 ```
 
@@ -21,9 +21,9 @@ Print error message to STDERR.
 
 Short hand for `(log* {:level :error} ...)`.
 
-## Function: `info`
+## Function: info
 
-```
+```fennel
 (info ...)
 ```
 
@@ -31,9 +31,9 @@ Print info message to STDERR.
 
 Short hand for `(log* {:level :info} ...)`.
 
-## Function: `isatty?`
+## Function: isatty?
 
-```
+```fennel
 (isatty? fd)
 ```
 
@@ -43,9 +43,9 @@ Check if the file descriptor `fd` is a TTY.
 STDERR. Internally, it runs `test -t $fd`. Results of this query is
 cached.
 
-## Function: `log`
+## Function: log
 
-```
+```fennel
 (log ...)
 ```
 
@@ -53,9 +53,9 @@ Print message, without level specified, to STDERR.
 
 Short hand for `(log* {} ...)`.
 
-## Function: `log*`
+## Function: log*
 
-```
+```fennel
 (log* {:color? color? :level level :out out} ...)
 ```
 
@@ -91,9 +91,9 @@ if `false`, use no color; and if `nil`, it infers whether to use color.
              (log+ {:level :error} "error"))))
 ```
 
-## Function: `warn`
+## Function: warn
 
-```
+```fennel
 (warn ...)
 ```
 

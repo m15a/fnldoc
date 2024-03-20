@@ -2,12 +2,12 @@
 
 **Table of contents**
 
-- Function: [`sandbox`](#function-sandbox)
-- Function: [`sandbox/overrides`](#function-sandboxoverrides)
+- Function: [sandbox](#function-sandbox)
+- Function: [sandbox/overrides](#function-sandboxoverrides)
 
-## Function: `sandbox`
+## Function: sandbox
 
-```
+```fennel
 (sandbox file ?debug)
 ```
 
@@ -23,9 +23,9 @@ level, or run any code when file is loaded that uses those modules.
 For testing purpose, if `?debug` is truthy and failing, it raises an error
 instead to exit.
 
-## Function: `sandbox/overrides`
+## Function: sandbox/overrides
 
-```
+```fennel
 (sandbox/overrides file overrides ?debug)
 ```
 

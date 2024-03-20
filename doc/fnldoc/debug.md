@@ -4,11 +4,11 @@ Utilities convenient for testing/debugging purpose.
 
 **Table of contents**
 
-- Function: [`exit/error`](#function-exiterror)
+- Function: [exit/error](#function-exiterror)
 
-## Function: `exit/error`
+## Function: exit/error
 
-```
+```fennel
 (exit/error msg ?debug)
 ```
 

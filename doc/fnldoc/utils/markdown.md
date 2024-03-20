@@ -4,86 +4,86 @@ Markdown-specific text processing facilities.
 
 **Table of contents**
 
-- Function: [`bold`](#function-bold)
-- Function: [`bold-italic`](#function-bold-italic)
-- Function: [`code`](#function-code)
-- Function: [`code-block`](#function-code-block)
-- Function: [`code-fence`](#function-code-fence)
-- Function: [`heading`](#function-heading)
-- Function: [`italic`](#function-italic)
-- Function: [`link`](#function-link)
-- Function: [`ordered-list`](#function-ordered-list)
-- Function: [`promote-headings`](#function-promote-headings)
-- Function: [`string->anchor`](#function-string-anchor)
-- Function: [`unordered-list`](#function-unordered-list)
+- Function: [bold](#function-bold)
+- Function: [bold-italic](#function-bold-italic)
+- Function: [code](#function-code)
+- Function: [code-block](#function-code-block)
+- Function: [code-fence](#function-code-fence)
+- Function: [heading](#function-heading)
+- Function: [italic](#function-italic)
+- Function: [link](#function-link)
+- Function: [ordered-list](#function-ordered-list)
+- Function: [promote-headings](#function-promote-headings)
+- Function: [string->anchor](#function-string-anchor)
+- Function: [unordered-list](#function-unordered-list)
 
-## Function: `bold`
+## Function: bold
 
-```
+```fennel
 (bold text)
 ```
 
 Make a **bold** `text`.
 
-## Function: `bold-italic`
+## Function: bold-italic
 
-```
+```fennel
 (bold-italic text)
 ```
 
 Make a ***bold italic*** `text`.
 
-## Function: `code`
+## Function: code
 
-```
+```fennel
 (code text)
 ```
 
 Show `text` as an inline `code`.
 
-## Function: `code-block`
+## Function: code-block
 
-```
+```fennel
 (code-block text)
 ```
 
 Indent `text` by four spaces.
 
-## Function: `code-fence`
+## Function: code-fence
 
-```
+```fennel
 (code-fence text ?annotation)
 ```
 
 Enclose `text` by at least three backticks; optionally attaching `?annotation`.
 
-## Function: `heading`
+## Function: heading
 
-```
+```fennel
 (heading level title)
 ```
 
 Make a heading of specified `level` by prepending `#` in front of the `title`.
 
-## Function: `italic`
+## Function: italic
 
-```
+```fennel
 (italic text)
 ```
 
 Make an *italic* `text`.
 
-## Function: `link`
+## Function: link
 
-```
+```fennel
 (link text url)
 ```
 
 Make a hyperlink of `text` pointing to the `url`.
 
-## Function: `ordered-list`
+## Function: ordered-list
 
-```
+```fennel
 (ordered-list texts)
 ```
 
@@ -93,17 +93,17 @@ Make an ordered list from the sequential table of `texts`.
 2. Banana
 3. Orange
 
-## Function: `promote-headings`
+## Function: promote-headings
 
-```
+```fennel
 (promote-headings level text)
 ```
 
 Promote headings included in the `text` by speficied `level`.
 
-## Function: `string->anchor`
+## Function: string->anchor
 
-```
+```fennel
 (string->anchor string)
 ```
 
@@ -111,9 +111,9 @@ Translate the `string` to Markdown valid anchor id.
 
 Empty ids may occur if we pass only restricted chars. Such ids are ignored.
 
-## Function: `unordered-list`
+## Function: unordered-list
 
-```
+```fennel
 (unordered-list texts)
 ```
 

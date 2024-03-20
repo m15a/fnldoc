@@ -4,20 +4,20 @@ Process command line arguments.
 
 **Table of contents**
 
-- Function: [`help`](#function-help)
-- Function: [`parse`](#function-parse)
+- Function: [help](#function-help)
+- Function: [parse](#function-parse)
 
-## Function: `help`
+## Function: help
 
-```
+```fennel
 (help color?)
 ```
 
 Generate help message, decorated with ANSI escape code if `color?` is truthy.
 
-## Function: `parse`
+## Function: parse
 
-```
+```fennel
 (parse args ?debug)
 ```
 
