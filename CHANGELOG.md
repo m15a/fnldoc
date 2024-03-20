@@ -5,14 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog][1],
 and this project adheres to [Semantic Versioning][2].
 
-[1]: https://keepachangelog.com/en/1.0.0/
+[1]: https://keepachangelog.com/en/1.1.0/
 [2]: https://semver.org/spec/v2.0.0.html
 
-## Unreleased
+## Fnldoc [1.1.0-dev] (???)
 
 ### Deprecated
 
-- Executable name has been changed to `fnldoc`. Although, symbolic link
+- Executable has been renamed to `fnldoc`. Although, symbolic link
   `fenneldoc` that references `fnldoc` is provided.
 - In `.fenneldoc`, the following keys have been renamed:
   - `sandbox` -> `sandbox?`
@@ -30,19 +30,20 @@ and this project adheres to [Semantic Versioning][2].
   In Fennel files, top comments beginning with `;;;; ` are rendered as
   module-level description in Markdown documentation. You can still use
   `modules-info.FILENAME.description` in `.fenneldoc` alternatively.
-- Module entries are now shown with their types (function or macro) [[#5]]:
-  The type is inferred automatically; otherwise you can explicitly annotate
-  it in metadata field `:fnldoc/type`.
+- Show module items with their types (function or macro) [[#5]]:
+  Type is inferred automatically; otherwise you can explicitly annotate
+  type in metadata field `:fnldoc/type`.
 - New option `--src-dir` (or `src-dir` entry in `.fenneldoc`) [[#10]]:
-  If source files are placed in this directory, it will be stripped from
-  destination path to generate documentation. For example, running
+  If source files are placed in this directory, it will be stripped
+  from destination path to generate documentation. For example, running
   `fnldoc --src-dir foo foo/file.fnl` generates documentation at
   `doc/file.md`.
 - `modules-info.FILENAME.order` entry in `.fenneldoc` [[609a7f4]]:
-  This was previously `modules-info.FILENAME.doc-order`, which accepted only
-  a table of module item names. It has now the same functionality with `order`
-  entry. Both accept `alphabetic`, `reverse-alphabetic`, a custom comparator
-  function, or a table of ordered module items.
+  This was previously `modules-info.FILENAME.doc-order`, which used to
+  accept only a table of module item names. It has now the same
+  functionality with `order` entry. Both accept `alphabetic`,
+  `reverse-alphabetic`, a custom comparator function, or a table of
+  ordered module items.
 - Highlight function/macro signature [[9e982cb]].
  
 [#4]: https://todo.sr.ht/~m15a/fnldoc/4
@@ -58,7 +59,8 @@ and this project adheres to [Semantic Versioning][2].
 - A bug that command line option `--order` not working [[609a7f4]].
 - Unknown identifier error in sandbox environment [[d242b81]].
 - ToC generation when there are no module exports [[6383334]].
-- Gensym hash increment (e.g. `x#` -> `x###`) in markdown fences [[1a94362]].
+- Accidental gensym hash increment (e.g., `x#` -> `x###`) in markdown
+  fences [[1a94362]].
 
 [#9]: https://todo.sr.ht/~m15a/fnldoc/9
 [#16]: https://todo.sr.ht/~m15a/fnldoc/16
@@ -68,8 +70,8 @@ and this project adheres to [Semantic Versioning][2].
 
 ### Internal changes
 
-- Modules are reorganized according to the above executable name change.
 - Version is now explicitly declared in the source code.
+- Reorganized modules according to the above executable renaming.
 - Removed dependency to cljlib.
 
 ## Fenneldoc 1.0.1 (2023-05-16)
@@ -144,4 +146,6 @@ First stable release of Fenneldoc.
   - Run documentation tests, by looking for code inside backticks.
 - Parse macro modules.
 
-<!-- vim: set tw=73 spell: -->
+[1.1.0-dev]: <https://git.sr.ht/~m15a/fnldoc/refs/HEAD>
+
+<!-- vim: set tw=72 spell: -->
