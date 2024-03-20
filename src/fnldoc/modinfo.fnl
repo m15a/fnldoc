@@ -181,9 +181,11 @@ More paragraph.
                           (doto lines
                             (table.insert (line:match (.. description-line "(.*)$")))))
                         (line:match empty-line)
-                        (set empty-lines-count (+ 1 empty-lines-count))
+                        (when (next lines)
+                          (set empty-lines-count (+ 1 empty-lines-count)))
                         (line:match another-empty-line)
-                        (set empty-lines-count (+ 1 empty-lines-count))
+                        (when (next lines)
+                          (set empty-lines-count (+ 1 empty-lines-count)))
                         (line:match comment-line)
                         (do :ignore-it!)
                         ;; Shebang lines must begin from line 1 but here
