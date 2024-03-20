@@ -151,8 +151,8 @@ corresponding anchor mapping.
                                                  :macro :Macro
                                                  _ :Function)]
                                      (.. ftype ": " (match (. anchor-map item)
-                                                      anchor (link (code item) anchor)
-                                                      _ (code item))))))]
+                                                      anchor (link item anchor)
+                                                      _ item)))))]
                 (lines->text))]
     (values toc anchor-map)))
 
@@ -200,7 +200,7 @@ corresponding anchor mapping.
                 :macro :Macro
                 _ :Function)]
     (doto lines
-      (table.insert (heading 2 (.. ftype ": " (code item))))
+      (table.insert (heading 2 (.. ftype ": " item)))
       (table.insert ""))
     (when (and config.function-signatures? mdata.arglist)
       (doto lines
