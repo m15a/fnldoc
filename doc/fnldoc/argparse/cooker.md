@@ -1,6 +1,5 @@
 # Cooker.fnl (1.1.0-dev)
 
-
 Generate command line argument option recipes.
 
 Macros defined here generate a table that maps command line argument

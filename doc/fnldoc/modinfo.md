@@ -88,6 +88,7 @@ string in which `;;;; ` is stripped from each line. Lines that match
 In the following Fennel module file,
 
 ```fennel
+#!/usr/bin/env fennel
 ;;;; A paragraph.
 
 ;;;; Another paragraph.
