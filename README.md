@@ -4,14 +4,9 @@ Generate documentation for your [Fennel] project.
 
 [![ci]][builds]
 
-## Description
-
-This is a fork of [Fenneldoc], with a number of bug fixes and some
-new features.
-
 ## Synopsis
 
-`your.fnl`:
+Let's say you have `your.fnl`:
 
 ```fennel
 ;;;; Your module description.
@@ -36,20 +31,20 @@ Your module description.
 
 **Table of contents**
 
-- Function: [`good-bye`](#function-good-bye)
-- Function: [`hello`](#function-hello)
+- Function: [good-bye](#function-good-bye)
+- Function: [hello](#function-hello)
 
-## Function: `good-bye`
+## Function: good-bye
 
-```
+```fennel
 (good-bye)
 ```
 
 Say good bye. See also [`hello`](#function-hello).
 
-## Function: `hello`
+## Function: hello
 
-```
+```fennel
 (hello)
 ```
 
@@ -59,20 +54,25 @@ Say hello.
      https://sr.ht/~m15a/fnldoc/ -->
 ````
 
-## Features
+## Description
+
+This is a fork of [Fenneldoc], with a number of bug fixes and some
+new features.
+
+### Features
 
 - Generate Markdown documentation for Fennel code by analyzing
   metadata **and in-file comments**.
-- Easy internal linking: just enclose any ```item'`` in your module.
+- Easy internal linking: just enclose any `` `item'`` in your module.
 - **Show function type (function or macro) in documentation.**
 - Run tests embedded in function docstring (a.k.a. doctest).
 - Granular customizability for documentation contents.
 
 Bold texts are major enhancements contributed by this fork.
-Take a look at the [changelog](./CHANGELOG.md) to find fixed bugs
+Take a look at [`CHANGELOG.md`](./CHANGELOG.md) to find fixed bugs
 and minor enhancements.
 
-## Installation
+### Installation
 
 Fnldoc runs with these dependencies:
 
@@ -89,9 +89,9 @@ Alternative ways for installation:
 
 - [Nix]: see its [usage](./nix/USAGE.md).
 
-## Usage
+### Usage
 
-### Run Fnldoc
+#### Run Fnldoc
 
 ```console
 fnldoc [OPTIONS] [FILE]...
@@ -99,7 +99,7 @@ fnldoc [OPTIONS] [FILE]...
 
 Markdown documentation will be generated in `./doc` directory (default).
 
-### Write documentation
+#### Write documentation
 
 Fnldoc generates documentation from three sources:
 
@@ -118,7 +118,7 @@ Use `--no-sandbox` flag in command line or `:sandbox` option in
 configuration file to override this behavior
 (see [Configuration](#configuration)).
 
-#### Function docstring
+##### Function docstring
 
 Write docstring as usual, then Fnldoc generates description for
 the function (or macro) accordingly. For example,
@@ -134,24 +134,24 @@ the function (or macro) accordingly. For example,
 The above function will get its documentation:
 
 ````markdown
-## Function: `your-function`
+## Function: your-function
 
-```
+```fennel
 (your-function ...)
 ```
 
 `your-function`'s docstring.
 ````
 
-#### Macro docstring
+##### Macro docstring
 
 Macros defined in a macro module, which may be imported by
 `import-macros`, are automatically shown as macros in documentation:
 
 ````markdown
-## Macro: `your-macro`
+## Macro: your-macro
 
-```
+```fennel
 (your-macro ...)
 ```
 
@@ -170,7 +170,7 @@ using Fnldoc's metadata field `:fnldoc/type`:
 {: your-macro}
 ```
 
-#### Module top-level comments
+##### Module top-level comments
 
 Fnldoc scans Fennel code and search for module top-level comment lines
 beginning with four semicolons `;;;; `, which will be inserted to
@@ -192,7 +192,7 @@ documentation as module description. For example, the following module
 {: fun}
 ```
 
-will be translated to its documentation:
+will get its Markdown documentation:
 
 ````markdown
 # Your-module.fnl
@@ -205,23 +205,26 @@ Another line.
 
 **Table of contents**
 
-- Function: [`fun`](#function-fun)
+- Function: [fun](#function-fun)
 
 ## Function: fun
 
-```
+```fennel
 (fun)
 ```
 
 **Undocumented**
 ````
 
-#### Copyright and license
+##### Copyright, license, and version
 
 You can add a footer section containing author name, copyright, and
 license information via configuration
-(see [Configuration](#configuration)).
-It may be project-wide,
+(see [Configuration](#configuration)). In the same manner, you can
+specify project version or module version in configuration. The
+specified version will be inserted into Markdown level-1 heading.
+
+Configuration may be project-wide,
 
 ```fennel
 {:project-copyright "Copyright (C) 20XX Your Name"
@@ -239,7 +242,7 @@ or module-wide
    :license "[YOUR_LICENSE](link to your license file/URL)"}}}
 ```
 
-#### Inline reference
+##### Inline reference
 
 Fnldoc supports inline references (i.e., internal links) in
 documentation by using Fnldoc's special notation: any text surrounded
@@ -265,10 +268,10 @@ Fnldoc embeds internal links for `bar` to `foo`:
 ````markdown
 **Table of contents**
 
-- Function: [`bar`](#function-bar)
-- Function: [`foo`](#function-foo)
+- Function: [bar](#function-bar)
+- Function: [foo](#function-foo)
 
-## Function: `bar`
+## Function: bar
 
 ```
 (bar ...)
@@ -276,7 +279,7 @@ Fnldoc embeds internal links for `bar` to `foo`:
 
 See [`foo`](#function-foo).
 
-## Function: `foo`
+## Function: foo
 
 ```
 (foo ...)
@@ -292,7 +295,7 @@ Whether to replace inline references with link can be customized in
 configuration entry `mode`
 (see [Configuration](#configuration)).
 
-#### Specifying order of contents
+##### Specifying order of contents
 
 Fnldoc supports specifying order of items by passing a sequential
 table of item names to `:order` configuration key. For example, say
@@ -329,7 +332,7 @@ or by passing it via `--order` flag in command line
 (see [Configuration](#configuration)).
 Note, that you can't pass sorting function via command-line argument.
 
-### Test documentation
+#### Test documentation
 
 Fnldoc understands Markdown code fences with `fennel` annotation as
 test code to be validated, and run these tests embedded in
@@ -403,7 +406,7 @@ undocumented arguments?
 fnldoc [WARNING]: in file 'sum.fnl' function 'sum' has undocumented argument 'a'
 ```
 
-#### Test requirements
+##### Test requirements
 
 In most cases Fnldoc is smart enough, and can require your module's
 exported functions automatically. However, if this doesn't work, you
@@ -416,7 +419,7 @@ Fnldoc a proper require for your macro modules. For example,
  {:path/to/macros.fnl "(import-macros {: a-macro} :path.to.macros)"}}
 ```
 
-## Configuration
+### Configuration
 
 Run `fnldoc --help` and you'll find configuration options that can
 be customized by command line flags.
