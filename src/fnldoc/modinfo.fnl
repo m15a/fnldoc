@@ -137,6 +137,7 @@ string in which `;;;; ` is stripped from each line. Lines that match
 In the following Fennel module file,
 
 ```fennel :skip-test
+#!/usr/bin/env fennel
 ;;;; A paragraph.
 
 ;;;; Another paragraph.
@@ -163,6 +164,7 @@ More paragraph.
   (case (io.open file)
     in (with-open [in in]
          (let [lines []
+               shebang-line "^#!"
                empty-line "^%s*$"
                another-empty-line "^%s*;;;;$"
                description-line "^%s*;;;; "
@@ -184,6 +186,10 @@ More paragraph.
                         (set empty-lines-count (+ 1 empty-lines-count))
                         (line:match comment-line)
                         (do :ignore-it!)
+                        ;; Shebang lines must begin from line 1 but here
+                        ;; no need to be so strict.
+                        (line:match shebang-line)
+                        (do :ignore-#!)
                         (set parsing? nil))
                _ (set parsing? nil)))
            (when (< 0 (length lines))
