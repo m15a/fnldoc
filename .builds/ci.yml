@@ -12,4 +12,5 @@ tasks:
       nix flake check
   - doc: |
       cd $SRC_DIR
+      if [ $GIT_REF != refs/heads/main ]; then complete-build; fi
       nix develop .#ci-doc --command bash -c "./tools/auto-update-doc.bash"
