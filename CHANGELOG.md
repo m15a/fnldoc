@@ -43,11 +43,13 @@ and this project adheres to [Semantic Versioning][2].
   a table of module item names. It has now the same functionality with `order`
   entry. Both accept `alphabetic`, `reverse-alphabetic`, a custom comparator
   function, or a table of ordered module items.
+- Highlight function/macro signature [[9e982cb]].
  
 [#4]: https://todo.sr.ht/~m15a/fnldoc/4
 [#5]: https://todo.sr.ht/~m15a/fnldoc/5
 [#10]: https://todo.sr.ht/~m15a/fnldoc/10
 [609a7f4]: https://git.sr.ht/~m15a/fnldoc/commit/609a7f4
+[9e982cb]: https://git.sr.ht/~m15a/fnldoc/commit/9e982cb
 
 ### Fixed
 
