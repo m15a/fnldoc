@@ -6,14 +6,12 @@ secrets:
   - deb4e7d8-9cff-41bf-b44c-2a1a8d2629c1
   - 97a85e37-fbc1-40b5-80d2-5649e7f8ddc0
 environment:
-  SRC_DIR: fnldoc
+  SRC_URL: https://git.sr.ht/~m15a/fnldoc
+  BARE_SRC_DIR: fnldoc.git
   DST_URL: git@github.com:m15a/fnldoc.git
 tasks:
-  - prep: |
-      cd $SRC_DIR
-      git remote set-url --push origin $DST_URL
-      git fetch --prune origin
-      git for-each-ref --format 'delete %(refname)' refs/pull | git update-ref --stdin
+  - clone: |
+      git clone --bare $SRC_URL
   - push: |
-      cd $SRC_DIR
-      git push --mirror
+      cd $BARE_SRC_DIR
+      git push --mirror $DST_URL
