@@ -16,7 +16,7 @@ FENNEL_FLAGS +=\
 		--add-macro-path $(path)/?.fnl\
 		--add-macro-path $(path)/?/init-macros.fnl)
 endif
-FENNEL_BUILD_FLAGS = --no-metadata --globals '*' --require-as-include --compile
+FENNEL_BUILD_FLAGS = --no-metadata --require-as-include --compile
 
 SRCS = $(shell find src -name '*.fnl')
 MAIN_SRC := src/fnldoc.fnl
