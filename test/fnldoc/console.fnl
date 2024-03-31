@@ -1,3 +1,4 @@
+(import-macros {: testing : test} :test.utils)
 (local t (require :test.faith))
 (local console (require :fnldoc.console))
 
@@ -7,16 +8,21 @@
     (out:seek :set)
     (out:read :*a)))
 
-(fn test-log* []
-  (t.= "fnldoc: no level\n"
-       (log+ {} "no level"))
-  (t.= "fnldoc [INFO]: info\n"
-       (log+ {:level :info} :info))
-  (t.= "fnldoc [WARNING]: warn\n"
-       (log+ {:level :warn} :warn))
-  (t.= "fnldoc [WARNING]: warning\n"
-       (log+ {:level :warning} :warning))
-  (t.= "fnldoc [ERROR]: error\n"
-       (log+ {:level :error} :error)))
+(testing
+  (test :plain-log []
+    (t.= "fnldoc: no level\n"
+         (log+ {} "no level")))
 
-{: test-log*}
+  (test :info-log []
+    (t.= "fnldoc [INFO]: info\n"
+         (log+ {:level :info} :info)))
+
+  (test :warning-log []
+    (t.= "fnldoc [WARNING]: warn\n"
+         (log+ {:level :warn} :warn)))
+
+  (test :error-log []
+    (t.= "fnldoc [ERROR]: error\n"
+         (log+ {:level :error} :error))))
+
+;; vim: lw+=testing,test,it
