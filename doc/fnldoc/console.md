@@ -66,31 +66,6 @@ other than those will be ignored. If file handle `out` is specified, print
 it to the `out` instead. If `color?` is truthy, use color to print messages;
 if `false`, use no color; and if `nil`, it infers whether to use color.
 
-### Examples
-
-```fennel
-(let [log+ (fn [{: level} msg]
-             (with-open [out (io.tmpfile)]
-               (log* {: level : out :color? false} msg)
-               (out:seek :set)
-               (out:read :*a)))] 
-  (assert (= "fnldoc: no level
-"
-             (log+ {} "no level")))
-  (assert (= "fnldoc [INFO]: info
-"
-             (log+ {:level :info} "info")))
-  (assert (= "fnldoc [WARNING]: warn
-"
-             (log+ {:level :warn} "warn")))
-  (assert (= "fnldoc [WARNING]: warning
-"
-             (log+ {:level :warning} "warning")))
-  (assert (= "fnldoc [ERROR]: error
-"
-             (log+ {:level :error} "error"))))
-```
-
 ## Function: warn
 
 ```fennel
