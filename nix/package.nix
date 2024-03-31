@@ -1,33 +1,17 @@
-{ version
-, src
-, fennel
-, stdenv
-, lib
-}:
+{ version, src, stdenv, lib, lua }:
 
 stdenv.mkDerivation rec {
   pname = "fnldoc";
   inherit version src;
 
-  nativeBuildInputs = [
-    fennel.lua
-    fennel
-  ];
+  nativeBuildInputs = [ lua.pkgs.fennel ];
+  buildInputs = [ lua ];
 
-  makeFlags = with lib; [
-    "VERSION=${version}"
-    "PREFIX=$(out)"
-  ];
-
-  # doCheck = true;
-  # checkTarget = "test";
-
-  postBuild = ''
-    patchShebangs .
-  '';
+  makeFlags = [ "VERSION=${version}" "PREFIX=$(out)" ];
 
   meta = with lib; {
-    description = "Tool for automatic documentation generation and validation for the Fennel language.";
+    description =
+      "Tool for automatic documentation generation and validation for the Fennel language.";
     homepage = "https://sr.ht/~m15a/fnldoc";
     license = licenses.mit;
     mainProgram = pname;
