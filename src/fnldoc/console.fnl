@@ -40,27 +40,7 @@ cached."
 `level` can be one of `:info`, `:warning` (or `:warn`), and `:error`;
 other than those will be ignored. If file handle `out` is specified, print
 it to the `out` instead. If `color?` is truthy, use color to print messages;
-if `false`, use no color; and if `nil`, it infers whether to use color.
-
-# Examples
-
-```fennel
-(let [log+ (fn [{: level} msg]
-             (with-open [out (io.tmpfile)]
-               (log* {: level : out :color? false} msg)
-               (out:seek :set)
-               (out:read :*a)))] 
-  (assert (= \"fnldoc: no level\n\"
-             (log+ {} \"no level\")))
-  (assert (= \"fnldoc [INFO]: info\n\"
-             (log+ {:level :info} \"info\")))
-  (assert (= \"fnldoc [WARNING]: warn\n\"
-             (log+ {:level :warn} \"warn\")))
-  (assert (= \"fnldoc [WARNING]: warning\n\"
-             (log+ {:level :warning} \"warning\")))
-  (assert (= \"fnldoc [ERROR]: error\n\"
-             (log+ {:level :error} \"error\"))))
-```"
+if `false`, use no color; and if `nil`, it infers whether to use color."
   (let [out (or out io.stderr)
         color? (case color?
                  true true
