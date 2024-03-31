@@ -36,8 +36,10 @@ build: $(EXECUTABLE) $(CONFIG_FILE)
 $(EXECUTABLE): $(SRCS)
 	echo '#!/usr/bin/env $(LUA)' > $@
 	$(FENNEL) $(FENNEL_FLAGS) $(FENNEL_BUILD_FLAGS) $(MAIN_SRC) >> $@
-	sed -i $@ -Ee 's#^(local version = ")[^"]+#\1$(VERSION)#'
-	sed -i $@ -Ee 's#^return \{version = version, main = main}$$#main()#'
+	sed -Ei $@ \
+		-e 's|(local fnldoc_version = ")[^"]+|\1$(VERSION)|' \
+		-e '$$d'
+	echo 'main()' >> $@
 	chmod +x $@
 
 $(CONFIG_FILE): $(EXECUTABLE)

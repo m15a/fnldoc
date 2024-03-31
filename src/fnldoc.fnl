@@ -34,10 +34,10 @@
 (local argparse (require :fnldoc.argparse))
 (local {: process!} (require :fnldoc.processor))
 
-(local version :1.1.0-dev)
+(local fnldoc-version :1.1.0-dev)
 
 (fn show-version []
-  (io.stdout:write version "\n")
+  (io.stdout:write fnldoc-version "\n")
   (os.exit 0))
 
 (fn show-help []
@@ -47,7 +47,7 @@
 
 (fn main []
   "Run Fnldoc application."
-  (let [config/file (config.init! {: version})
+  (let [config/file (config.init! {:version fnldoc-version})
         {: show-version?
          : show-help?
          : write-config?
@@ -63,4 +63,4 @@
     (each [_ file (ipairs files)]
       (process! file config))))
 
-{: version : main}
+{:version fnldoc-version : main}
