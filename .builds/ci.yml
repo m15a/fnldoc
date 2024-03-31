@@ -7,10 +7,16 @@ environment:
   SRC_DIR: fnldoc
   DST_URL: git@git.sr.ht:~m15a/fnldoc
 tasks:
-  - check: |
+  - check-luajit: |
       cd $SRC_DIR
-      nix flake check
+      nix develop .#ci-check-shell-fennel-luajit -c bash -c "make test"
+  - check-lua5_4: |
+      cd $SRC_DIR
+      nix develop .#ci-check-shell-fennel-lua5_4 -c bash -c "make test"
+  - check-lua5_3: |
+      cd $SRC_DIR
+      nix develop .#ci-check-shell-fennel-lua5_3 -c bash -c "make test"
   - doc: |
       cd $SRC_DIR
       if [ $GIT_REF != refs/heads/main ]; then complete-build; fi
-      nix develop .#ci-doc --command bash -c "./tools/auto-update-doc.bash"
+      nix develop .#ci-doc -c bash -c "./tools/auto-update-doc.bash"
