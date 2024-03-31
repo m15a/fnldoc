@@ -211,13 +211,10 @@ Append `self`'s `fennel-path` to `fennel.path`.
 ## Function: write!
 
 ```fennel
-(write! self config-file ?debug)
+(write! self config-file)
 ```
 
 Write contents of `self` to the `config-file` (default: `.fenneldoc`).
-
-For testing purpose, if `?debug` is truthy and failing, it raises an error
-instead to exit.
 
 ---
 

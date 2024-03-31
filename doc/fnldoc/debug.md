@@ -2,17 +2,21 @@
 
 Utilities convenient for testing/debugging purpose.
 
+These macros switch behavior depending on global `_G._FNLDOC_DEBUG`.
+If the global is truthy at compile time, they raise error.
+Otherwise, they do some IO stuff.
+
 **Table of contents**
 
-- Function: [exit/error](#function-exiterror)
+- Macro: [exit/error](#macro-exiterror)
 
-## Function: exit/error
+## Macro: exit/error
 
 ```fennel
-(exit/error msg ?debug)
+(exit/error msg)
 ```
 
-If `?debug` is truthy, raise an error with `msg`; otherwise exit with warning.
+Exit with warning `msg` unless `_G._FNLDOC_DEBUG` is truthy at compile time.
 
 ---
 

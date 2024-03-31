@@ -18,7 +18,7 @@ Generate help message, decorated with ANSI escape code if `color?` is truthy.
 ## Function: parse
 
 ```fennel
-(parse args ?debug)
+(parse args)
 ```
 
 Parse command line `args` and return its result.
@@ -32,9 +32,6 @@ The result contains attributes:
 - `config`: Parsed configuration that will be merged into that coming from
   `.fenneldoc`.
 - `files`: Target Fennel file names, which will be processed by Fnldoc.
-
-For testing purpose, if `?debug` is truthy and `parse` fails, it raises an
-error instead to exit.
 
 ---
 

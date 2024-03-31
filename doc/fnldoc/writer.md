@@ -9,13 +9,10 @@ Functions related to writing generated documentation into respecting files.
 ## Function: write!
 
 ```fennel
-(write! text path ?debug)
+(write! text path)
 ```
 
 Write out the contents of `text` string to the `path`.
-
-For testing purpose, if `?debug` is truthy and failing, it raises an error
-instead to exit.
 
 ---
 
