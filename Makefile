@@ -22,6 +22,7 @@ SRCS = $(shell find src -name '*.fnl')
 MAIN_SRC := src/fnldoc.fnl
 TESTS = $(shell find test -name '*.fnl' ! -name 'faith.fnl')
 EXECUTABLE := fnldoc
+CONFIG_FILE := .fenneldoc
 VERSION ?= $(shell $(FENNEL) $(FENNEL_FLAGS) -e '(. (require :fnldoc) :version)')
 
 DESTDIR ?=
@@ -30,7 +31,7 @@ BINDIR = $(PREFIX)/bin
 DOCDIR ?= doc
 
 .PHONY: build
-build: $(EXECUTABLE)
+build: $(EXECUTABLE) $(CONFIG_FILE)
 
 $(EXECUTABLE): $(SRCS)
 	echo '#!/usr/bin/env $(LUA)' > $@
@@ -38,7 +39,9 @@ $(EXECUTABLE): $(SRCS)
 	sed -i $@ -Ee 's#^(local version = ")[^"]+#\1$(VERSION)#'
 	sed -i $@ -Ee 's#^return \{version = version, main = main}$$#main()#'
 	chmod +x $@
-	$(LUA) $@ --config --project-version $(VERSION)
+
+$(CONFIG_FILE): $(EXECUTABLE)
+	$(LUA) $< --config --project-version $(VERSION)
 
 .PHONY: install
 install: $(EXECUTABLE)
