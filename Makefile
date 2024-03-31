@@ -53,11 +53,11 @@ clean:
 	rm -f $(EXECUTABLE)
 
 .PHONY: test
-test:
+test: $(SRCS) $(TESTS)
 	@$(FENNEL) $(FENNEL_FLAGS) test/init.fnl
 
 .PHONY: doc
-doc: $(EXECUTABLE)
+doc: $(EXECUTABLE) $(CONFIG_FILE) $(SRCS)
 	rm -rf $(DOCDIR)
 	$(LUA) $< --no-sandbox --out-dir $(DOCDIR) $(SRCS)
 
