@@ -74,7 +74,7 @@
 (local {: view} (require :fennel))
 (local {: assert-type} (require :fnldoc.utils.assert))
 (local console (require :fnldoc.console))
-(local {: exit/error} (require :fnldoc.debug))
+(import-macros {: exit/error} :fnldoc.debug)
 (local {: comparator/table} (require :fnldoc.utils.table))
 (local {: basename} (require :fnldoc.utils.file))
 (local {: capitalize : escape-regex} (require :fnldoc.utils.string))
@@ -89,7 +89,7 @@
         : promote-headings}
        (require :fnldoc.utils.markdown))
 
-(fn comparator/fallback [order ?fallback-order ?debug]
+(fn comparator/fallback [order ?fallback-order]
   (case order
     :alphabetic nil
     :reverse-alphabetic #(> $1 $2)
@@ -98,7 +98,7 @@
                             (comparator/fallback ?fallback-order)))
     (where fun (= :function (type fun))) fun
     else (let [msg (.. "unsupported order: " (view else))]
-           (exit/error msg ?debug))))
+           (exit/error msg))))
 
 (lambda sorted-item-index [modinfo config]
   "Sort the item index of `module-info` and return it as a sequential table.

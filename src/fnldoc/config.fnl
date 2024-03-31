@@ -3,7 +3,7 @@
 (local fennel (require :fennel))
 (local {: view : dofile : metadata} fennel)
 (local console (require :fnldoc.console))
-(local {: exit/error} (require :fnldoc.debug))
+(import-macros {: exit/error} :fnldoc.debug)
 (local {: clone/deeply} (require :fnldoc.utils.table))
 
 (local default (require :fnldoc.config.default))
@@ -52,11 +52,8 @@
                      (#(pick-values 1 $)))
                  ""] "\n"))
 
-(fn write! [self config-file ?debug]
-  "Write contents of `self` to the `config-file` (default: `.fenneldoc`).
-
-For testing purpose, if `?debug` is truthy and failing, it raises an error
-instead to exit."
+(fn write! [self config-file]
+  "Write contents of `self` to the `config-file` (default: `.fenneldoc`)."
   (let [config-file (or config-file :.fenneldoc)]
     (match (io.open config-file :w)
       f (with-open [file f]
@@ -67,7 +64,7 @@ instead to exit."
       (nil msg code)
       (let [msg (string.format "failed to open file '%s': %s (%s)" config-file
                                msg code)]
-        (exit/error msg ?debug)))))
+        (exit/error msg)))))
 
 (local mt {:__index {: merge! : set-fennel-path! : write!}})
 

@@ -18,4 +18,5 @@
 
 (io.stderr:write (runtime-version) "\n")
 (io.stderr:write "Faith " faith.version "\n")
+(set _G._FNLDOC_DEBUG true)
 (faith.run (find-test-modules))

@@ -8,10 +8,9 @@
   (let [recipe (bless {:key :num :flag :--num
                        :preprocessor tonumber
                        :validator #(= :number (type $))})]
-    (set recipe.__fnldoc_debug? true)
     (t.= 10 (-> "10"
                 (recipe:preprocess)
-                (recipe:validate :debug)))
+                (recipe:validate)))
     (t.error "invalid argument for option %-%-num: \"a\""
              #(-> :a
                   (recipe:preprocess)
@@ -33,7 +32,6 @@
   (let [args []
         config {}
         recipe (bless {:key :key} {:flag :--key})]
-    (set recipe.__fnldoc_debug? true)
     (t.error "argument missing while processing option %-%-key"
              #(recipe:parse! config args))))
 

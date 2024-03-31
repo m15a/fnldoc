@@ -17,6 +17,7 @@ FENNEL_FLAGS +=\
 		--add-macro-path $(path)/?/init-macros.fnl)
 endif
 FENNEL_BUILD_FLAGS = --no-metadata --require-as-include --compile
+FENNEL_TEST_FLAGS = --no-compiler-sandbox
 
 SRCS = $(shell find src -name '*.fnl')
 MAIN_SRC := src/fnldoc.fnl
@@ -56,7 +57,7 @@ clean:
 
 .PHONY: test
 test: $(SRCS) $(TESTS)
-	@$(FENNEL) $(FENNEL_FLAGS) test/init.fnl
+	@$(FENNEL) $(FENNEL_FLAGS) $(FENNEL_TEST_FLAGS) test/init.fnl
 
 .PHONY: doc
 doc: $(EXECUTABLE) $(CONFIG_FILE) $(SRCS)

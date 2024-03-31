@@ -13,14 +13,14 @@
 (fn test-write! []
   (let [text "hello"
         path (join-paths test-dir :a :b.md)]
-    (t.= true (write! text path :debug))
+    (t.= true (write! text path))
     (t.= "hello" (with-open [in (io.open path)]
                    (in:read :a*))))
   (let [text ""]
     (t.error "error opening file 'test"
-             #(write! text (join-paths invalid-dir :a.md) :debug))
+             #(write! text (join-paths invalid-dir :a.md)))
     (t.error "error opening file 'test"
-             #(write! text invalid-file :debug))))
+             #(write! text invalid-file))))
 
 (fn teardown-all []
   (os.execute (.. "rm -rf " test-dir)))

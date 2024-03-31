@@ -1,18 +1,18 @@
 (local {: assert-type} (require :fnldoc.utils.assert))
 (local {: merge!} (require :fnldoc.utils.table))
-(local {: exit/error} (require :fnldoc.debug))
+(import-macros {: exit/error} :fnldoc.debug)
 
-(lambda deny-access [reason file ?debug]
+(lambda deny-access [reason file]
   (let [msg (.. "access to denied " reason " detected while loading " file)]
-    #(exit/error msg ?debug)))
+    #(exit/error msg)))
 
-(lambda deny-access/module [module file ?debug]
+(lambda deny-access/module [module file]
   (let [msg (.. "access to denied '" module "' module detected while loading "
                 file)]
-    (setmetatable {} {:__index #(exit/error msg ?debug)})))
+    (setmetatable {} {:__index #(exit/error msg)})))
 
 ;; TODO: strict check for each Lua version/implementation.
-(lambda sandbox [file ?debug]
+(lambda sandbox [file]
   "Create a sandboxed environment to run `file` for doctests.
 
 Does not allow any IO, loading files or Lua code via `load`,
@@ -20,10 +20,7 @@ Does not allow any IO, loading files or Lua code via `load`,
 and accessing such modules as `os`, `debug`, `package`, and `io`.
 
 This means that your files must not use these modules on the top
-level, or run any code when file is loaded that uses those modules.
-
-For testing purpose, if `?debug` is truthy and failing, it raises an error
-instead to exit."
+level, or run any code when file is loaded that uses those modules."
   (assert-type :string file)
   (let [allowed {: assert
                  : collectgarbage
@@ -57,27 +54,24 @@ instead to exit."
                    :rawget nil
                    :rawset nil}
         sandboxed {:arg []
-                   :print (deny-access :IO file ?debug)
-                   :package (deny-access/module :package file ?debug)
-                   :io (deny-access/module :io file ?debug)
-                   :os (deny-access/module :os file ?debug)
-                   :debug (deny-access/module :debug file ?debug)}
+                   :print (deny-access :IO file)
+                   :package (deny-access/module :package file)
+                   :io (deny-access/module :io file)
+                   :os (deny-access/module :os file)
+                   :debug (deny-access/module :debug file)}
         env (doto allowed
               (merge! disallowd sandboxed))]
     (set env._G env)
     env))
 
-(lambda sandbox/overrides [file overrides ?debug]
+(lambda sandbox/overrides [file overrides]
   "A variant of `sandbox' that will be overridden before running `file`.
 
 You can provide an `overrides` table, which contains function name as
 a key, and function as a value. This function will be used instead of
 specified function name in the sandbox. For example, you can wrap IO
-functions to only throw warning, and not error.
-
-For testing purpose, if `?debug` is truthy and failing, it raises an error
-instead to exit."
-  (let [env (sandbox file ?debug)]
+functions to only throw warning, and not error."
+  (let [env (sandbox file)]
     (merge! env overrides)
     env))
 
