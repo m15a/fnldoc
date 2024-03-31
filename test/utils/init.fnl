@@ -20,4 +20,10 @@
     (out:write ...)
     (out:write "\n")))
 
-{: find-test-modules : log}
+(fn text [text]
+  "Ignore first (spaces and) newline in a long text string."
+  (case (type text)
+    :string (pick-values 1 (text:gsub "^[ \t]*\n" ""))
+    typ (error "string expected, got " typ)))
+
+{: find-test-modules : log : text}

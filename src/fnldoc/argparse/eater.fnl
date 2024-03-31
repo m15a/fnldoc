@@ -86,7 +86,7 @@ If `color?` is truthy, it uses ANSI escape code."
                       (lines->text [(. description :spec)
                                     (indent 6 (wrap 72 (. description :desc)))
                                     ""])
-                      (error (.. "no flag found: " flag)))))]
+                      (error (.. "no description found: " flag)))))]
     (lines->text lines)))
 
 {: bless : preprocess : validate : parse! : option-descriptions/order}
