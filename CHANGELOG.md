@@ -10,6 +10,52 @@ and this project adheres to [Semantic Versioning][2].
 
 ## Fnldoc [1.1.0-dev] (???)
 
+### Added
+
+- Module-level description inside Fennel file [#4]:
+  In Fennel files, top comments beginning with `;;;; ` are rendered as
+  module-level description in Markdown documentation. You can still use
+  `modules-info.FILENAME.description` in `.fenneldoc` alternatively.
+- Show module items with their types (function or macro) [#5]:
+  Type is inferred automatically; otherwise you can explicitly annotate
+  type in metadata field `:fnldoc/type`.
+- New option `--src-dir` (or `src-dir` entry in `.fenneldoc`) [#10]:
+  If source files are placed in this directory, it will be stripped
+  from destination path to generate documentation. For example, running
+  `fnldoc --src-dir foo foo/file.fnl` generates documentation at
+  `doc/file.md`.
+- `modules-info.FILENAME.order` entry in `.fenneldoc` [609a7f4]:
+  This was previously `modules-info.FILENAME.doc-order`, which used to
+  accept only a table of module item names. Now it has the same
+  functionality with `order` entry. Both accept `alphabetic`,
+  `reverse-alphabetic`, a custom comparator function, or a table of
+  ordered module items.
+- Highlight function/macro signature [9e982cb].
+- Load `.fenneldoc` in sandboxed environment [#19].
+ 
+[#4]: https://todo.sr.ht/~m15a/fnldoc/4
+[#5]: https://todo.sr.ht/~m15a/fnldoc/5
+[#10]: https://todo.sr.ht/~m15a/fnldoc/10
+[#19]: https://todo.sr.ht/~m15a/fnldoc/19
+[609a7f4]: https://git.sr.ht/~m15a/fnldoc/commit/609a7f4
+[9e982cb]: https://git.sr.ht/~m15a/fnldoc/commit/9e982cb
+
+### Fixed
+
+- Generating empty documentation for function module [#16].
+- Erroneous handling for file path beginning with `./` [#9].
+- A bug that command line option `--order` not working [609a7f4].
+- Unknown identifier error in sandboxed environment [d242b81].
+- ToC generation error when there are no module exports [6383334].
+- Accidental gensym hash *increment* (e.g., `x#` -> `x###`) in markdown
+  fences [1a94362].
+
+[#9]: https://todo.sr.ht/~m15a/fnldoc/9
+[#16]: https://todo.sr.ht/~m15a/fnldoc/16
+[d242b81]: https://git.sr.ht/~m15a/fnldoc/commit/d242b81
+[6383334]: https://git.sr.ht/~m15a/fnldoc/commit/6383334
+[1a94362]: https://git.sr.ht/~m15a/fnldoc/commit/1a94362
+
 ### Deprecated
 
 - Executable has been renamed to `fnldoc`. Although, symbolic link
@@ -24,56 +70,15 @@ and this project adheres to [Semantic Versioning][2].
   - `insert-comment` -> `final-comment?`
   - `modules-info.FILENAME.doc-order` ->`modules-info.FILENAME.order`
 
-### Added
+### Packaging
 
-- Module-level description inside Fennel file [[#4]]:
-  In Fennel files, top comments beginning with `;;;; ` are rendered as
-  module-level description in Markdown documentation. You can still use
-  `modules-info.FILENAME.description` in `.fenneldoc` alternatively.
-- Show module items with their types (function or macro) [[#5]]:
-  Type is inferred automatically; otherwise you can explicitly annotate
-  type in metadata field `:fnldoc/type`.
-- New option `--src-dir` (or `src-dir` entry in `.fenneldoc`) [[#10]]:
-  If source files are placed in this directory, it will be stripped
-  from destination path to generate documentation. For example, running
-  `fnldoc --src-dir foo foo/file.fnl` generates documentation at
-  `doc/file.md`.
-- `modules-info.FILENAME.order` entry in `.fenneldoc` [[609a7f4]]:
-  This was previously `modules-info.FILENAME.doc-order`, which used to
-  accept only a table of module item names. It has now the same
-  functionality with `order` entry. Both accept `alphabetic`,
-  `reverse-alphabetic`, a custom comparator function, or a table of
-  ordered module items.
-- Highlight function/macro signature [[9e982cb]].
-- Load `.fenneldoc` in sandboxed environment [#19].
- 
-[#4]: https://todo.sr.ht/~m15a/fnldoc/4
-[#5]: https://todo.sr.ht/~m15a/fnldoc/5
-[#10]: https://todo.sr.ht/~m15a/fnldoc/10
-[#19]: https://todo.sr.ht/~m15a/fnldoc/19
-[609a7f4]: https://git.sr.ht/~m15a/fnldoc/commit/609a7f4
-[9e982cb]: https://git.sr.ht/~m15a/fnldoc/commit/9e982cb
-
-### Fixed
-
-- Generating empty documentation for function module [[#16]].
-- Erroneous handling for file path beginning with `./` [[#9]].
-- A bug that command line option `--order` not working [[609a7f4]].
-- Unknown identifier error in sandbox environment [[d242b81]].
-- ToC generation when there are no module exports [[6383334]].
-- Accidental gensym hash increment (e.g., `x#` -> `x###`) in markdown
-  fences [[1a94362]].
-
-[#9]: https://todo.sr.ht/~m15a/fnldoc/9
-[#16]: https://todo.sr.ht/~m15a/fnldoc/16
-[d242b81]: https://git.sr.ht/~m15a/fnldoc/commit/d242b81
-[6383334]: https://git.sr.ht/~m15a/fnldoc/commit/6383334
-[1a94362]: https://git.sr.ht/~m15a/fnldoc/commit/1a94362
+- Provide Nix flake: see [./nix/USAGE.md](./nix/USAGE.md).
 
 ### Internal changes
 
 - Version is now explicitly declared in the source code.
-- Reorganized modules according to the above executable renaming.
+- Modules have been reorganized and refactored.
+- Added unit tests in `test/` directory.
 - Removed dependency to cljlib.
 
 ## Fenneldoc 1.0.1 (2023-05-16)
