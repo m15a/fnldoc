@@ -33,15 +33,9 @@ Compatible with GNU coreutils' `basename`.
 ### Examples
 
 ```fennel
-(assert (= :/ (basename :/)))
-(assert (= :b (basename :/a/b)))
-(assert (= :b (basename :a/b/)))
-(assert (= ":" (basename ":")))
-(assert (= :. (basename :.)))
-(assert (= :.. (basename :..)))
-(assert (= :b (basename :/a/b.ext :.ext)))
-(assert (= :b (basename :/a/b.ext/ :.ext)))
-(assert (= :.ext (basename :/a/b/.ext :.ext)))
+(basename "/a/b") ;=> "b"
+(basename "/a/b.ext/" ".ext") ;=> "b"
+(basename "/a/b/.ext" ".ext") ;=> ".ext"
 ```
 
 ## Function: dirname
@@ -60,16 +54,11 @@ at once.
 ### Examples
 
 ```fennel
-(assert (= :/ (dirname :/)))
-(assert (= :/a (dirname :/a/b)))
-(assert (= :/a (dirname :/a/b/)))
-(assert (= :a (dirname :a/b)))
-(assert (= :a (dirname :a/b/)))
-(assert (= :. (dirname :a)))
-(assert (= :. (dirname :a/)))
-(assert (= :. (dirname ":")))
-(assert (= :. (dirname :.)))
-(assert (= :. (dirname :..)))
+(dirname "/a/b") ;=> "a"
+(dirname "a/b/") ;=> "a"
+(dirname "a") ;=> "."
+(dirname ".") ;=> "."
+(dirname "..") ;=> "."
 ```
 
 ## Function: file-exists?
@@ -91,9 +80,8 @@ Join all `paths` segments into one path.
 ### Examples
 
 ```fennel
-(assert (= :a/b/c/ (join-paths :a :b :c/)))
-(assert (= :a/c (join-paths :a :. :c)))
-(assert (= :a/b/ (join-paths :a :b :c :../)))
+(join-paths :a :b :c/) ;=> "a/b/c/"
+(join-paths :a :b :c :..) ;=> "a/b"
 ```
 
 ## Function: make-directory
@@ -133,13 +121,9 @@ Trailing slash will be left as is.
 ### Examples
 
 ```fennel
-(assert (= :a/b/c/ (normalize :a//b///c/)))
-(assert (= :a/d (normalize :a/b/../d)))
-(assert (= :a/ (normalize :a/b/../)))
-(assert (= :../ (normalize :../)))
-(assert (= :./ (normalize :./)))
-(assert (= :./ (normalize :./a/../)))
-(assert (= :. (normalize :./.)))
+(normalize "a//b///c/") ;=> "a/b/c/"
+(normalize :a/b/../d) ;=> "a/d"
+(normalize "./.") ;=> "."
 ```
 
 ## Function: path->function-name
@@ -155,8 +139,7 @@ This is used for converting function module file to its function name.
 ### Examples
 
 ```fennel
-(let [path "a/b/c.fnl"]
-  (assert (= :c (path->function-name path))))
+(path->function-name "a/b/c.fnl") ;=> :c
 ```
 
 ## Function: path->module-name
@@ -170,17 +153,7 @@ Translate the `path` to its module name.
 ### Examples
 
 ```fennel
-(let [path "a/b/c.fnl"]
-  (assert (= :a.b.c (path->module-name path))))
-
-(let [path "../a/b/c.fnl"]
-  (assert (= :...a.b.c (path->module-name path))))
-
-(let [path "./a/b/c.fnl"]
-  (assert (= :a.b.c (path->module-name path))))
-
-(let [path "./a/b/.././c.fnl"]
-  (assert (= :a.c (path->module-name path))))
+(path->module-name "a/b/c.fnl") ;=> :a.b.c
 ```
 
 ## Function: remove-prefix-path
@@ -194,11 +167,8 @@ Strip the `prefix` component from `path`.
 ### Examples
 
 ```fennel
-(assert (= :b/c/ (remove-prefix-path :./a :a/b/c/)))
-(assert (= :c (remove-prefix-path :a/b/ :a/b/c)))
-(assert (= :. (remove-prefix-path :a/b/c/ :a/b/c)))
-(assert (= :./ (remove-prefix-path :a/b/c :a/b/c/)))
-(assert (= :a/b (remove-prefix-path :a/b/c :a/b)))
+(remove-prefix-path "./a" "a/b/c/") ;=> "b/c/"
+(remove-prefix-path "a/b/c/" "a/b/c") ;=> "."
 ```
 
 ## Function: remove-suffix
@@ -216,8 +186,8 @@ This is for convenience on manipulating hidden files.
 ### Examples
 
 ```fennel
-(assert (= :/a/b (remove-suffix :/a/b.ext :.ext)))
-(assert (= :/a/b/.ext (remove-suffix :/a/b/.ext :.ext)))
+(remove-suffix "/a/b.ext" ".ext") ;=> "/a/b"
+(remove-suffix "/a/b/.ext" ".ext") ;=> "/a/b/.ext"
 ```
 
 ---
