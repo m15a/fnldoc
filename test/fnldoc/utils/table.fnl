@@ -49,3 +49,5 @@
     (it "falls back to optional table comparator" []
       (table.sort xs (comparator/table [3] (comparator/table [0 1])))
       (t.= [3 3 0 1 2 2] xs))))
+
+;; vim: lw+=testing,test,it spell

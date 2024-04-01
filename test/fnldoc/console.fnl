@@ -25,4 +25,4 @@
     (t.= "fnldoc [ERROR]: error\n"
          (log+ {:level :error} :error))))
 
-;; vim: lw+=testing,test,it
+;; vim: lw+=testing,test,it spell

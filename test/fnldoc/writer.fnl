@@ -27,3 +27,5 @@
 
   (fn teardown-all []
     (os.execute (.. "rm -rf " test-dir))))
+
+;; vim: lw+=testing,test,it spell

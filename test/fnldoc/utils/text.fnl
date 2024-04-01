@@ -52,3 +52,5 @@ Cape Clear." (ut.wrap 78 text))))
       (t.= "FOUR  " (ut.pad/right 6 text))
       (t.= :FOUR00 (ut.pad/right 6 text :0))
       (t.error "invalid %?pad%-char length:" #(ut.pad/right 0 text :BB)))))
+
+;; vim: lw+=testing,test,it spell
