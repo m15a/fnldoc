@@ -8,7 +8,11 @@
 
 (fn %string->id [str]
   (pick-values 1 (-> str
-                     (string.gsub "&+" "and")
+                     (string.gsub "&" "and")
+                     (string.gsub "#" "numbersign")
+                     (string.gsub "%$" "dollar")
+                     (string.gsub ";" "semicolon")
+                     (string.gsub "[\"'`%(%){}%[%]]+" "")
                      (string.gsub "[ %.:]+" "-"))))
 
 (fn %it->test [testing-name spec-description ...]
