@@ -64,18 +64,16 @@
 ;;;; types.
 
 (local unpack (or table.unpack _G.unpack))
-(local {: view} (require :fennel))
 (local default-config (require :fnldoc.config.default))
-(local {: assert-type} (require :fnldoc.utils.assert))
 (local {: clone} (require :fnldoc.utils.table))
 
-(fn assert-char [x]
-  (assert (and (= :string (type x)) (= 1 (length x)))
-          (string.format "1-length string expected, got %s" (view x))))
+(fn string? [x]
+  (case (type x)
+    :string true
+    _ false))
 
-(fn assert-sequence [x]
-  (assert (sequence? x) (string.format "sequential table expected, got %s"
-                                       (view x))))
+(fn char? [x]
+  (and (string? x) (= 1 (length x))))
 
 (fn boolean-description [{: name : short-name : default : description}]
   (if short-name
@@ -90,10 +88,12 @@
                      default)))
 
 (fn boolean-recipe* [{: name : short-name : description}]
-  (assert-type :string name)
+  (assert-compile (string? name) "invalid long flag name" name)
   (when short-name
-    (assert-char short-name))
-  (assert-type :string description)
+    (assert-compile (char? short-name)
+                    "invalid short flag name, should be 1-length string"
+                    short-name))
+  (assert-compile (string? description) "invalid description" description)
   (let [key (.. name :?)
         default (. default-config key)
         description (boolean-description {: name
@@ -113,15 +113,6 @@
        ,(when short-name
           `(tset options# ,(.. "-" short-name) ,short-spec))
        options#)))
-
-(fn boolean-recipe [name ...]
-  "Make a boolean option and corresponding negative (`--no-*`) counterpart."
-  (case ...
-    (short-name description)
-    (boolean-recipe* {: name : short-name : description})
-    (description)
-    (boolean-recipe* {: name : description})
-    _ (error "argument missing: description")))
 
 (fn category-description [{: name : short-name : domain : default : description}]
   (let [domain (table.concat domain "|")]
@@ -143,13 +134,15 @@
     `(fn [x#] (or (. ,domain x#) false))))
 
 (fn category-recipe* [{: name : short-name : domain : description}]
-  (assert-type :string name)
+  (assert-compile (string? name) "invalid long flag name" name)
   (when short-name
-    (assert-char short-name))
-  (assert-sequence domain)
+    (assert-compile (char? short-name)
+                    "invalid short flag name, should be 1-length string"
+                    short-name))
+  (assert-compile (sequence? domain) "invalid domain type" domain)
   (each [_ k (ipairs domain)]
-    (assert-type :string k))
-  (assert-type :string description)
+    (assert-compile (string? k) "invalid domain item" domain))
+  (assert-compile (string? description) "invalid description" description)
   (let [default (. default-config name)
         description (category-description {: name
                                            : short-name
@@ -167,15 +160,6 @@
           `(tset options# ,(.. "-" short-name) ,short-spec))
        options#)))
 
-(fn category-recipe [name ...]
-  "Make a categorical option such like apple, orange, or banana."
-  (case ...
-    (short-name domain description)
-    (category-recipe* {: name : short-name : domain : description})
-    (domain description)
-    (category-recipe* {: name : domain : description})
-    nil (error "argument missing: domain and description")))
-
 (fn string-description [{: name : short-name : var-name : default : description}]
   (if short-name
       (string.format "-%s, --%s\t%s\t%s (default: %s)"
@@ -191,11 +175,13 @@
                      default)))
 
 (fn string-recipe* [{: name : short-name : var-name : description}]
-  (assert-type :string name)
+  (assert-compile (string? name) "invalid long flag name" name)
   (when short-name
-    (assert-char short-name))
-  (assert-type :string var-name)
-  (assert-type :string description)
+    (assert-compile (char? short-name)
+                    "invalid short flag name, should be 1-length string"
+                    short-name))
+  (assert-compile (string? var-name) "invalid variable name" var-name)
+  (assert-compile (string? description) "invalid description" description)
   (let [default (. default-config name)
         description (string-description {: name
                                          : short-name
@@ -211,15 +197,6 @@
        ,(when short-name
           `(tset options# ,(.. "-" short-name) ,short-spec))
        options#)))
-
-(fn string-recipe [name ...]
-  "Make a simple string option."
-  (case ...
-    (short-name var-name description)
-    (string-recipe* {: name : short-name : var-name : description})
-    (var-name description)
-    (string-recipe* {: name : var-name : description})
-    nil (error "argument missing: VARNAME and description")))
 
 (fn number-description [{: name : short-name : var-name : default : description}]
   (if short-name
@@ -242,11 +219,13 @@
   `(fn [x#] (= :number (type x#))))
 
 (fn number-recipe* [{: name : short-name : var-name : description}]
-  (assert-type :string name)
+  (assert-compile (string? name) "invalid long flag name" name)
   (when short-name
-    (assert-char short-name))
-  (assert-type :string var-name)
-  (assert-type :string description)
+    (assert-compile (char? short-name)
+                    "invalid short flag name, should be 1-length string"
+                    short-name))
+  (assert-compile (string? var-name) "invalid variable name" var-name)
+  (assert-compile (string? description) "invalid description" description)
   (let [default (. default-config name)
         description (number-description {: name
                                          : short-name
@@ -265,16 +244,7 @@
           `(tset options# ,(.. "-" short-name) ,short-spec))
        options#)))
 
-(fn number-recipe [name ...]
-  "Make a number option."
-  (case ...
-    (short-name var-name description)
-    (number-recipe* {: name : short-name : var-name : description})
-    (var-name description)
-    (number-recipe* {: name : var-name : description})
-    nil (error "argument missing: VARNAME and description")))
-
-(fn recipe [recipe-type ...]
+(fn recipe [recipe-type & recipe-spec]
   "Make an option recipe of the given `recipe-type`.
 
 The recipe type can be one of
@@ -330,17 +300,45 @@ recipe's.
 In command line argument parsing, this option will consume the next argument,
 convert the argument to a number, validate if it has been converted to number,
 and set the corresponding entry in configuration to the converted number."
-  {:fnl/arglist [recipe-type & recipe-spec]}
-  (case (assert-type :string recipe-type)
-    :boolean (boolean-recipe ...)
-    :bool (boolean-recipe ...)
-    :category (category-recipe ...)
-    :cat (category-recipe ...)
-    :string (string-recipe ...)
-    :str (string-recipe ...)
-    :number (number-recipe ...)
-    :num (number-recipe ...)
-    _ (error "unknown recipe type!")))
+  (assert-compile (case recipe-type
+                    (where (or :boolean :bool
+                               :category :cat
+                               :string :str
+                               :number :num)) true
+                    _ false)
+                  "invalid recipe type"
+                  recipe-type)
+  (let [n (case recipe-type
+            (where (or :boolean :bool)) 2
+            _ 3)]
+    (assert-compile (<= n (length recipe-spec))
+                    "some recipe argument missing"
+                    recipe-spec))
+  (case recipe-type
+    (where (or :boolean :bool))
+    (case recipe-spec
+      [name short-name description]
+      (boolean-recipe* {: name : short-name : description})
+      [name description]
+      (boolean-recipe* {: name : description}))
+    (where (or :category :cat))
+    (case recipe-spec
+      [name short-name domain description]
+      (category-recipe* {: name : short-name : domain : description})
+      [name domain description]
+      (category-recipe* {: name : domain : description}))
+    (where (or :string :str))
+    (case recipe-spec
+      [name short-name var-name description]
+      (string-recipe* {: name : short-name : var-name : description})
+      [name var-name description]
+      (string-recipe* {: name : var-name : description}))
+    (where (or :number :num))
+    (case recipe-spec
+      [name short-name var-name description]
+      (number-recipe* {: name : short-name : var-name : description})
+      [name var-name description]
+      (number-recipe* {: name : var-name : description}))))
 
 (fn cooking [& recipes]
   "A helper macro to collect option `recipes` into one table."
