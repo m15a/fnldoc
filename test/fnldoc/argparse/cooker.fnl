@@ -1,4 +1,4 @@
-(import-macros {: testing : it} :test.utils)
+(import-macros {: testing} :test.utils)
 (local t (require :test.faith))
 (import-macros {: cooking : recipe} :fnldoc.argparse.cooker)
 
@@ -14,8 +14,8 @@
     (set r.preprocessor nil)
     v))
 
-(testing
-  (it "cooks boolean recipes" []
+(testing :cooking
+  (it "makes boolean recipes" []
     (t.= {:--yes {:description "    --[no-]yes\t\tYES! (default: nil)"
                   :key :yes?
                   :value true}
@@ -29,7 +29,7 @@
            (recipe :boolean :yes :YES!)
            (recipe :bool :no :n :NO!))))
 
-  (it "cooks category recipes" []
+  (it "makes category recipes" []
     (let [recipes (cooking (recipe :category :fruit :f
                                    [:apple :banana] :Fruit!)
                            (recipe :cat :drink [:beer] :Beer!))
@@ -57,7 +57,7 @@
            (icollect [_ x (ipairs [:beer :whisky])]
              (validator-drink x)))))
 
-  (it "cooks string recipes" []
+  (it "makes string recipes" []
     (t.= {:--text {:description "    --text\tTEXT\ttext (default: nil)"
                    :key :text}
           :--output {:description "-o, --output\tOUT\toutput (default: nil)"
@@ -67,7 +67,7 @@
            (recipe :string :text :TEXT :text)
            (recipe :str :output :o :OUT :output))))
 
-  (it "cooks number recipes" []
+  (it "makes number recipes" []
     (let [recipes (cooking
                     (recipe :number :float :FLOAT :float)
                     (recipe :num :int :i :INT :integer))

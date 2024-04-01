@@ -1,9 +1,9 @@
-(import-macros {: testing : test : it} :test.utils)
+(import-macros {: testing : test} :test.utils)
 (local t (require :test.faith))
 (local fennel (require :fennel))
 (local config (require :fnldoc.config))
 
-(testing
+(testing :config
   (it "does not mutate default" []
     (let [a (config.new)
           b (config.new)]

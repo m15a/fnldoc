@@ -1,8 +1,8 @@
-(import-macros {: testing : it} :test.utils)
+(import-macros {: testing} :test.utils)
 (local t (require :test.faith))
 (local {: parse} (require :fnldoc.argparse))
 
-(testing
+(testing :argparse
   (it "parses arguments without mutating them" []
     (let [args [:arg1 :--no-toc :--out-dir :here "--" :arg2 :--help]
           result (parse args)]
