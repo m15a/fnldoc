@@ -44,12 +44,12 @@
             ci-doc
 
             # TODO: macro compilation fails:
-            #ci-check-shell-fennel-lua5_1 ci-check-shell-fennel-unstable-lua5_1
+            #ci-check-fennel-lua5_1 ci-check-fennel-unstable-lua5_1
             # TODO: some tests fail:
-            #ci-check-shell-fennel-lua5_2 ci-check-shell-fennel-unstable-lua5_2
-            ci-check-shell-fennel-lua5_3 ci-check-shell-fennel-unstable-lua5_3
-            ci-check-shell-fennel-lua5_4 ci-check-shell-fennel-unstable-lua5_4
-            ci-check-shell-fennel-luajit ci-check-shell-fennel-unstable-luajit;
+            #ci-check-fennel-lua5_2 ci-check-fennel-unstable-lua5_2
+            ci-check-fennel-lua5_3 ci-check-fennel-unstable-lua5_3
+            ci-check-fennel-lua5_4 ci-check-fennel-unstable-lua5_4
+            ci-check-fennel-luajit ci-check-fennel-unstable-luajit;
 
           default = let fennel = pkgs.fennel-unstable-luajit;
           in pkgs.mkShell {
