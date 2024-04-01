@@ -26,4 +26,12 @@
     :string (pick-values 1 (text:gsub "^[ \t]*\n" ""))
     typ (error "string expected, got " typ)))
 
-{: find-test-modules : log : text}
+(fn merge! [testing-exports ...]
+  (each [_ tbl (ipairs [...])]
+    (each [k v (pairs tbl)]
+      (when (. testing-exports k)
+        (error "tests or setup/teardown functions of identital name found"))
+      (tset testing-exports k v)))
+  testing-exports)
+
+{: find-test-modules : log : text : merge!}
