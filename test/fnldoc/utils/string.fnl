@@ -1,13 +1,23 @@
+(import-macros {: testing} :test.utils)
+(local {: merge!} (require :test.utils))
 (local t (require :test.faith))
-(local us (require :fnldoc.utils.string))
+(local {: escape-regex : capitalize} (require :fnldoc.utils.string))
 
-(fn test-escape-regex []
-  (let [full-regex "^$()%.[]*+-?"]
-    (t.= "%^%$%(%)%%%.%[%]%*%+%-%?" (us.escape-regex full-regex))))
+(merge!
+  (testing :escape-regex
+    (it "escapes magic characters of Lua pattern" []
+      (t.= "%^%$%(%)%%%.%[%]%*%+%-%?"
+           (escape-regex "^$()%.[]*+-?"))))
 
-(fn test-capitalize []
-  (t.= :Snakecase (us.capitalize :snakeCase))
-  (t.= " Snakecase " (us.capitalize " snakeCase "))
-  (t.= "UPPER lower" (us.capitalize "UPPER lower")))
+  (testing :capitalize
+    (it "capitalizes the first word" []
+      (t.= "Snakecase is snakeCase"
+           (capitalize "snakeCase is snakeCase")))
+    (it "keeps spaces" []
+      (t.= " Snakecase "
+           (capitalize " snakeCase ")))
+    (it "keeps all-uppercase word" []
+      (t.= "UPPER lower"
+           (capitalize "UPPER lower")))))
 
-{: test-escape-regex : test-capitalize}
+;; vim: lw+=testing,test,it spell
