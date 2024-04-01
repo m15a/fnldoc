@@ -1,0 +1,1 @@
+{:foo (fn [] (print :hoo))}
