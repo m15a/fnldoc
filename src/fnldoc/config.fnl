@@ -5,6 +5,7 @@
 (local console (require :fnldoc.console))
 (import-macros {: exit/error} :fnldoc.debug)
 (local {: clone/deeply} (require :fnldoc.utils.table))
+(local {: sandbox} (require :fnldoc.sandbox))
 
 (local default (require :fnldoc.config.default))
 
@@ -76,11 +77,11 @@
 (fn init! [{: config-file : version}]
   (let [config-file (or config-file :.fenneldoc)
         config (new)]
-    (case (pcall dofile config-file)
+    (case (pcall dofile config-file {:env (sandbox config-file)} config-file)
       (true from-file) (config:merge! from-file)
       (false msg)
       (when (not (msg:match (.. config-file ": No such file or directory")))
-        (console.error msg)))
+        (exit/error msg)))
     (config:set-fennel-path!)
     (set config.fnldoc-version version)
     config))
