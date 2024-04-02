@@ -57,9 +57,8 @@ To be blessed, `key` and `flag` entries are mandatory."
   (merge! option-recipe extra)
   (assert (and (= :string (type option-recipe.key))
                (= :string (type option-recipe.flag)))
-          (string.format "invalid option recipe key and/or flag: %s and %s"
-                         (view option-recipe.key)
-                         (view option-recipe.flag)))
+          (.. "invalid option recipe key and/or flag: "
+              (view option-recipe.key) " and " (view option-recipe.flag)))
   (setmetatable option-recipe eater-mt))
 
 (fn recipes->tab-splitted-descriptions [recipes color?]
