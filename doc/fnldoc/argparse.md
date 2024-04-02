@@ -5,9 +5,6 @@ Process command line arguments.
 **Table of contents**
 
 - Function: [help](#function-help)
-- Function: [option-recipes.--inline-references.validator](#function-option-recipes-inline-referencesvalidator)
-- Function: [option-recipes.--mode.validator](#function-option-recipes-modevalidator)
-- Function: [option-recipes.--order.validator](#function-option-recipes-ordervalidator)
 - Function: [parse](#function-parse)
 
 ## Function: help
@@ -17,30 +14,6 @@ Process command line arguments.
 ```
 
 Generate help message, decorated with ANSI escape code if `color?` is truthy.
-
-## Function: option-recipes.--inline-references.validator
-
-```fennel
-(option-recipes.--inline-references.validator x_17_auto)
-```
-
-**Undocumented**
-
-## Function: option-recipes.--mode.validator
-
-```fennel
-(option-recipes.--mode.validator x_17_auto)
-```
-
-**Undocumented**
-
-## Function: option-recipes.--order.validator
-
-```fennel
-(option-recipes.--order.validator x_17_auto)
-```
-
-**Undocumented**
 
 ## Function: parse
 

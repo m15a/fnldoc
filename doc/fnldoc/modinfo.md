@@ -41,6 +41,9 @@ However, `:fnldoc/type` annotation is not mandatory for *macros*
 module, since it is clear that functions in a *macros* module are
 macros, and it will properly detected.
 
+Another usage of `:fnldoc/type` is to teach Fnldoc to ignore any
+function or macro in generating documentation by specifying
+
 ### Module description
 
 In addition to [`require-file`](#function-require-file), Fnldoc does
