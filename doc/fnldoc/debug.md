@@ -13,10 +13,10 @@ Otherwise, they do some IO stuff.
 ## Macro: exit/error
 
 ```fennel
-(exit/error msg)
+(exit/error & msgs)
 ```
 
-Exit with warning `msg` unless `_G._FNLDOC_DEBUG` is truthy at compile time.
+Exit with warning `msgs` unless `_G._FNLDOC_DEBUG` is truthy at compile time.
 
 ---
 

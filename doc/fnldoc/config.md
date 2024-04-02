@@ -7,6 +7,7 @@ Process configuration file.
 - Function: [init!](#function-init)
 - Function: [merge!](#function-merge)
 - Function: [new](#function-new)
+- Function: [set!](#function-set)
 - Function: [set-fennel-path!](#function-set-fennel-path)
 - Function: [write!](#function-write)
 
@@ -199,6 +200,22 @@ Merge key-value pairs of the `from` table into `self` config object.
 ```
 
 Create a new config object.
+
+## Function: set!
+
+```fennel
+(set! self key value)
+```
+
+Set the `key`-`value` pair to `self` config object with validation.
+
+Validation depends on the `key` type:
+
+- boolean (e.g., `sandbox?`): check if the `value` type is `:boolean`;
+- category: check using its validator
+  (see [`fnldoc.argparse.cooker`](./fnldoc/argparse/cooker.md));
+- number: check using its validator (ditto.); and
+- string: check if the `value` type is `:string`.
 
 ## Function: set-fennel-path!
 
