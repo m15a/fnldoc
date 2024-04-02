@@ -17,8 +17,8 @@ and this project adheres to [Semantic Versioning][2].
   module-level description in Markdown documentation. You can still use
   `modules-info.FILENAME.description` in `.fenneldoc` alternatively.
 - Show module items with their types (function or macro) [#5]:
-  Type is inferred automatically; otherwise you can explicitly annotate
-  type in metadata field `:fnldoc/type`.
+  Type is inferred automatically; otherwise you can explicitly set
+  metadata field `:fnldoc/type` to `:function` or `:macro`.
 - Ignore module items in generating documentation [#20]:  
   To prevent functions or macros from being documented, set metadata
   field `:fnldoc/type` to `:private`.
