@@ -6,7 +6,7 @@
 (local {: clone} (require :fnldoc.utils.table))
 (local {: indent : wrap : lines->text} (require :fnldoc.utils.text))
 
-(local option-recipes
+(local recipes
        (cooking
          (recipe :category :mode [:checkdoc :check :doc]
            "Mode to operate in.
@@ -52,7 +52,7 @@ Supported modes:
            "Whether to sandbox loaded code and documentation tests.")))
 
 ;; TODO: Enable `recipe` to handle these options.
-(local meta-option-recipes
+(local meta-recipes
        {:--
         {:description
          "    --\tTreat remaining arguments as FILEs."}
@@ -94,14 +94,14 @@ Supported modes:
                       :--project-license
                       :--project-version
                       :--sandbox]
-                     option-recipes color?))
+                     recipes color?))
          (underline "Other options:")
          (indent 2 (option-descriptions/order
                      [:--
                       :--config
                       :--fnldoc-version
                       :--help]
-                     meta-option-recipes color?))
+                     meta-recipes color?))
          (wrap 80 (.. "All options have respective entries in '.fenneldoc' "
                       "configuration file, and arguments passed via command line "
                       "have higher precedence, therefore will override following "
@@ -137,14 +137,13 @@ The result contains attributes:
               :--config (set state.write-config? true)
               :--help (set state.show-help? true)
               :--fnldoc-version (set state.show-version? true)
-              _ (let [option-recipe (. option-recipes flag|file)]
-                  (if (not option-recipe)
-                      (table.insert state.files flag|file)
-                      (let [eater (bless option-recipe {:flag flag|file})]
-                        (eater:parse! state.config args))))))))
+              _ (case (. recipes flag|file)
+                  recipe* (let [eater (bless recipe* {:flag flag|file})]
+                            (eater:parse! state.config args))
+                  _ (table.insert state.files flag|file))))))
     (doto state
       (tset :ignore-options? nil))))
 
-{: help : parse}
+{: recipes : help : parse}
 
 ;; vim:set lw+=recipe:
