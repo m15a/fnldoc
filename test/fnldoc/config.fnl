@@ -63,8 +63,8 @@
 
   (test :config-merge! []
     (let [c (config.new)]
-      (c:merge! {:a :b})
-      (t.= :b (. c :a))))
+      (c:merge! {:sandbox? false})
+      (t.= false (. c :sandbox?))))
 
   (test :config-set-fennel-path! []
     (let [backup fennel.path
