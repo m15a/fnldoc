@@ -42,6 +42,7 @@ and this project adheres to [Semantic Versioning][2].
 
 ### Fixed
 
+- Validate `.fenneldoc` when loading [#15].
 - Generating empty documentation for function module [#16].
 - Erroneous handling for file path beginning with `./` [#9].
 - A bug that command line option `--order` not working [609a7f4].
@@ -51,6 +52,7 @@ and this project adheres to [Semantic Versioning][2].
   fences [1a94362].
 
 [#9]: https://todo.sr.ht/~m15a/fnldoc/9
+[#15]: https://todo.sr.ht/~m15a/fnldoc/15
 [#16]: https://todo.sr.ht/~m15a/fnldoc/16
 [d242b81]: https://git.sr.ht/~m15a/fnldoc/commit/d242b81
 [6383334]: https://git.sr.ht/~m15a/fnldoc/commit/6383334
