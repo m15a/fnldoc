@@ -43,7 +43,7 @@
 
   (test :config-init! []
     (let [c (config.init!
-              {:config-file "test/fixture/.fenneldoc" :version :test})]
+              {:config-file "test/fixture/fenneldoc" :version :test})]
       (t.= :test c.fnldoc-version)
       (t.= [] c.fennel-path)
       (t.= :nowhere c.out-dir)
@@ -52,7 +52,7 @@
 
   (it "is loaded in sandboxed environment" []
     (t.error "access to denied IO detected"
-             #(config.init! {:config-file "test/fixture/.unsafe-fenneldoc"
+             #(config.init! {:config-file "test/fixture/unsafe-fenneldoc"
                              :version :test}))))
 
 ;; vim: lw+=testing,test,it spell
