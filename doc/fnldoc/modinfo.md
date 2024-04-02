@@ -43,6 +43,7 @@ macros, and it will properly detected.
 
 Another usage of `:fnldoc/type` is to teach Fnldoc to ignore any
 function or macro in generating documentation by specifying
+`{:fnldoc/type :private}`.
 
 ### Module description
 
