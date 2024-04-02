@@ -7,7 +7,7 @@
 (import-macros {: for-all?} :fnldoc.utils)
 (local {: clone/deeply} (require :fnldoc.utils.table))
 (local {: sandbox} (require :fnldoc.sandbox))
-(local {: recipes} (require :fnldoc.argparse))
+(local {: option-recipes} (require :fnldoc.argparse))
 
 (local default (require :fnldoc.config.default))
 
@@ -28,7 +28,7 @@
     (console.warn msg)))
 
 (local validators/basic
-       (collect [_ recipe (pairs recipes)]
+       (collect [_ recipe (pairs option-recipes)]
          (values recipe.key
                  (if (recipe.key:match "%?$")
                      #(= :boolean (type $))

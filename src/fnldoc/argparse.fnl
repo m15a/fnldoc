@@ -6,7 +6,7 @@
 (local {: clone} (require :fnldoc.utils.table))
 (local {: indent : wrap : lines->text} (require :fnldoc.utils.text))
 
-(local recipes
+(local option-recipes
        (cooking
          (recipe :category :mode [:checkdoc :check :doc]
            "Mode to operate in.
@@ -94,7 +94,7 @@ Supported modes:
                       :--project-license
                       :--project-version
                       :--sandbox]
-                     recipes color?))
+                     option-recipes color?))
          (underline "Other options:")
          (indent 2 (option-descriptions/order
                      [:--
@@ -137,13 +137,13 @@ The result contains attributes:
               :--config (set state.write-config? true)
               :--help (set state.show-help? true)
               :--fnldoc-version (set state.show-version? true)
-              _ (case (. recipes flag|file)
+              _ (case (. option-recipes flag|file)
                   recipe* (let [eater (bless recipe* {:flag flag|file})]
                             (eater:parse! state.config args))
                   _ (table.insert state.files flag|file))))))
     (doto state
       (tset :ignore-options? nil))))
 
-{: recipes : help : parse}
+{: option-recipes : help : parse}
 
 ;; vim:set lw+=recipe:
