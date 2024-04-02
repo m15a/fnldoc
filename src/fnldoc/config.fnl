@@ -4,8 +4,10 @@
 (local {: view : dofile : metadata} fennel)
 (local console (require :fnldoc.console))
 (import-macros {: exit/error} :fnldoc.debug)
+(import-macros {: for-all?} :fnldoc.utils)
 (local {: clone/deeply} (require :fnldoc.utils.table))
 (local {: sandbox} (require :fnldoc.sandbox))
+(local {: recipes} (require :fnldoc.argparse))
 
 (local default (require :fnldoc.config.default))
 
@@ -25,6 +27,82 @@
                 (string.format old-key use))]
     (console.warn msg)))
 
+(local validators/basic
+       (collect [_ recipe (pairs recipes)]
+         (values recipe.key
+                 (if (recipe.key:match "%?$")
+                     #(= :boolean (type $))
+                     (= :order recipe.key)
+                     (fn [x] (case (type x)
+                               :string (recipe.validator x)
+                               :table (for-all? [_ item (ipairs x)]
+                                        (= :string (type item)))
+                               :function true
+                               _ false))
+                     recipe.validator
+                     recipe.validator
+                     #(= :string (type $))))))
+
+(local validators/module-info
+       {:name #(= :string (type $))
+        :description #(= :string (type $))
+        :order validators/basic.order
+        :copyright #(= :string (type $))
+        :license #(= :string (type $))
+        :version #(= :string (type $))})
+
+(fn validate/module-info [key value]
+  (case (. validators/module-info key)
+    validate (validate value)
+    _ (do
+        (console.warn "unknown option '" key "' found")
+        true)))
+
+(local validators/more
+       {:ignored-args-patterns
+        (fn [x] (and (= :table (type x))
+                     (for-all? [_ pattern (ipairs x)]
+                        (= :string (type pattern)))))
+        :test-requirements
+        (fn [x] (and (= :table (type x))
+                     (for-all? [path code (pairs x)]
+                        (and (= :string (type path))
+                             (= :string (type code))))))
+        :fennel-path
+        (fn [x] (and (= :table (type x))
+                     (for-all? [_ path (ipairs x)]
+                        (= :string (type path)))))
+        :modules-info
+        (fn [x] (and (= :table (type x))
+                     (for-all? [path conf (pairs x)]
+                       (and (= :string (type path))
+                            (= :table (type conf))
+                            (for-all? [k v (pairs conf)]
+                              (validate/module-info k v))))))})
+
+(fn validate [key value]
+  (case (. validators/more key)
+    validate (validate value)
+    _ (case (. validators/basic key)
+        validate (validate value)
+        _ (do
+            (console.warn "unknown option '" key "' found")
+            true))))
+
+(fn set! [self key value]
+  "Set the `key`-`value` pair to `self` config object with validation.
+
+Validation depends on the `key` type:
+
+- boolean (e.g., `sandbox?`): check if the `value` type is `:boolean`;
+- category: check using its validator
+  (see [`fnldoc.argparse.cooker`](./fnldoc/argparse/cooker.md));
+- number: check using its validator (ditto.); and
+- string: check if the `value` type is `:string`."
+  (if (validate key value)
+      (tset self key value)
+      (exit/error (.. "invalid option '" key "': " (view value)))))
+
 (fn merge! [self from]
   "Merge key-value pairs of the `from` table into `self` config object.
 `self` will be mutated. Warn once if each `key` is deprecated."
@@ -35,9 +113,9 @@
                (when (not (. warned key))
                  (warn/deprecated key info)
                  (tset warned key true))
-               (when info.new-key
-                 (tset self info.new-key value)))
-        _ (tset self key value)))))
+               (case info.new-key
+                 key (self:set! key value)))
+        _ (self:set! key value)))))
 
 (fn set-fennel-path! [self]
   "Append `self`'s `fennel-path` to `fennel.path`."
@@ -67,7 +145,7 @@
                                msg code)]
         (exit/error msg)))))
 
-(local mt {:__index {: merge! : set-fennel-path! : write!}})
+(local mt {:__index {: set! : merge! : set-fennel-path! : write!}})
 
 (fn new []
   "Create a new config object."
@@ -238,4 +316,6 @@ as comments beginning with `;;;; `.
 `:order` can be `:alphabetic`, `:reverse-alphabetic`, a comparator function,
 or a sequential table of item names, as the same as global `order` entry."))
 
-{: default : new : merge! : set-fennel-path! : write! : init!}
+{: default : new : set! : merge! : set-fennel-path! : write! : init!}
+
+;; vim: lw+=for-all?
