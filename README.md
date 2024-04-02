@@ -513,4 +513,4 @@ the file.
 [mailing list]: https://lists.sr.ht/~m15a/public-inbox
 [pull request on GitHub]: https://github.com/m15a/fnldoc/pulls/
 
-<!-- vim: set tw=73 spell: -->
+<!-- vim: set tw=72 spell: -->

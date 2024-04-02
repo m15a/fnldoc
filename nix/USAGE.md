@@ -40,4 +40,4 @@ $ nix run sourcehut:~m15a/fnldoc -- --fnldoc-version
 1.1.0-dev-68bbdc1
 ```
 
-<!-- vim: set tw=73 spell: -->
+<!-- vim: set tw=72 spell: -->

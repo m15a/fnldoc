@@ -165,4 +165,4 @@ Horizontal rule.
 [4]: https://docs.gitlab.com/ee/user/markdown.html
 [5]: https://spec.commonmark.org/
 
-<!-- vim:set tw=73 spell: -->
+<!-- vim:set tw=72 spell: -->
