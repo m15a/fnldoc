@@ -31,18 +31,18 @@ and this project adheres to [Semantic Versioning][2].
   `reverse-alphabetic`, a custom comparator function, or a table of
   ordered module items.
 - Highlight function/macro signature [9e982cb].
-- Load `.fenneldoc` in sandboxed environment [#19].
+- Load `.fenneldoc` in sandboxed environment [#19] with validation [#15].
  
 [#4]: https://todo.sr.ht/~m15a/fnldoc/4
 [#5]: https://todo.sr.ht/~m15a/fnldoc/5
 [#10]: https://todo.sr.ht/~m15a/fnldoc/10
+[#15]: https://todo.sr.ht/~m15a/fnldoc/15
 [#19]: https://todo.sr.ht/~m15a/fnldoc/19
 [609a7f4]: https://git.sr.ht/~m15a/fnldoc/commit/609a7f4
 [9e982cb]: https://git.sr.ht/~m15a/fnldoc/commit/9e982cb
 
 ### Fixed
 
-- Validate `.fenneldoc` when loading [#15].
 - Generating empty documentation for function module [#16].
 - Erroneous handling for file path beginning with `./` [#9].
 - A bug that command line option `--order` not working [609a7f4].
@@ -52,7 +52,6 @@ and this project adheres to [Semantic Versioning][2].
   fences [1a94362].
 
 [#9]: https://todo.sr.ht/~m15a/fnldoc/9
-[#15]: https://todo.sr.ht/~m15a/fnldoc/15
 [#16]: https://todo.sr.ht/~m15a/fnldoc/16
 [d242b81]: https://git.sr.ht/~m15a/fnldoc/commit/d242b81
 [6383334]: https://git.sr.ht/~m15a/fnldoc/commit/6383334
