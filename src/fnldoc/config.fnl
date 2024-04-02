@@ -44,24 +44,24 @@
   (each [_ path (ipairs self.fennel-path)]
     (set fennel.path (.. path ";" fennel.path))))
 
-(fn config->file-contents [config version]
-  (table.concat [";; -*- mode: fennel; -*- vi:ft=fennel"
-                 (.. ";; Configuration file for Fnldoc " version)
-                 ";; https://sr.ht/~m15a/fnldoc/"
-                 (-> (view config)
-                     (string.gsub "\\\n" "\n")
-                     (#(pick-values 1 $)))
-                 ""] "\n"))
+(fn config->file-contents [config]
+  (let [config* (clone/deeply config)
+        version config.fnldoc-version]
+    (set config*.fnldoc-version nil)
+    (table.concat [";; -*- mode: fennel; -*- vi:ft=fennel"
+                   (.. ";; Configuration file for Fnldoc " version)
+                   ";; https://sr.ht/~m15a/fnldoc/"
+                   (-> (view config*)
+                       (string.gsub "\\\n" "\n")
+                       (#(pick-values 1 $)))
+                   ""] "\n")))
 
 (fn write! [self config-file]
   "Write contents of `self` to the `config-file` (default: `.fenneldoc`)."
   (let [config-file (or config-file :.fenneldoc)]
     (match (io.open config-file :w)
       f (with-open [file f]
-          (let [version self.fnldoc-version]
-            (set self.fnldoc-version nil)
-            (file:write (config->file-contents self version))
-            (set self.fnldoc-version version)))
+          (file:write (config->file-contents self)))
       (nil msg code)
       (let [msg (string.format "failed to open file '%s': %s (%s)" config-file
                                msg code)]
