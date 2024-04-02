@@ -101,7 +101,7 @@ Validation depends on the `key` type:
 - string: check if the `value` type is `:string`."
   (if (validate key value)
       (tset self key value)
-      (exit/error (.. "invalid option '" key "': " (view value)))))
+      (exit/error "invalid option '" key "': " (view value))))
 
 (fn merge! [self from]
   "Merge key-value pairs of the `from` table into `self` config object.
@@ -141,9 +141,7 @@ Validation depends on the `key` type:
       f (with-open [file f]
           (file:write (config->file-contents self)))
       (nil msg code)
-      (let [msg (string.format "failed to open file '%s': %s (%s)" config-file
-                               msg code)]
-        (exit/error msg)))))
+      (exit/error "failed to open file '" config-file "': " msg " (" code ")"))))
 
 (local mt {:__index {: set! : merge! : set-fennel-path! : write!}})
 

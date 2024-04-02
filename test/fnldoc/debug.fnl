@@ -3,6 +3,6 @@
 
 (fn test-exit/error []
   (t.error "it should raise an error"
-           #(exit/error "it should raise an error when testing.")))
+           #(exit/error "it should raise " "an error when testing.")))
 
 {: test-exit/error}

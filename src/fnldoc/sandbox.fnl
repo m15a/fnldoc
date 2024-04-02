@@ -3,13 +3,12 @@
 (import-macros {: exit/error} :fnldoc.debug)
 
 (lambda deny-access [reason file]
-  (let [msg (.. "access to denied " reason " detected while loading " file)]
-    #(exit/error msg)))
+  #(exit/error "access to denied " reason " detected while loading " file))
 
-(lambda deny-access/module [module file]
-  (let [msg (.. "access to denied '" module "' module detected while loading "
-                file)]
-    (setmetatable {} {:__index #(exit/error msg)})))
+(lambda deny-access/module [name file]
+  (->> {:__index #(exit/error "access to denied '" name
+                              "' module detected while loading " file)}
+       (setmetatable {})))
 
 ;; TODO: strict check for each Lua version/implementation.
 (lambda sandbox [file]

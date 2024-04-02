@@ -27,9 +27,8 @@ If validation fails, report error and exit with failing status."
       value
       (if (self.validator value)
           value
-          (let [msg (.. "invalid argument for option " self.flag ": "
-                        (view self.processed-arg))]
-            (exit/error msg)))))
+          (exit/error "invalid argument for option " self.flag ": "
+                      (view self.processed-arg)))))
 
 (fn parse! [self config args]
   "Update the `config` possibly with consuming the head of `args`.
@@ -45,8 +44,7 @@ If the head of `args` is missing, report error and exit with failing status."
             (tset config self.key (-> next-arg
                                       (self:preprocess)
                                       (self:validate))))
-          (let [msg (.. "argument missing while processing option " self.flag)]
-            (exit/error msg)))))
+          (exit/error "argument missing while processing option " self.flag))))
 
 (local eater-mt {:__index {: preprocess : validate : parse!}})
 

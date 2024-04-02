@@ -9,16 +9,13 @@
   (assert-type :string text)
   (let [dir (dirname path)]
     (if (not (make-directory dir :parents))
-        (let [msg (string.format "error creating directory '%s'" dir)]
-          (exit/error msg))
+        (exit/error "error creating directory '" dir "'")
         (case (io.open path :w)
           file (with-open [out file]
                  (if (out:write text)
                      true
-                     (let [msg (string.format "error writing file '%s'" path)]
-                       (exit/error msg))))
+                     (exit/error "error writing file '" path "'")))
           (_ msg code)
-          (let [msg (string.format "error opening file '%s': %s (%s)" path msg code)]
-            (exit/error msg))))))
+          (exit/error "error opening file '" path "': " msg " (" code ")")))))
 
 {: write!}

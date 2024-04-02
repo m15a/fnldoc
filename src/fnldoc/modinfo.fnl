@@ -275,9 +275,9 @@ generated. The result contains the following entries.
       (console.info "skipping a module of type '" result.type "': " file)
       nil)
     (false msg)
-    (exit/error (.. "error loading " file ": " msg))
+    (exit/error "error loading " file ": " msg)
     _
-    (exit/error (.. "UNHANDLED ERROR LOADING " file ": " (tostring _))))) 
+    (exit/error "UNHANDLED ERROR LOADING " file ": " (tostring _))))
 
 {: extract-metadata
  : find-metadata

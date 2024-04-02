@@ -6,12 +6,14 @@
 ;;;; If the global is truthy at compile time, they raise error.
 ;;;; Otherwise, they do some IO stuff.
 
-(fn exit/error [msg]
-  "Exit with warning `msg` unless `_G._FNLDOC_DEBUG` is truthy at compile time."
+(local unpack (or table.unpack _G.unpack))
+
+(fn exit/error [& msgs]
+  "Exit with warning `msgs` unless `_G._FNLDOC_DEBUG` is truthy at compile time."
   (if _G._FNLDOC_DEBUG
-      `(error ,msg)
+      `(error (table.concat ,msgs ""))
       `(let [console# (require :fnldoc.console)]
-         (console#.error ,msg)
+         (console#.error ,(unpack msgs))
          (os.exit -1))))
 
 {: exit/error}

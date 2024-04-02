@@ -97,8 +97,7 @@
     (comparator/table tbl (when ?fallback-order
                             (comparator/fallback ?fallback-order)))
     (where fun (= :function (type fun))) fun
-    else (let [msg (.. "unsupported order: " (view else))]
-           (exit/error msg))))
+    else (exit/error "unsupported order: " (view else))))
 
 (lambda sorted-item-index [modinfo config]
   "Sort the item index of `module-info` and return it as a sequential table.
