@@ -7,11 +7,11 @@ If you are a Nix user, add Fnldoc overlay to your project flake:
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     flake-utils.url = "github:numtide/flake-utils";
-    fnldoc.url = "sourcehut:~m15a/fnldoc/main";
     ...
+    fnldoc.url = "sourcehut:~m15a/fnldoc/main";
   };
-  ...
-  outputs = inputs @ { self, nixpkgs, flake-utils, ... }:
+
+  outputs = inputs@{ self, nixpkgs, flake-utils, ... }:
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = import nixpkgs {
@@ -21,10 +21,9 @@ If you are a Nix user, add Fnldoc overlay to your project flake:
             inputs.fnldoc.overlays.default
           ];
         };
-      in
-      {
-        devShells.default = {
-          buildInputs = [
+      in {
+        devShells.default = pkgs.mkShell {
+          packages = [
             ...
             pkgs.fnldoc
           ];
