@@ -41,7 +41,7 @@
 ;;;;
 ;;;; Another usage of `:fnldoc/type` is to teach Fnldoc to ignore any
 ;;;; function or macro in generating documentation by specifying
-;;;;`{:fnldoc/type :private}`.
+;;;; `{:fnldoc/type :private}`.
 
 ;;;; ### Module description
 ;;;;
