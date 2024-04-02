@@ -38,6 +38,10 @@
 ;;;; However, `:fnldoc/type` annotation is not mandatory for *macros*
 ;;;; module, since it is clear that functions in a *macros* module are
 ;;;; macros, and it will properly detected.
+;;;;
+;;;; Another usage of `:fnldoc/type` is to teach Fnldoc to ignore any
+;;;; function or macro in generating documentation by specifying
+;;;;`{:fnldoc/type :private}`.
 
 ;;;; ### Module description
 ;;;;
@@ -70,7 +74,8 @@
   (let [docstring (metadata:get value :fnl/docstring)
         arglist (metadata:get value :fnl/arglist)
         ftype (metadata:get value :fnldoc/type)]
-    (when (or docstring arglist ftype)
+    (when (and (not= :private ftype)
+               (or docstring arglist ftype))
       {: docstring : arglist :type ftype})))
 
 (lambda find-metadata [module]

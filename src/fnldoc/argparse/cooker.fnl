@@ -131,7 +131,7 @@
 
 (fn category-validator [domain]
   (let [domain (collect [_ k (ipairs domain)] k true)]
-    `(fn [x#] (or (. ,domain x#) false))))
+    `(fn [x#] {:fnldoc/type :private} (or (. ,domain x#) false))))
 
 (fn category-recipe* [{: name : short-name : domain : description}]
   (assert-compile (string? name) "invalid long flag name" name)
@@ -213,10 +213,10 @@
                      default)))
 
 (fn number-preprocessor []
-  `tonumber)
+  `(fn [x#] {:fnldoc/type :private} (tonumber x#)))
 
 (fn number-validator []
-  `(fn [x#] (= :number (type x#))))
+  `(fn [x#] {:fnldoc/type :private} (= :number (type x#))))
 
 (fn number-recipe* [{: name : short-name : var-name : description}]
   (assert-compile (string? name) "invalid long flag name" name)

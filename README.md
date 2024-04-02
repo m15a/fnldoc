@@ -170,6 +170,24 @@ using Fnldoc's metadata field `:fnldoc/type`:
 {: your-macro}
 ```
 
+##### Keep a function or macro private
+
+Fnldoc searches for metadata recursively, meaning that functions or
+macros contained in any table exposed in a module will be documented.
+Sometimes you may not want a function or macro to be documented.
+To prevent them from being documented by Fnldoc, you can specify
+metadata field `:fnldoc/type` as `:private`. For example,
+
+```fennel
+(local exposed-table {})
+
+(fn exposed-table.private-function [...]
+  {:fnldoc/type :private}
+  (do :something))
+
+{: exposed-table}
+```
+
 ##### Module top-level comments
 
 Fnldoc scans Fennel code and search for module top-level comment lines

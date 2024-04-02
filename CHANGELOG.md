@@ -19,6 +19,9 @@ and this project adheres to [Semantic Versioning][2].
 - Show module items with their types (function or macro) [#5]:
   Type is inferred automatically; otherwise you can explicitly annotate
   type in metadata field `:fnldoc/type`.
+- Ignore module items in generating documentation [#20]:  
+  To prevent functions or macros from being documented, set metadata
+  field `:fnldoc/type` to `:private`.
 - New option `--src-dir` (or `src-dir` entry in `.fenneldoc`) [#10]:
   If source files are placed in this directory, it will be stripped
   from destination path to generate documentation. For example, running
@@ -38,6 +41,7 @@ and this project adheres to [Semantic Versioning][2].
 [#10]: https://todo.sr.ht/~m15a/fnldoc/10
 [#15]: https://todo.sr.ht/~m15a/fnldoc/15
 [#19]: https://todo.sr.ht/~m15a/fnldoc/19
+[#20]: https://todo.sr.ht/~m15a/fnldoc/20
 [609a7f4]: https://git.sr.ht/~m15a/fnldoc/commit/609a7f4
 [9e982cb]: https://git.sr.ht/~m15a/fnldoc/commit/9e982cb
 
