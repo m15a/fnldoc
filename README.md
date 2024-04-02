@@ -6,7 +6,7 @@ Generate documentation for your [Fennel] project.
 
 ## Synopsis
 
-Let's say you have `your.fnl`:
+For `your.fnl`:
 
 ```fennel
 ;;;; Your module description.
@@ -50,21 +50,30 @@ Say good bye. See also [`hello`](#function-hello).
 
 Say hello.
 
-<!-- Generated with Fnldoc 1.1.0-dev-68bbdc1
+<!-- Generated with Fnldoc 1.1.0-dev
      https://sr.ht/~m15a/fnldoc/ -->
 ````
 
 ## Description
 
-This is a fork of [Fenneldoc], with a number of bug fixes and some
-new features.
+Fnldoc automatically generates Markdown documentation from Fennel
+source code. It searches for function metadata and documentation
+comments in source code, and then formats these pieces of information
+into API documentation. In addition, it can test Fennel code inside
+Markdown fences in function docstring (a.k.a. doctest).
+
+Fnldoc is actually a fork of now archived [Fenneldoc], with some bug
+fixes and new features.
 
 ### Features
 
 - Generate Markdown documentation for Fennel code by analyzing
-  metadata **and in-file comments**.
-- Easy internal linking: just enclose any `` `item'`` in your module.
-- **Show function type (function or macro) in documentation.**
+  metadata such as docstring **and module-level comments beginning
+  with `;;;; `**.
+- Easy internal linking: `` `text'`` enclosed by backtick and single
+  quote is turned into internal hyperlink.
+- **Show function type (function or macro)** and signature in
+  documentation.
 - Run tests embedded in function docstring (a.k.a. doctest).
 - Granular customizability for documentation contents.
 
