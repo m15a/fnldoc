@@ -17,7 +17,6 @@
  :project-version "1.1.0-dev"
  :sandbox? true
  :src-dir "./src"
- :test-requirements {:src/fnldoc/utils/init-macros.fnl
-                     "(import-macros {: for-all? : for-some?} :fnldoc.utils)"}
+ :test-requirements {:src/fnldoc/utils/init-macros.fnl "(import-macros {: for-all? : for-some?} :fnldoc.utils)"}
  :toc? true
  :version? true}
