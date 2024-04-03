@@ -5,6 +5,7 @@
     fennel-tools = {
       url = "github:m15a/flake-fennel-tools";
       inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-utils.follows = "flake-utils";
     };
   };
 
