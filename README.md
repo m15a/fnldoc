@@ -116,14 +116,17 @@ Fnldoc generates documentation from three sources of information:
 2. Module top-level comments: documentation for each module file
 3. Configuration file: project information such as copyright
 
-For writing documentation in source 1, see the following three sections,
+For writing documentation in source 1, see the following four sections,
 [Function docstring](#function-docstring),
-[Macro dosctring](#macro-docstring), and
-[Keep function or macro private](#keep-function-or-macro-private).
+[Macro dosctring](#macro-docstring),
+[Keep function or macro private](#keep-function-or-macro-private),
+and [Specifying order of contents](#specifying-order-of-contents).
 For source 2, see
 [Module top-level comments](#module-top-level-comments).
 For source 3, see
 [Copyright, license, and version](#copyright-license-and-version).
+Finally, to generate internal links in documentation, see
+[Inline reference](#inline-reference).
  
 > [!WARNING]
 > For source 1, Fnldoc **runs your code** by executing `fennel.dofile`,
@@ -213,6 +216,43 @@ For example,
 {: exposed-table}
 ```
 
+##### Specifying order of contents
+
+Fnldoc supports specifying order of items by passing a sequential
+table of item names to `:order` option. For example, suppose we have a
+module with two functions:
+
+```fennel
+(fn first-function [...]
+  (do :first-thing))
+
+(fn another-function [...]
+  (do :another-thing))
+
+{: first-function : another-function}
+```
+
+Fnldoc sorts the table alphabetically by default, thus the order of
+the documentation will be `another-function` followed by
+`first-function`. You can override this behavior for the file in
+`.fenneldoc` by specifying the file's `:order` option in the
+`:modules-info` table:
+
+```fennel
+{:modules-info
+ {"path/to/the/file.fnl" {:order [:first-function
+                                  :another-function]}}}
+```
+
+In addition, you can specify `:order` option as either
+`:reverse-alphabetic`, or a custom comparator function. The latter will
+be passed to Lua's `table.sort` function as its third argument.
+
+You can also set this in command line via `--order` flag (see
+[Configuration](#configuration)). Note that you can't pass sorting
+function or table via command-line argument; only `alphabetic` or
+`reverse-alphabetic`.
+
 ##### Module top-level comments
 
 Fnldoc collects runtime information for generating documentation.
@@ -297,7 +337,8 @@ or module-wide
 Fnldoc supports inline reference (i.e., internal link) by Fnldoc's
 special syntax: any text surrounded by a backtick (`` ` ``) and a single
 quote (`'`) will be converted to an internal link if the text refers to
-any exported function or macro name.
+any exported function or macro name. If any appropriate heading to be
+referenced is not found, it falls back to plain `` `code` ``.
 
 For example, function `bar` in the following module has an inline
 reference to function `foo`.
@@ -338,48 +379,8 @@ See [`foo`](#function-foo).
 **Undocumented**
 ````
 
-If appropriate headings to be referenced are not found, it falls back
-to plain `` `code` ``.
-
-Whether to replace inline references with links can be customized in
-configuration entry `mode` (see [Configuration](#configuration)).
-
-##### Specifying order of contents
-
-Fnldoc supports specifying order of items by passing a sequential
-table of item names to `:order` configuration entry. For example,
-suppose we have a module with two functions:
-
-```fennel
-(fn first-function [...]
-  (do :first-thing))
-
-(fn another-function [...]
-  (do :another-thing))
-
-{: first-function : another-function}
-```
-
-Fnldoc sorts the table alphabetically by default, thus the order of
-the documentation will be `another-function` followed by
-`first-function`. You can override this behavior for the file in
-`.fenneldoc` by specifying the file's `:order` entry in the
-`:modules-info` table:
-
-```fennel
-{:modules-info
- {"path/to/the/file.fnl" {:order [:first-function
-                                  :another-function]}}}
-```
-
-In addition, you can specify `:order` entry as either
-`reverse-alphabetic`, or a custom comparator function. The latter will
-be passed to Lua's `table.sort` function as its third argument.
-
-You can also set this in command line via `--order` flag (see
-[Configuration](#configuration)). Note that you can't pass sorting
-function or table via command-line argument; only `alphabetic` or
-`reverse-alphabetic`.
+Whether to replace inline references with links can be customized by
+`:mode` option (see [Configuration](#configuration)).
 
 #### Test documentation
 
@@ -467,17 +468,16 @@ Fnldoc a proper require for your macro modules. For example,
  {:path/to/macros.fnl "(import-macros {: a-macro} :path.to.macros)"}}
 ```
 
-### Configuration
+#### Configuration
 
-Run `fnldoc --help` and you'll find configuration options that can
-be customized by command line flags.
-
-If you like to configure options permanently, write out your
-configuration in `.fenneldoc` file. Fnldoc looks for `.fenneldoc`
-in your current directory and set options accordingly.
+Run `fnldoc --help` and you'll find configuration options that can be
+customized by command line flags. If you like to configure options
+permanently, write out your configuration in `.fenneldoc` file. Fnldoc
+looks for `.fenneldoc` in your current directory and set options
+accordingly.
 
 `.fenneldoc` should return a table of option settings. It looks
-like this:
+like so:
 
 ```fennel
 {:out-dir "./doc"
@@ -498,10 +498,10 @@ like this:
 ```
 
 You can generate `.fenneldoc` filled with defaults by invoking
-`fnldoc --config`. If you want to generate a fresh `.fenneldoc`,
-remove old `.fenneldoc` and run `fnldoc --config` again.
-If you want to override configuration entries in `.fenneldoc`, pass
-flags to `fnldoc` like this:
+`fnldoc --config`. If you want to generate a fresh `.fenneldoc`, remove
+old `.fenneldoc` and run `fnldoc --config` again. If you want to
+override configuration options in `.fenneldoc`, pass flags to `fnldoc`
+like this:
 
     $ fnldoc --no-toc --no-function-signatures --config
 
