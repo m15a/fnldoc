@@ -130,6 +130,9 @@ entries.
             (false msg)
             (values false msg))))))
 
+(macro inc! [x]
+  `(set ,x (+ ,x 1)))
+
 (lambda extract-module-description [file]
  "Extract module description from the top of the `file`.
 
@@ -173,6 +176,7 @@ More paragraph.
                empty-line "^%s*$"
                another-empty-line "^%s*;;;;$"
                description-line "^%s*;;;; "
+               description (.. description-line "(.*)$")
                comment-line "^%s*;"]
            (var parsing? true)
            (var empty-lines-count 0)
@@ -184,19 +188,22 @@ More paragraph.
                             (table.insert lines ""))
                           (set empty-lines-count 0)
                           (doto lines
-                            (table.insert (line:match (.. description-line "(.*)$")))))
+                            (table.insert (line:match description))))
+
                         (line:match empty-line)
                         (when (next lines)
-                          (set empty-lines-count (+ 1 empty-lines-count)))
+                          (inc! empty-lines-count))
+
                         (line:match another-empty-line)
                         (when (next lines)
-                          (set empty-lines-count (+ 1 empty-lines-count)))
-                        (line:match comment-line)
+                          (inc! empty-lines-count))
+
+                        (or (line:match comment-line)
+                            ;; Shebang lines must begin from line 1 but here
+                            ;; no need to be so strict.
+                            (line:match shebang-line))
                         (do :ignore-it!)
-                        ;; Shebang lines must begin from line 1 but here
-                        ;; no need to be so strict.
-                        (line:match shebang-line)
-                        (do :ignore-#!)
+
                         (set parsing? nil))
                _ (set parsing? nil)))
            (when (< 0 (length lines))
