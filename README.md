@@ -56,14 +56,12 @@ Say hello.
 
 ## Description
 
-Fnldoc automatically generates Markdown documentation from Fennel
-source code. It searches for function metadata and documentation
+Fnldoc is a fork of now archived [Fenneldoc], with some bug fixes and
+new features. It automatically generates Markdown documentation from
+Fennel source code. It searches for function metadata and documentation
 comments in source code, and then formats these pieces of information
 into API documentation. In addition, it can test Fennel code inside
 Markdown fences in function docstring (a.k.a. doctest).
-
-Fnldoc is actually a fork of now archived [Fenneldoc], with some bug
-fixes and new features.
 
 ### Features
 
@@ -72,7 +70,7 @@ fixes and new features.
   with `;;;; `**.
 - Easy internal linking: `` `text'`` enclosed by backtick and single
   quote is turned into internal hyperlink.
-- **Show function type (function or macro)** and signature in
+- Show **function type (function or macro)** and signature in
   documentation.
 - Run tests embedded in function docstring (a.k.a. doctest).
 - Granular customizability for documentation contents.
@@ -83,12 +81,13 @@ and minor enhancements.
 
 ### Installation
 
-Fnldoc runs with these dependencies:
+To build and install Fnldoc, you need the following dependencies.
 
 - Lua: [PUC Lua] 5.3+ or [LuaJIT]
 - Fennel: 1.4.2+ (only required when compiling to Lua script)
+- [GNU make]
 
-[GNU make] is also required as a build tool.
+Clone this repository and run `make install`:
 
     $ git clone https://git.sr.ht/~m15a/fnldoc
     $ cd fnldoc
@@ -110,22 +109,30 @@ Markdown documentation will be generated in `./doc` directory (default).
 
 #### Write documentation
 
-Fnldoc generates documentation from three sources:
+Fnldoc generates documentation from three sources of information:
 
-1. Runtime information (e.g., metadata): each function/macro's
-   description and module structure
+1. Runtime information: each function/macro's metadata (e.g.,
+   docstring) and module structure
 2. Module top-level comments: documentation for each module file
 3. Configuration file: project information such as copyright
+
+For writing documentation in source 1, see the following three sections,
+[Function docstring](#function-docstring),
+[Macro dosctring](#macro-docstring), and
+[Keep function or macro private](#keep-function-or-macro-private).
+For source 2, see
+[Module top-level comments](#module-top-level-comments).
+For source 3, see
+[Copyright, license, and version](#copyright-license-and-version).
  
-For source 1, Fnldoc **runs your code** by executing `fennel.dofile`,
-and collects runtime information, such as metadata and exported
-functions. It does so in a restricted environment called **sandbox**,
-so if your program has any side effects reachable during file loading,
-you will get an error.
- 
-Use `--no-sandbox` flag in command line or `:sandbox` option in
-configuration file to override this behavior
-(see [Configuration](#configuration)).
+> [!WARNING]
+> For source 1, Fnldoc **runs your code** by executing `fennel.dofile`,
+> and collects runtime information such as metadata and exported
+> functions. It does so in a restricted environment called **sandbox**,
+> so if your program has any side effects reachable during file loading,
+> you will get an error. Use `--no-sandbox` flag in command line or
+> `:sandbox` option in configuration file to override this behavior
+> (see [Configuration](#configuration)).
 
 ##### Function docstring
 
@@ -140,7 +147,7 @@ the function (or macro) accordingly. For example,
 {: your-function}
 ```
 
-The above function will get its documentation:
+The above function will get its section in documentation:
 
 ````markdown
 ## Function: your-function
@@ -151,6 +158,10 @@ The above function will get its documentation:
 
 `your-function`'s docstring.
 ````
+
+If you write Markdown code fence inside docstring, it can be validated
+by Fnldoc. See [Test documentation](#test-documentation) for more
+details.
 
 ##### Macro docstring
 
@@ -179,13 +190,18 @@ using Fnldoc's metadata field `:fnldoc/type`:
 {: your-macro}
 ```
 
-##### Keep a function or macro private
+As well as function docstring, Markdown code fence inside macro
+docstring can also be validated. See
+[Test documentation](#test-documentation) for more details.
 
-Fnldoc searches for metadata recursively, meaning that functions or
-macros contained in any table exposed in a module will be documented.
-Sometimes you may not want a function or macro to be documented.
-To prevent them from being documented by Fnldoc, you can specify
-metadata field `:fnldoc/type` as `:private`. For example,
+##### Keep function or macro private
+
+To generate documentation, Fnldoc searches for metadata inside code
+recursively, meaning that functions or macros contained in any table
+exposed in a module will be documented. However, sometimes you may not
+want a function or macro to be documented. To prevent them from being
+documented, you can specify metadata field `:fnldoc/type` as `:private`.
+For example,
 
 ```fennel
 (local exposed-table {})
@@ -199,9 +215,11 @@ metadata field `:fnldoc/type` as `:private`. For example,
 
 ##### Module top-level comments
 
-Fnldoc scans Fennel code and search for module top-level comment lines
-beginning with four semicolons `;;;; `, which will be inserted to
-documentation as module description. For example, the following module
+Fnldoc collects runtime information for generating documentation.
+Meanwhile, it reads Fennel code as text file and searches for module
+top-level comment lines beginning with four semicolons, `;;;; `, which
+will be inserted to documentation as module-wide description. For
+example, the following module file
 
 ```fennel
 ;;;; Your module.
@@ -243,13 +261,18 @@ Another line.
 **Undocumented**
 ````
 
+> [!NOTE]
+> Unlike function or macro docstring, Markdown code fences inside module
+> top-level comments will not be validated for now.
+
 ##### Copyright, license, and version
 
 You can add a footer section containing author name, copyright, and
 license information via configuration
-(see [Configuration](#configuration)). In the same manner, you can
-specify project version or module version in configuration. The
-specified version will be inserted into Markdown level-1 heading.
+(see [Configuration](#configuration)). You can also specify project
+version or module version in configuration. The specified version will
+be inserted into Markdown level-1 heading at the top of documentation
+file.
 
 Configuration may be project-wide,
 
@@ -271,10 +294,10 @@ or module-wide
 
 ##### Inline reference
 
-Fnldoc supports inline references (i.e., internal links) in
-documentation by using Fnldoc's special notation: any text surrounded
-by a backtick (``"`"``) and a single quote (`"'"`) will be converted
-to an internal link.
+Fnldoc supports inline reference (i.e., internal link) by Fnldoc's
+special syntax: any text surrounded by a backtick (`` ` ``) and a single
+quote (`'`) will be converted to an internal link if the text refers to
+any exported function or macro name.
 
 For example, function `bar` in the following module has an inline
 reference to function `foo`.
@@ -290,7 +313,7 @@ reference to function `foo`.
 {: foo : bar}
 ```
 
-Fnldoc embeds internal links for `bar` to `foo`:
+Fnldoc generates an internal link to `foo` as follows.
 
 ````markdown
 **Table of contents**
@@ -300,7 +323,7 @@ Fnldoc embeds internal links for `bar` to `foo`:
 
 ## Function: bar
 
-```
+```fennel
 (bar ...)
 ```
 
@@ -308,7 +331,7 @@ See [`foo`](#function-foo).
 
 ## Function: foo
 
-```
+```fennel
 (foo ...)
 ```
 
@@ -316,17 +339,16 @@ See [`foo`](#function-foo).
 ````
 
 If appropriate headings to be referenced are not found, it falls back
-to plain ``"`code`"``.
+to plain `` `code` ``.
 
-Whether to replace inline references with link can be customized in
-configuration entry `mode`
-(see [Configuration](#configuration)).
+Whether to replace inline references with links can be customized in
+configuration entry `mode` (see [Configuration](#configuration)).
 
 ##### Specifying order of contents
 
 Fnldoc supports specifying order of items by passing a sequential
-table of item names to `:order` configuration key. For example, say
-we have a module with two functions:
+table of item names to `:order` configuration entry. For example,
+suppose we have a module with two functions:
 
 ```fennel
 (fn first-function [...]
@@ -340,32 +362,31 @@ we have a module with two functions:
 
 Fnldoc sorts the table alphabetically by default, thus the order of
 the documentation will be `another-function` followed by
-`first-function`. You can override this behavior by specifying the
-`:order` key for the file under `:modules-info` key in `.fenneldoc`:
+`first-function`. You can override this behavior for the file in
+`.fenneldoc` by specifying the file's `:order` entry in the
+`:modules-info` table:
 
 ```fennel
-{:modules-info {
- "path/to/the/file.fnl" {:order [:first-function
-                                 :another-function]}}}
+{:modules-info
+ {"path/to/the/file.fnl" {:order [:first-function
+                                  :another-function]}}}
 ```
 
-If you wish to sort items differently from alphabetic order, you can
-specify either `reverse-alphabetic`, or a custom comparator function,
-which will be passed to Lua's `table.sort` function as its third
-argument.
+In addition, you can specify `:order` entry as either
+`reverse-alphabetic`, or a custom comparator function. The latter will
+be passed to Lua's `table.sort` function as its third argument.
 
-You can set this as a value for the `:order` key in configuration file,
-or by passing it via `--order` flag in command line
-(see [Configuration](#configuration)).
-Note, that you can't pass sorting function via command-line argument.
+You can also set this in command line via `--order` flag (see
+[Configuration](#configuration)). Note that you can't pass sorting
+function or table via command-line argument; only `alphabetic` or
+`reverse-alphabetic`.
 
 #### Test documentation
 
 Fnldoc understands Markdown code fences with `fennel` annotation as
-test code to be validated, and run these tests embedded in
-documentation unless the code fence also has `:skip-test` annotation.
-For example, say we made a change in function but forgot to update
-the docstring:
+test code to be validated, and run these tests unless the code fences
+also have `:skip-test` annotation. For example, suppose we made a change
+in function but forgot to update the docstring:
 
 ````fennel
 (fn sum [a b]
@@ -426,8 +447,8 @@ fnldoc [WARNING]: in file 'sum.fnl' function 'sum' has undocumented argument 'b'
 fnldoc [INFO]: skipping test in 'sum'
 ```
 
-By the way, did you notice that Fnldoc warned when finding
-undocumented arguments?
+By the way, did you notice that Fnldoc warned when finding undocumented
+arguments?
 
 ```
 fnldoc [WARNING]: in file 'sum.fnl' function 'sum' has undocumented argument 'a'
