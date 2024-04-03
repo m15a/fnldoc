@@ -13,7 +13,7 @@ Orchestrate tasks.
 (destination-path module-info config)
 ```
 
-Determine path to put generated Markdown according to `module-info` and `config`.
+Determine path to put generated Markdown from `module-info` and `config`.
 
 ## Function: process!
 
@@ -21,10 +21,11 @@ Determine path to put generated Markdown according to `module-info` and `config`
 (process! file config)
 ```
 
-Extract module information from the `file`, run doctests, and generate Markdown.
+Extract module information from the `file`, run tests, and generate Markdown.
 
-Whether to run doctests and/or to generate markdown depends on preferences specified
-in the `config`. Generated documentation will be placed under `config.out-dir`.
+Whether to run tests and/or to generate markdown depends on preferences
+specified in the `config`. Generated documentation will be placed under
+`config.out-dir`.
 
 ---
 
